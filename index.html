@@ -52,7 +52,7 @@
             }
         }
 
-        /* --- 3. DYNAMIC ISLAND (Klickbar och animerad) --- */
+        /* --- 3. DYNAMIC ISLAND (Med fungerande iOS-lås till vänster) --- */
         .dynamic-island-container {
             position: absolute;
             top: 11px;
@@ -62,7 +62,8 @@
         }
 
         .dynamic-island {
-            width: 110px;
+            /* Lite bredare i grunden för att rymma låset snyggt */
+            width: 125px;
             height: 30px;
             background-color: #000;
             border-radius: 20px;
@@ -70,57 +71,70 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15);
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            padding: 0 12px;
+            box-sizing: border-box;
         }
 
-        /* Innehåll i Dynamic Island (gömt som standard) */
+        /* Innehållet i Dynamic Island */
         .island-content {
-            opacity: 0;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             width: 100%;
-            padding: 0 15px;
-            box-sizing: border-box;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-            font-size: 12px;
-            color: #fff;
+            gap: 8px;
+            transition: all 0.3s ease;
         }
 
-        /* När man klickar och expanderar */
+        /* Det lilla iOS-låset */
+        .island-lock {
+            width: 13px;
+            height: 13px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform 0.3s ease;
+        }
+
+        /* Bygeln på hänglåset som vi kan flytta för att "låsa upp" */
+        .lock-shackle {
+            transition: transform 0.3s ease;
+            transform-origin: 12px 9px;
+        }
+
+        /* Texten bredvid låset (gömd i stängt läge) */
+        .island-text {
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0;
+            width: 0;
+            white-space: nowrap;
+            transition: opacity 0.2s ease, width 0.2s ease;
+        }
+
+        /* EXPANDERAT LÄGE (När man klickar) */
         .dynamic-island.expanded {
-            width: 320px;
-            height: 65px;
-            border-radius: 32px;
+            width: 170px; /* Gör ön bredare för Face ID-läget */
+            height: 34px;
+            justify-content: flex-start; /* Skjuter låset till vänster */
         }
 
         .dynamic-island.expanded .island-content {
+            justify-content: flex-start; /* Låset lägger sig till vänster */
+        }
+
+        .dynamic-island.expanded .island-text {
             opacity: 1;
-            pointer-events: auto;
+            width: auto;
         }
 
-        /* Musik-våg animation till ön */
-        .music-wave {
-            display: flex;
-            gap: 2px;
-            align-items: flex-end;
-            height: 14px;
-        }
-        .music-wave span {
-            width: 2px;
-            height: 100%;
-            background-color: #1db954; /* Spotify-grön */
-            animation: bounce 0.8s infinite ease-in-out alternate;
-        }
-        .music-wave span:nth-child(2) { animation-delay: 0.2s; }
-        .music-wave span:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes bounce {
-            10% { height: 4px; }
-            100% { height: 14px; }
+        /* UPPLÅST ANIME-STATE (Styrs via JS) */
+        .dynamic-island.unlocked .lock-shackle {
+            transform: translateY(-2px) rotate(-15px); /* Öppnar bygeln */
         }
 
         /* --- 4. STATUSFÄLT --- */
@@ -187,7 +201,7 @@
 
         .battery-fill {
             height: 100%;
-            width: 88%; /* Batterinivå */
+            width: 88%; 
             background-color: #fff;
             border-radius: 2px;
         }
@@ -201,12 +215,12 @@
             border-radius: 0 1px 1px 0;
         }
 
-        /* --- 5. LÅSSKÄRMENS INNEHÅLL (Utan Lås-emoji) --- */
+        /* --- 5. LÅSSKÄRMENS INNEHÅLL --- */
         .lock-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 35px; /* Ökat lite nu när låset är borta */
+            margin-top: 35px; 
             flex-grow: 1;
         }
 
@@ -310,15 +324,13 @@
     <div class="iphone-screen">
         
         <div class="dynamic-island-container">
-            <div class="dynamic-island" id="island" onclick="toggleIsland()">
+            <div class="dynamic-island" id="island" onclick="triggerUnlock()">
                 <div class="island-content">
-                    <span style="color: #1db954; font-weight: bold;">Spotify</span>
-                    <span>Nu spelas: iOS Beats</span>
-                    <div class="music-wave">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
+                    <svg class="island-lock" viewBox="0 0 24 24">
+                        <path class="lock-shackle" d="M7 10V7a5 5 0 0 1 10 0v3" />
+                        <rect x="5" y="10" width="14" height="11" rx="3.5" fill="#fff" stroke="none" />
+                    </svg>
+                    <span class="island-text" id="islandText">Face ID</span>
                 </div>
             </div>
         </div>
@@ -375,7 +387,7 @@
     </div>
 
     <script>
-        // Uppdatera klocka och datum
+        // Uppdatera klocka och datum kontinuerligt
         function updateTime() {
             const now = new Date();
             
@@ -389,10 +401,34 @@
             document.getElementById('date').textContent = dateStr;
         }
 
-        // Funktion för att öppna/stänga Dynamic Island
-        function toggleIsland() {
+        // Simulerar upplåsning med Face ID via Dynamic Island
+        let isAnimating = false;
+        function triggerUnlock() {
+            if (isAnimating) return;
+            isAnimating = true;
+
             const island = document.getElementById('island');
-            island.classList.toggle('expanded');
+            const islandText = document.getElementById('islandText');
+
+            // 1. Expandera ön åt vänster och visa "Face ID"
+            island.classList.add('expanded');
+            islandText.textContent = "Face ID";
+
+            // 2. Efter 800ms "låses bygeln upp" mekaniskt och texten ändras till "Upplåst"
+            setTimeout(() => {
+                island.classList.add('unlocked');
+                islandText.textContent = "Upplåst";
+            }, 800);
+
+            // 3. Efter ytterligare 1000ms krymper Dynamic Island tillbaka till viloläge
+            setTimeout(() => {
+                island.classList.remove('expanded');
+                // Vänta tills krymp-animationen är klar innan låset stängs igen
+                setTimeout(() => {
+                    island.classList.remove('unlocked');
+                    isAnimating = false;
+                }, 400);
+            }, 2000);
         }
 
         updateTime();
