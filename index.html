@@ -22,7 +22,6 @@
         .iphone {
             width: 375px;
             height: 812px;
-            /* Din iOS 17 bakgrundsbild */
             background-image: url('ios-17-wallpaper-v2-light-4k.jpg');
             background-size: cover;
             background-position: center;
@@ -119,19 +118,22 @@
             box-sizing: border-box;
         }
 
+        /* ÄKTA iOS-KNAPPARS DESIGN */
         .action-button {
             width: 50px;
             height: 50px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            /* Mörk, halvgenomskinlig bakgrund med kraftig oskärpa (blur) */
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: background 0.2s, transform 0.1s;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none; /* Ingen kantlinje i originalet, bara ren oskärpa */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         /* SVG-ikoner inuti knapparna */
@@ -139,11 +141,18 @@
             width: 22px;
             height: 22px;
             fill: #fff;
+            transition: fill 0.1s;
         }
 
+        /* TRYCK-EFFEKT: När man trycker på knappen (iOS-style) */
         .action-button:active {
             transform: scale(0.92);
-            background: rgba(255, 255, 255, 0.25);
+            background: #ffffff; /* Blir helt vit i bakgrunden */
+        }
+
+        /* Ikonen blir mörkgrå/svart när bakgrunden blir vit */
+        .action-button:active svg {
+            fill: #1c1c1e; 
         }
 
         /* Svep-text */
