@@ -29,7 +29,8 @@
             max-width: 390px;
             max-height: 844px; 
             
-            background-image: url('ios-17-wallpaper-v2-light-4k.jpg');
+            /* NY BAKGRUND */
+            background-image: url('blackbakgrund.webp');
             background-size: cover;
             background-position: center;
             position: relative;
@@ -52,7 +53,7 @@
             }
         }
 
-        /* --- 3. DYNAMIC ISLAND (Låset placerat längst till vänster) --- */
+        /* --- 3. DYNAMIC ISLAND (Låset längst till vänster) --- */
         .dynamic-island-container {
             position: absolute;
             top: 11px;
@@ -69,24 +70,22 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* Justerar innehållet till vänster direkt */
+            justify-content: flex-start;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15);
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            padding: 0 14px; /* Ger bra distans från vänsterkanten */
+            padding: 0 14px;
             box-sizing: border-box;
         }
 
-        /* Innehållet i Dynamic Island */
         .island-content {
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* Låset hålls till vänster */
+            justify-content: flex-start;
             width: 100%;
             gap: 10px;
         }
 
-        /* Det lilla iOS-låset */
         .island-lock {
             width: 13px;
             height: 13px;
@@ -95,17 +94,15 @@
             stroke-width: 2.5;
             stroke-linecap: round;
             stroke-linejoin: round;
-            flex-shrink: 0; /* Hindrar låset från att tryckas ihop */
+            flex-shrink: 0;
             transition: transform 0.3s ease;
         }
 
-        /* Bygeln på hänglåset */
         .lock-shackle {
             transition: transform 0.3s ease;
             transform-origin: 12px 9px;
         }
 
-        /* Texten bredvid låset (dold i stängt läge) */
         .island-text {
             font-size: 13px;
             font-weight: 600;
@@ -115,7 +112,6 @@
             transition: opacity 0.2s ease, width 0.2s ease;
         }
 
-        /* EXPANDERAT LÄGE (Vid klick) */
         .dynamic-island.expanded {
             width: 170px; 
             height: 34px;
@@ -126,7 +122,6 @@
             width: auto;
         }
 
-        /* UPPLÅST LÄGE */
         .dynamic-island.unlocked .lock-shackle {
             transform: translateY(-2px) rotate(-15px);
         }
@@ -218,7 +213,6 @@
             flex-grow: 1;
         }
 
-        /* Datum */
         .date {
             font-size: 21px;
             font-weight: 600;
@@ -288,7 +282,6 @@
             fill: #1c1c1e; 
         }
 
-        /* Svep-text */
         .swipe-text {
             font-size: 13px;
             font-weight: 500;
@@ -298,7 +291,6 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Hem-streck */
         .home-bar {
             width: 130px;
             height: 5px;
