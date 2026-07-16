@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>iOS Simulator</title>
+    <title>iOS Simulator Pro</title>
     <style>
         :root {
-            /* ASYMMETRISKA FJÄDRAR (Öppna vs Stäng) */
-            --ios-open-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* Elastisk studs */
-            --ios-close-spring: cubic-bezier(0.16, 1, 0.3, 1);    /* Snabb, rapp rekyl */
+            /* FYSIK-KURVOR FÖR ULTRA-FLYT (Använder Apple-liknande parametrar) */
+            --ios-open-spring: cubic-bezier(0.22, 1.25, 0.36, 1); /* Perfekt studs */
+            --ios-close-spring: cubic-bezier(0.25, 1, 0.3, 1);    /* Snabb, rapp respons */
+            --ios-island-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
             
-            --liquid-glass: rgba(255, 255, 255, 0.12);
-            --glass-border: rgba(255, 255, 255, 0.18);
+            --liquid-glass: rgba(255, 255, 255, 0.11);
+            --glass-border: rgba(255, 255, 255, 0.16);
             
-            /* Dynamiska variabler för app-animationen (sätts via JS) */
+            /* Dynamiska koordinater */
             --origin-x: 50%;
             --origin-y: 50%;
         }
@@ -29,7 +30,7 @@
         }
 
         body {
-            background: #000;
+            background: #0a0a0c;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -44,28 +45,43 @@
             height: 812px;
             background: #000;
             border-radius: 54px;
-            box-shadow: inset 0 0 0 2px #5a5a5c, 0 0 0 4px #2a2a2c, 0 30px 100px rgba(0, 0, 0, 0.8);
+            box-shadow: inset 0 0 0 2px #3c3c3e, 0 0 0 4px #1c1c1e, 0 30px 100px rgba(0, 0, 0, 0.95);
             position: relative;
             overflow: hidden;
             padding: 10px;
             transition: all 0.3s var(--ios-close-spring);
         }
 
-        /* Skärmen */
+        /* Skärmen med parallax-zoom på bakgrunden */
         .iphone-screen {
             width: 100%;
             height: 100%;
-            background: #000 url('blackbakgrund.webp') no-repeat center center;
-            background-size: cover;
+            background: #000;
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             border-radius: 44px;
             overflow: hidden;
+            z-index: 1;
         }
 
-        /* RESPONSIV DESIGN (Mobilhelskärm) */
+        /* Separat Wallpaper för att kunna zooma den oberoende av appar */
+        .wallpaper-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000 url('blackbakgrund.webp') no-repeat center center;
+            background-size: cover;
+            z-index: -1;
+            transform: scale3d(1, 1, 1);
+            transition: transform 0.65s var(--ios-open-spring), filter 0.65s var(--ios-open-spring);
+            will-change: transform, filter;
+        }
+
+        /* RESPONSIV DESIGN */
         @media (max-width: 600px) {
             .iphone-frame {
                 width: 100vw;
@@ -93,15 +109,14 @@
             }
         }
 
-        /* DYNAMIC ISLAND - NU TILLBAKA PÅ ALLA ENHETER! */
+        /* REALISTISK DYNAMIC ISLAND */
         .dynamic-island-container {
             position: absolute;
             top: 11px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate3d(-50%, 0, 0);
             z-index: 99999;
             pointer-events: none;
-            transition: all 0.5s var(--ios-open-spring);
         }
         .dynamic-island {
             width: 110px;
@@ -109,15 +124,67 @@
             background: #000;
             border-radius: 20px;
             box-sizing: border-box;
-            border: 0.5px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: all 0.4s var(--ios-open-spring);
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 12px;
+            transition: all 0.55s var(--ios-island-spring);
+            will-change: width, height, transform;
         }
         
-        /* En kul detalj: Dynamic Island pulserar lite när en app öppnas */
-        .app-is-open .dynamic-island {
-            transform: scale(0.9);
-            opacity: 0.8;
+        /* Gömda linser inuti hårdvaran */
+        .dynamic-island::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 10px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #0d122b 0%, #03040a 80%);
+            opacity: 0.85;
+            box-shadow: inset 0 0 2px rgba(255,255,255,0.2);
+        }
+        .dynamic-island::after {
+            content: '';
+            position: absolute;
+            left: 28px;
+            top: 12px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #051405 0%, #010401 90%);
+            opacity: 0.7;
+        }
+
+        /* Grön Kamera-lampa (Integritetsindikator) */
+        .camera-indicator {
+            width: 5.5px;
+            height: 5.5px;
+            border-radius: 50%;
+            background: #30d158;
+            opacity: 0;
+            transform: scale3d(0, 0, 1);
+            transition: all 0.3s var(--ios-open-spring);
+            box-shadow: 0 0 6px rgba(48, 209, 88, 0.8);
+            z-index: 2;
+        }
+        .camera-active .camera-indicator {
+            opacity: 1;
+            transform: scale3d(1, 1, 1);
+        }
+
+        /* Puls-animation när Dynamic Island reagerar på interaktioner */
+        .island-pulse {
+            animation: islandBump 0.4s var(--ios-island-spring);
+        }
+        @keyframes islandBump {
+            0% { transform: scale3d(1, 1, 1); }
+            50% { transform: scale3d(1.08, 0.94, 1); }
+            100% { transform: scale3d(1, 1, 1); }
         }
 
         @media (max-width: 600px) {
@@ -171,112 +238,118 @@
         /* Låsskärm */
         .lock-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: inherit; background-size: cover; z-index: 500;
-            display: flex; flex-direction: column; justify-content: space-between;
+            z-index: 500; display: flex; flex-direction: column; justify-content: space-between;
             padding: 70px 0 35px 0; transition: transform 0.65s var(--ios-open-spring), opacity 0.4s ease;
         }
         #clock { font-size: 80px; font-weight: 700; letter-spacing: -1.5px; color: #fff; text-align: center; }
         #date { font-size: 19px; font-weight: 500; color: #fff; text-align: center; }
         .swipe-indicator { text-align: center; color: #fff; font-size: 14px; font-weight: 500; animation: breathe-swipe 2s infinite; }
-        @keyframes breathe-swipe { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; transform: translateY(-4px); } }
+        @keyframes breathe-swipe { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; transform: translate3d(0, -4px, 0); } }
 
         /* Hemskärm & Grid */
         .home-screen {
             padding: 10px 18px; display: flex; flex-direction: column; flex-grow: 1;
-            margin-top: 15px; opacity: 0; transform: scale(0.94);
+            margin-top: 15px; opacity: 0; transform: scale3d(0.95, 0.95, 1);
             transition: transform 0.65s var(--ios-open-spring), opacity 0.4s ease, filter 0.5s ease;
             will-change: transform, opacity, filter;
         }
         .dock-container {
-            padding: 0 18px 35px 18px; opacity: 0; transform: translateY(30px);
+            padding: 0 18px 35px 18px; opacity: 0; transform: translate3d(0, 30px, 0);
             transition: transform 0.65s var(--ios-open-spring), opacity 0.4s ease, filter 0.5s ease;
             will-change: transform, opacity, filter;
         }
-        .is-unlocked .home-screen { opacity: 1; transform: scale(1); }
-        .is-unlocked .dock-container { opacity: 1; transform: translateY(0); }
+        .is-unlocked .home-screen { opacity: 1; transform: scale3d(1, 1, 1); }
+        .is-unlocked .dock-container { opacity: 1; transform: translate3d(0, 0, 0); }
 
-        /* Hemskärmen skjuts bakåt synkroniserat vid öppning */
+        /* Bakgrundszoom vid öppning av app */
+        .app-is-open .wallpaper-bg {
+            transform: scale3d(1.08, 1.08, 1);
+            filter: blur(15px) brightness(0.8);
+        }
         .app-is-open .home-screen, .app-is-open .dock-container {
-            transform: scale(0.92);
-            opacity: 0.25;
-            filter: blur(12px);
-            transition: transform 0.6s var(--ios-open-spring), opacity 0.6s var(--ios-open-spring), filter 0.6s var(--ios-open-spring);
+            transform: scale3d(0.92, 0.92, 1);
+            opacity: 0.15;
+            filter: blur(10px);
+            transition: transform 0.65s var(--ios-open-spring), opacity 0.65s var(--ios-open-spring), filter 0.65s var(--ios-open-spring);
         }
 
         .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px 14px; padding-top: 15px; }
         .app-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         
-        /* Ikoner */
+        /* REALISTISKA APP-IKONER */
         .app-icon {
             width: 62px; height: 62px; border-radius: 22.5%;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: transform 0.15s ease, filter 0.15s ease;
+            /* Premium djupeffekt och inre kant */
+            box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.2), 0 5px 14px rgba(0,0,0,0.22);
+            transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.18s ease;
             position: relative; overflow: hidden; background: #fff;
         }
-        .app-item:active .app-icon { transform: scale(0.85); filter: brightness(0.7); }
+        .app-item:active .app-icon { transform: scale3d(0.86, 0.86, 1); filter: brightness(0.8); }
 
         /* Safari */
         .icon-safari { background: linear-gradient(180deg, #30b0e8 0%, #0d60b5 100%); }
-        .icon-safari::before { content: ''; position: absolute; width: 46px; height: 46px; background: #fff; border-radius: 50%; }
-        .icon-safari::after { content: ''; position: absolute; width: 42px; height: 42px; background: radial-gradient(circle, #30b0e8 0%, #0d60b5 100%); border-radius: 50%; }
-        .safari-needle { position: absolute; z-index: 3; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 22px solid #ff3b30; transform: rotate(45deg); transform-origin: 50% 100%; top: 9px; }
-        .safari-needle-south { position: absolute; z-index: 2; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 22px solid #fff; transform: rotate(45deg); transform-origin: 50% 0%; bottom: 9px; }
+        .icon-safari::before { content: ''; position: absolute; width: 44px; height: 44px; background: #fff; border-radius: 50%; box-shadow: inset 0 1px 3px rgba(0,0,0,0.15); }
+        .icon-safari::after { content: ''; position: absolute; width: 40px; height: 40px; background: radial-gradient(circle, #32b5ee 0%, #0a56aa 100%); border-radius: 50%; }
+        .safari-compass-dots { position: absolute; z-index: 2; width: 34px; height: 34px; border: 1.5px dashed rgba(255,255,255,0.4); border-radius: 50%; }
+        .safari-needle { position: absolute; z-index: 3; width: 0; height: 0; border-left: 4.5px solid transparent; border-right: 4.5px solid transparent; border-bottom: 20px solid #ff3b30; transform: rotate(45deg); transform-origin: 50% 100%; top: 11px; filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.25)); }
+        .safari-needle-south { position: absolute; z-index: 2; width: 0; height: 0; border-left: 4.5px solid transparent; border-right: 4.5px solid transparent; border-top: 20px solid #f2f2f7; transform: rotate(45deg); transform-origin: 50% 0%; bottom: 11px; filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.15)); }
 
-        /* Bilder */
+        /* Bilder (Photos) */
         .icon-photos { background: #fff; }
-        .photos-flower { position: relative; width: 34px; height: 34px; }
-        .petal { position: absolute; width: 12px; height: 18px; border-radius: 6px; opacity: 0.85; left: 11px; top: 8px; transform-origin: 6px 9px; mix-blend-mode: multiply; }
-        .petal:nth-child(1) { background: #ff2a6d; transform: rotate(0deg) translateY(-8px); }
-        .petal:nth-child(2) { background: #ff5e3a; transform: rotate(45deg) translateY(-8px); }
-        .petal:nth-child(3) { background: #ffdb4c; transform: rotate(90deg) translateY(-8px); }
-        .petal:nth-child(4) { background: #87fc70; transform: rotate(135deg) translateY(-8px); }
-        .petal:nth-child(5) { background: #55e9bc; transform: rotate(180deg) translateY(-8px); }
-        .petal:nth-child(6) { background: #52edc7; transform: rotate(225deg) translateY(-8px); }
-        .petal:nth-child(7) { background: #1ad6fd; transform: rotate(270deg) translateY(-8px); }
-        .petal:nth-child(8) { background: #b545ff; transform: rotate(315deg) translateY(-8px); }
+        .photos-flower { position: relative; width: 32px; height: 32px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1)); }
+        .petal { position: absolute; width: 11px; height: 17px; border-radius: 5.5px; left: 10.5px; top: 7.5px; transform-origin: 5.5px 8.5px; mix-blend-mode: multiply; opacity: 0.9; }
+        .petal:nth-child(1) { background: #ff2d55; transform: rotate(0deg) translateY(-6.5px); }
+        .petal:nth-child(2) { background: #ff9500; transform: rotate(45deg) translateY(-6.5px); }
+        .petal:nth-child(3) { background: #ffcc00; transform: rotate(90deg) translateY(-6.5px); }
+        .petal:nth-child(4) { background: #4cd964; transform: rotate(135deg) translateY(-6.5px); }
+        .petal:nth-child(5) { background: #5ac8fa; transform: rotate(180deg) translateY(-6.5px); }
+        .petal:nth-child(6) { background: #007aff; transform: rotate(225deg) translateY(-6.5px); }
+        .petal:nth-child(7) { background: #5856d6; transform: rotate(270deg) translateY(-6.5px); }
+        .petal:nth-child(8) { background: #ff2d55; transform: rotate(315deg) translateY(-6.5px); }
 
         /* Inställningar */
-        .icon-settings { background: linear-gradient(135deg, #d1d1d6 0%, #8e8e93 100%); }
-        .settings-gear { width: 36px; height: 36px; background: #2c2c2e; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; }
-        .settings-gear::before { content: ''; position: absolute; width: 20px; height: 20px; background: #8e8e93; border-radius: 50%; z-index: 2; }
-        .gear-tooth { position: absolute; width: 8px; height: 42px; background: #2c2c2e; border-radius: 2px; }
+        .icon-settings { background: linear-gradient(135deg, #f2f2f7 0%, #8e8e93 100%); }
+        .settings-gear { width: 40px; height: 40px; background: #636366; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); }
+        .settings-gear::before { content: ''; position: absolute; width: 22px; height: 22px; background: linear-gradient(135deg, #d1d1d6, #8e8e93); border-radius: 50%; z-index: 2; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .gear-tooth { position: absolute; width: 7px; height: 44px; background: #636366; border-radius: 2px; }
         .gear-tooth:nth-child(2) { transform: rotate(45deg); }
         .gear-tooth:nth-child(3) { transform: rotate(90deg); }
         .gear-tooth:nth-child(4) { transform: rotate(135deg); }
 
         /* App Store */
-        .icon-appstore { background: linear-gradient(180deg, #28a8ff 0%, #0071eb 100%); }
-        .appstore-a { position: relative; width: 36px; height: 36px; }
-        .appstore-line { position: absolute; background: #fff; border-radius: 5px; }
-        .appstore-line.l1 { width: 6px; height: 32px; left: 15px; transform: rotate(-30deg); }
-        .appstore-line.l2 { width: 6px; height: 32px; left: 15px; transform: rotate(30deg); }
-        .appstore-line.l3 { width: 24px; height: 6px; top: 19px; left: 6px; }
+        .icon-appstore { background: linear-gradient(180deg, #34aadc 0%, #007aff 100%); }
+        .appstore-a { position: relative; width: 34px; height: 34px; }
+        .appstore-line { position: absolute; background: #fff; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+        .appstore-line.l1 { width: 5px; height: 32px; left: 14.5px; transform: rotate(-30deg); z-index: 2; }
+        .appstore-line.l2 { width: 5px; height: 32px; left: 14.5px; transform: rotate(30deg); z-index: 1; }
+        .appstore-line.l3 { width: 22px; height: 5px; top: 19px; left: 6px; z-index: 3; }
 
         /* Meddelanden */
-        .icon-messages { background: linear-gradient(180deg, #65e97d 0%, #2bd04f 100%); }
-        .message-bubble { width: 38px; height: 28px; background: #fff; border-radius: 14px; position: relative; }
-        .message-bubble::after { content: ''; position: absolute; bottom: -2px; left: -2px; width: 14px; height: 14px; background: #fff; border-bottom-right-radius: 12px; border-bottom-left-radius: 18px; transform: rotate(-15deg); }
+        .icon-messages { background: linear-gradient(180deg, #5fe46e 0%, #2bd04a 100%); }
+        .message-bubble { width: 36px; height: 26px; background: #fff; border-radius: 13px; position: relative; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1)); }
+        .message-bubble::after { content: ''; position: absolute; bottom: -2px; left: -3px; width: 12px; height: 12px; background: #fff; border-bottom-right-radius: 10px; border-bottom-left-radius: 15px; transform: rotate(-10deg); }
 
         /* Kamera */
-        .icon-camera { background: linear-gradient(180deg, #8e8e93 0%, #3a3a3c 100%); position: relative; }
-        .camera-lens { width: 30px; height: 30px; border-radius: 50%; background: #1c1c1e; border: 3px solid #545456; position: relative; display: flex; align-items: center; justify-content: center; }
-        .camera-lens::before { content: ''; width: 12px; height: 12px; background: #0a84ff; border-radius: 50%; opacity: 0.8; }
-        .camera-flash-dot { position: absolute; top: 12px; right: 12px; width: 6px; height: 6px; background: #ffd60a; border-radius: 50%; }
+        .icon-camera { background: linear-gradient(180deg, #f2f2f7 0%, #8e8e93 100%); position: relative; }
+        .camera-body-deco { width: 44px; height: 28px; background: #3a3a3c; border-radius: 6px; position: relative; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.2); }
+        .camera-body-deco::before { content: ''; position: absolute; top: -4px; width: 14px; height: 5px; background: #3a3a3c; border-radius: 3px 3px 0 0; }
+        .camera-lens { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle, #1c1c1e 30%, #2c2c2e 80%); border: 2px solid #545456; display: flex; align-items: center; justify-content: center; }
+        .camera-lens::before { content: ''; width: 8px; height: 8px; background: radial-gradient(circle, #0a84ff 10%, #000 80%); border-radius: 50%; opacity: 0.9; }
 
         /* Telefon */
-        .icon-phone { background: linear-gradient(180deg, #65e97d 0%, #2bd04f 100%); }
-        .phone-receiver { width: 28px; height: 28px; background: #fff; border-radius: 5px; transform: rotate(-45deg); position: relative; }
-        .phone-receiver::before { content: ''; position: absolute; width: 12px; height: 20px; background: #fff; border-radius: 4px; top: 4px; left: -4px; box-shadow: 24px 0 0 #fff; }
+        .icon-phone { background: linear-gradient(180deg, #5fe46e 0%, #2bd04a 100%); }
+        .phone-receiver { width: 28px; height: 28px; background: #fff; border-radius: 4px; transform: rotate(-45deg); position: relative; filter: drop-shadow(0 1.5px 2px rgba(0,0,0,0.15)); }
+        .phone-receiver::before { content: ''; position: absolute; width: 11px; height: 20px; background: #fff; border-radius: 3.5px; top: 4px; left: -4px; box-shadow: 25px 0 0 #fff; }
 
-        .app-label { color: #fff; font-size: 11px; font-weight: 500; margin-top: 6px; text-shadow: 0 1px 2px rgba(0,0,0,0.6); text-align: center; }
+        .app-label { color: #fff; font-size: 11px; font-weight: 500; margin-top: 6px; text-shadow: 0 1px 3px rgba(0,0,0,0.7); text-align: center; }
 
         /* Docka */
         .dock {
-            background: var(--liquid-glass); border: 1px solid var(--glass-border);
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border-radius: 34px; padding: 14px; display: flex; justify-content: space-around;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: var(--liquid-glass); border: 0.5px solid var(--glass-border);
+            backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+            border-radius: 34px; padding: 13px; display: flex; justify-content: space-around;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
         .dock .app-icon { width: 60px; height: 60px; }
 
@@ -286,39 +359,41 @@
             display: flex; justify-content: center; align-items: flex-end;
             z-index: 10000; padding-bottom: 8px; cursor: pointer;
         }
-        .home-bar { width: 135px; height: 5px; background: rgba(255, 255, 255, 0.9); border-radius: 3px; }
+        .home-bar { 
+            width: 135px; height: 5px; background: rgba(255, 255, 255, 0.9); border-radius: 3px; 
+            transition: transform 0.2s var(--ios-close-spring);
+        }
+        .home-bar-container:active .home-bar { transform: scale3d(0.95, 0.8, 1); }
 
-        /* NY DYNAMISK APP-SKÄRM (MED PRESTANDAOPTIMERINGAR) */
+        /* DYNAMISK APP-SKÄRM */
         .app-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 1001; display: none; flex-direction: column;
             border-radius: 44px; overflow: hidden; padding-bottom: 35px;
             
-            /* Startpunkt och form baseras på ikonen */
+            /* Ultra-smooth maskning baserad på klickpunkt */
             transform-origin: var(--origin-x) var(--origin-y);
             opacity: 0;
-            transform: scale(0.05) translate(0, 0);
+            transform: scale3d(0.04, 0.04, 1) translate3d(0, 0, 0);
             
-            /* HÅRDVARUACCELERATION (GPU-framing) */
+            /* GPU Hårdvaruacceleration */
             will-change: transform, opacity, border-radius;
             backface-visibility: hidden;
             
-            /* Standard stängnings-animation (Snabb rekyl utan studs) */
-            transition: transform 0.5s var(--ios-close-spring), opacity 0.3s ease-out, border-radius 0.5s var(--ios-close-spring);
+            /* Standard stängningsfjäder (Rapp, snabb och direkt) */
+            transition: transform 0.48s var(--ios-close-spring), opacity 0.28s ease-out, border-radius 0.48s var(--ios-close-spring);
         }
 
         @media (max-width: 600px) {
             .app-screen { border-radius: 0; }
         }
 
-        /* Fullt öppet läge (Juicy elastisk studs) */
+        /* Fullt öppen med Apples elastiska fjäder */
         .app-screen.open {
             opacity: 1;
-            transform: scale(1) translate(0, 0) !important;
+            transform: scale3d(1, 1, 1) translate3d(0, 0, 0) !important;
             border-radius: 44px;
-            
-            /* Använd elastisk studs endast vid öppning! */
-            transition: transform 0.62s var(--ios-open-spring), opacity 0.32s ease-out, border-radius 0.62s var(--ios-open-spring);
+            transition: transform 0.6s var(--ios-open-spring), opacity 0.3s ease-out, border-radius 0.6s var(--ios-open-spring);
         }
         @media (max-width: 600px) {
             .app-screen.open { border-radius: 0; }
@@ -362,13 +437,13 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scaleX(-1); /* Spegelvänd som standard för selfie */
+            transform: scaleX(-1);
         }
         #cameraVideo.back-cam {
-            transform: scaleX(1); /* Ingen spegelvändning på bakkameran */
+            transform: scaleX(1);
         }
 
-        /* Foto-blixt-effekt */
+        /* Foto-blixt */
         .shutter-flash {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff; opacity: 0; pointer-events: none; z-index: 10;
@@ -394,7 +469,7 @@
             outline: 3px solid #fff; cursor: pointer;
             transition: transform 0.1s ease;
         }
-        .shutter-button:active { transform: scale(0.9); }
+        .shutter-button:active { transform: scale3d(0.88, 0.88, 1); }
 
         .camera-thumbnail {
             width: 45px; height: 45px; border-radius: 50%;
@@ -415,11 +490,15 @@
 <body>
 
     <div class="iphone-frame">
-        <div class="dynamic-island-container">
-            <div class="dynamic-island"></div>
+        <div class="dynamic-island-container" id="islandContainer">
+            <div class="dynamic-island" id="island">
+                <div class="camera-indicator"></div>
+            </div>
         </div>
         
         <div class="iphone-screen" id="mainScreen">
+            <div class="wallpaper-bg" id="wallpaper"></div>
+
             <div class="status-bar">
                 <div class="status-left">
                     <span id="time-widget">12:00</span>
@@ -442,18 +521,62 @@
 
             <div class="home-screen">
                 <div class="app-grid">
-                    <div class="app-item" data-id="safari" onclick="openApp(this)"><div class="app-icon icon-safari"><div class="safari-needle"></div><div class="safari-needle-south"></div></div><div class="app-label">Safari</div></div>
-                    <div class="app-item" data-id="photos" onclick="openApp(this)"><div class="app-icon icon-photos"><div class="photos-flower"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div></div></div><div class="app-label">Bilder</div></div>
-                    <div class="app-item" data-id="settings" onclick="openApp(this)"><div class="app-icon icon-settings"><div class="settings-gear"><div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div></div></div><div class="app-label">Inställningar</div></div>
-                    <div class="app-item" data-id="appstore" onclick="openApp(this)"><div class="app-icon icon-appstore"><div class="appstore-a"><div class="appstore-line l1"></div><div class="appstore-line l2"></div><div class="appstore-line l3"></div></div></div><div class="app-label">App Store</div></div>
-                    <div class="app-item" data-id="messages" onclick="openApp(this)"><div class="app-icon icon-messages"><div class="message-bubble"></div></div><div class="app-label">Meddelanden</div></div>
-                    <div class="app-item" data-id="camera" onclick="openApp(this)"><div class="app-icon icon-camera"><div class="camera-lens"></div><div class="camera-flash-dot"></div></div><div class="app-label">Kamera</div></div>
+                    <div class="app-item" data-id="safari" onclick="openApp(this)">
+                        <div class="app-icon icon-safari">
+                            <div class="safari-compass-dots"></div>
+                            <div class="safari-needle"></div>
+                            <div class="safari-needle-south"></div>
+                        </div>
+                        <div class="app-label">Safari</div>
+                    </div>
+                    <div class="app-item" data-id="photos" onclick="openApp(this)">
+                        <div class="app-icon icon-photos">
+                            <div class="photos-flower">
+                                <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+                            </div>
+                        </div>
+                        <div class="app-label">Bilder</div>
+                    </div>
+                    <div class="app-item" data-id="settings" onclick="openApp(this)">
+                        <div class="app-icon icon-settings">
+                            <div class="settings-gear">
+                                <div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div>
+                            </div>
+                        </div>
+                        <div class="app-label">Inställningar</div>
+                    </div>
+                    <div class="app-item" data-id="appstore" onclick="openApp(this)">
+                        <div class="app-icon icon-appstore">
+                            <div class="appstore-a">
+                                <div class="appstore-line l1"></div><div class="appstore-line l2"></div><div class="appstore-line l3"></div>
+                            </div>
+                        </div>
+                        <div class="app-label">App Store</div>
+                    </div>
+                    <div class="app-item" data-id="messages" onclick="openApp(this)">
+                        <div class="app-icon icon-messages">
+                            <div class="message-bubble"></div>
+                        </div>
+                        <div class="app-label">Meddelanden</div>
+                    </div>
+                    <div class="app-item" data-id="camera" onclick="openApp(this)">
+                        <div class="app-icon icon-camera">
+                            <div class="camera-body-deco">
+                                <div class="camera-lens"></div>
+                            </div>
+                        </div>
+                        <div class="app-label">Kamera</div>
+                    </div>
                 </div>
             </div>
 
             <div class="dock-container">
                 <div class="dock">
-                    <div class="app-item" data-id="phone" onclick="openApp(this)"><div class="app-icon icon-phone"><div class="phone-receiver"></div></div></div>
+                    <div class="app-item" data-id="phone" onclick="openApp(this)">
+                        <div class="app-icon icon-phone">
+                            <div class="phone-receiver"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -474,7 +597,7 @@
         let isLocked = true;
         let lastClickedIcon = null;
         let activeStream = null;
-        let currentFacingMode = 'user'; // 'user' = fram, 'environment' = bak
+        let currentFacingMode = 'user';
 
         // Klocka
         function updateClock() {
@@ -488,12 +611,21 @@
         setInterval(updateClock, 1000);
         updateClock();
 
+        // Bump Dynamic Island
+        function bumpIsland() {
+            const island = document.getElementById('island');
+            island.classList.remove('island-pulse');
+            void island.offsetWidth; // Trigger reflow
+            island.classList.add('island-pulse');
+        }
+
         // Lås upp
         function unlockPhone() {
             if (!isLocked) return;
             isLocked = false;
+            bumpIsland();
             const lockScreen = document.getElementById('lockScreen');
-            lockScreen.style.transform = 'translateY(-100%)';
+            lockScreen.style.transform = 'translate3d(0, -100%, 0)';
             lockScreen.style.opacity = '0';
             document.getElementById('mainScreen').classList.add('is-unlocked');
             setTimeout(() => { lockScreen.style.display = 'none'; }, 650);
@@ -546,13 +678,15 @@
                 const videoEl = document.getElementById('cameraVideo');
                 if (videoEl) {
                     videoEl.srcObject = stream;
-                    
                     if (currentFacingMode === 'user') {
                         videoEl.classList.remove('back-cam');
                     } else {
                         videoEl.classList.add('back-cam');
                     }
                 }
+                
+                // Aktivera den gröna LED-lampan i Dynamic Island
+                document.getElementById('islandContainer').classList.add('camera-active');
             } catch (err) {
                 console.error("Kunde inte starta kameran: ", err);
                 const body = document.getElementById('appBody');
@@ -598,15 +732,16 @@
             thumb.style.backgroundImage = `url(${imgData})`;
         }
 
-        // Öppna App
+        // Öppna App (Med ultra-smidig spring-mekanik)
         function openApp(appElement) {
             const appId = appElement.getAttribute('data-id');
             const app = contents[appId];
             if (!app) return;
 
+            bumpIsland();
             lastClickedIcon = appElement.querySelector('.app-icon');
             
-            // Beräkna startpunkt (ikon-sug)
+            // Beräkna exakt position för ikon-sug
             const iconRect = lastClickedIcon.getBoundingClientRect();
             const screenRect = document.getElementById('mainScreen').getBoundingClientRect();
             const xPercent = ((iconRect.left + iconRect.width / 2 - screenRect.left) / screenRect.width) * 100;
@@ -642,7 +777,10 @@
             const appScreen = document.getElementById('appScreen');
             if (!appScreen.classList.contains('open')) return;
 
-            // Stäng av kameran direkt för att spara resursen
+            bumpIsland();
+            
+            // Släck kameraindikatorn och stäng av videoströmmar
+            document.getElementById('islandContainer').classList.remove('camera-active');
             if (activeStream) {
                 activeStream.getTracks().forEach(track => track.stop());
                 activeStream = null;
@@ -651,10 +789,9 @@
             appScreen.classList.remove('open');
             document.getElementById('mainScreen').classList.remove('app-is-open');
 
-            // Stäng av display helt först efter att stängnings-animeringen är klar
             setTimeout(() => {
                 appScreen.style.display = 'none';
-            }, 500); // Sänkt till 500ms för rappare feedback
+            }, 480); // Sänkt tid matchat med den nya stängningsfjädern
         }
 
         // Svep / Touch för stängning
