@@ -6,8 +6,10 @@
     <title>iOS Simulator</title>
     <style>
         :root {
-            /* Apples fjäder-animation */
-            --ios-spring: cubic-bezier(0.25, 1, 0.3, 1);
+            /* ASYMMETRISKA FJÄDRAR (Öppna vs Stäng) */
+            --ios-open-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* Elastisk studs */
+            --ios-close-spring: cubic-bezier(0.16, 1, 0.3, 1);    /* Snabb, rapp rekyl */
+            
             --liquid-glass: rgba(255, 255, 255, 0.12);
             --glass-border: rgba(255, 255, 255, 0.18);
             
@@ -46,7 +48,7 @@
             position: relative;
             overflow: hidden;
             padding: 10px;
-            transition: all 0.3s var(--ios-spring);
+            transition: all 0.3s var(--ios-close-spring);
         }
 
         /* Skärmen */
@@ -91,25 +93,36 @@
             }
         }
 
-        /* DYNAMIC ISLAND */
+        /* DYNAMIC ISLAND - NU TILLBAKA PÅ ALLA ENHETER! */
         .dynamic-island-container {
             position: absolute;
-            top: 15px;
+            top: 11px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 99999;
             pointer-events: none;
+            transition: all 0.5s var(--ios-open-spring);
         }
         .dynamic-island {
             width: 110px;
             height: 30px;
             background: #000;
             border-radius: 20px;
+            box-sizing: border-box;
+            border: 0.5px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: all 0.4s var(--ios-open-spring);
         }
+        
+        /* En kul detalj: Dynamic Island pulserar lite när en app öppnas */
+        .app-is-open .dynamic-island {
+            transform: scale(0.9);
+            opacity: 0.8;
+        }
+
         @media (max-width: 600px) {
             .dynamic-island-container {
-                display: none;
+                top: calc(env(safe-area-inset-top, 12px) + 2px);
             }
         }
 
@@ -160,7 +173,7 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: inherit; background-size: cover; z-index: 500;
             display: flex; flex-direction: column; justify-content: space-between;
-            padding: 70px 0 35px 0; transition: transform 0.60s var(--ios-spring), opacity 0.4s ease;
+            padding: 70px 0 35px 0; transition: transform 0.65s var(--ios-open-spring), opacity 0.4s ease;
         }
         #clock { font-size: 80px; font-weight: 700; letter-spacing: -1.5px; color: #fff; text-align: center; }
         #date { font-size: 19px; font-weight: 500; color: #fff; text-align: center; }
@@ -171,19 +184,23 @@
         .home-screen {
             padding: 10px 18px; display: flex; flex-direction: column; flex-grow: 1;
             margin-top: 15px; opacity: 0; transform: scale(0.94);
-            transition: transform 0.65s var(--ios-spring), opacity 0.4s ease, filter 0.5s ease;
+            transition: transform 0.65s var(--ios-open-spring), opacity 0.4s ease, filter 0.5s ease;
+            will-change: transform, opacity, filter;
         }
         .dock-container {
             padding: 0 18px 35px 18px; opacity: 0; transform: translateY(30px);
-            transition: transform 0.65s var(--ios-spring), opacity 0.4s ease, filter 0.5s ease;
+            transition: transform 0.65s var(--ios-open-spring), opacity 0.4s ease, filter 0.5s ease;
+            will-change: transform, opacity, filter;
         }
         .is-unlocked .home-screen { opacity: 1; transform: scale(1); }
         .is-unlocked .dock-container { opacity: 1; transform: translateY(0); }
 
+        /* Hemskärmen skjuts bakåt synkroniserat vid öppning */
         .app-is-open .home-screen, .app-is-open .dock-container {
             transform: scale(0.92);
-            opacity: 0.3;
-            filter: blur(8px);
+            opacity: 0.25;
+            filter: blur(12px);
+            transition: transform 0.6s var(--ios-open-spring), opacity 0.6s var(--ios-open-spring), filter 0.6s var(--ios-open-spring);
         }
 
         .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px 14px; padding-top: 15px; }
@@ -241,7 +258,7 @@
         .message-bubble { width: 38px; height: 28px; background: #fff; border-radius: 14px; position: relative; }
         .message-bubble::after { content: ''; position: absolute; bottom: -2px; left: -2px; width: 14px; height: 14px; background: #fff; border-bottom-right-radius: 12px; border-bottom-left-radius: 18px; transform: rotate(-15deg); }
 
-        /* Kamera (NY) */
+        /* Kamera */
         .icon-camera { background: linear-gradient(180deg, #8e8e93 0%, #3a3a3c 100%); position: relative; }
         .camera-lens { width: 30px; height: 30px; border-radius: 50%; background: #1c1c1e; border: 3px solid #545456; position: relative; display: flex; align-items: center; justify-content: center; }
         .camera-lens::before { content: ''; width: 12px; height: 12px; background: #0a84ff; border-radius: 50%; opacity: 0.8; }
@@ -271,26 +288,37 @@
         }
         .home-bar { width: 135px; height: 5px; background: rgba(255, 255, 255, 0.9); border-radius: 3px; }
 
-        /* DYNAMISK APP-SKÄRM */
+        /* NY DYNAMISK APP-SKÄRM (MED PRESTANDAOPTIMERINGAR) */
         .app-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 1001; display: none; flex-direction: column;
             border-radius: 44px; overflow: hidden; padding-bottom: 35px;
             
+            /* Startpunkt och form baseras på ikonen */
             transform-origin: var(--origin-x) var(--origin-y);
             opacity: 0;
             transform: scale(0.05) translate(0, 0);
-            transition: transform 0.58s var(--ios-spring), opacity 0.3s ease-out, border-radius 0.58s var(--ios-spring);
+            
+            /* HÅRDVARUACCELERATION (GPU-framing) */
+            will-change: transform, opacity, border-radius;
+            backface-visibility: hidden;
+            
+            /* Standard stängnings-animation (Snabb rekyl utan studs) */
+            transition: transform 0.5s var(--ios-close-spring), opacity 0.3s ease-out, border-radius 0.5s var(--ios-close-spring);
         }
 
         @media (max-width: 600px) {
             .app-screen { border-radius: 0; }
         }
 
+        /* Fullt öppet läge (Juicy elastisk studs) */
         .app-screen.open {
             opacity: 1;
             transform: scale(1) translate(0, 0) !important;
             border-radius: 44px;
+            
+            /* Använd elastisk studs endast vid öppning! */
+            transition: transform 0.62s var(--ios-open-spring), opacity 0.32s ease-out, border-radius 0.62s var(--ios-open-spring);
         }
         @media (max-width: 600px) {
             .app-screen.open { border-radius: 0; }
@@ -419,7 +447,6 @@
                     <div class="app-item" data-id="settings" onclick="openApp(this)"><div class="app-icon icon-settings"><div class="settings-gear"><div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div></div></div><div class="app-label">Inställningar</div></div>
                     <div class="app-item" data-id="appstore" onclick="openApp(this)"><div class="app-icon icon-appstore"><div class="appstore-a"><div class="appstore-line l1"></div><div class="appstore-line l2"></div><div class="appstore-line l3"></div></div></div><div class="app-label">App Store</div></div>
                     <div class="app-item" data-id="messages" onclick="openApp(this)"><div class="app-icon icon-messages"><div class="message-bubble"></div></div><div class="app-label">Meddelanden</div></div>
-                    
                     <div class="app-item" data-id="camera" onclick="openApp(this)"><div class="app-icon icon-camera"><div class="camera-lens"></div><div class="camera-flash-dot"></div></div><div class="app-label">Kamera</div></div>
                 </div>
             </div>
@@ -469,7 +496,7 @@
             lockScreen.style.transform = 'translateY(-100%)';
             lockScreen.style.opacity = '0';
             document.getElementById('mainScreen').classList.add('is-unlocked');
-            setTimeout(() => { lockScreen.style.display = 'none'; }, 600);
+            setTimeout(() => { lockScreen.style.display = 'none'; }, 650);
         }
 
         // App-innehåll
@@ -520,7 +547,6 @@
                 if (videoEl) {
                     videoEl.srcObject = stream;
                     
-                    // Spegelvända endast om vi kör med framkameran
                     if (currentFacingMode === 'user') {
                         videoEl.classList.remove('back-cam');
                     } else {
@@ -554,16 +580,13 @@
 
             if (!video || !canvas) return;
 
-            // Blixt-effekt
             flash.classList.add('flash-active');
             setTimeout(() => flash.classList.remove('flash-active'), 80);
 
-            // Rita ut till canvas
             const ctx = canvas.getContext('2d');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             
-            // Om framkamera, spegla renderingen
             if (currentFacingMode === 'user') {
                 ctx.translate(canvas.width, 0);
                 ctx.scale(-1, 1);
@@ -571,7 +594,6 @@
             
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             
-            // Skapa bildlänk till tumnagel
             const imgData = canvas.toDataURL('image/png');
             thumb.style.backgroundImage = `url(${imgData})`;
         }
@@ -597,7 +619,6 @@
             document.getElementById('appTitle').textContent = app.title;
             document.getElementById('appBody').innerHTML = app.body;
 
-            // Lägg till special-styling om det är kameran
             if (appId === 'camera') {
                 appScreen.classList.add('camera-screen');
             } else {
@@ -621,7 +642,7 @@
             const appScreen = document.getElementById('appScreen');
             if (!appScreen.classList.contains('open')) return;
 
-            // Stäng av kameran om den körs
+            // Stäng av kameran direkt för att spara resursen
             if (activeStream) {
                 activeStream.getTracks().forEach(track => track.stop());
                 activeStream = null;
@@ -630,9 +651,10 @@
             appScreen.classList.remove('open');
             document.getElementById('mainScreen').classList.remove('app-is-open');
 
+            // Stäng av display helt först efter att stängnings-animeringen är klar
             setTimeout(() => {
                 appScreen.style.display = 'none';
-            }, 580);
+            }, 500); // Sänkt till 500ms för rappare feedback
         }
 
         // Svep / Touch för stängning
@@ -647,7 +669,7 @@
 
         gestureZone.addEventListener('touchend', (e) => {
             const touchEndY = e.changedTouches[0].clientY;
-            if (touchStartY - touchEndY > 30) {
+            if (touchStartY - touchEndY > 35) {
                 closeApp();
             }
         }, { passive: true });
