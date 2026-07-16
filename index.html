@@ -48,7 +48,7 @@
             }
         }
 
-        /* --- 3. STATUSFÄLT (Gemensamt överst) --- */
+        /* --- 3. STATUSFÄLT --- */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -71,7 +71,7 @@
             gap: 5px;
         }
 
-        /* TÄCKNINGSSTAPLAR (Nu till vänster om 5G) */
+        /* TÄCKNINGSSTAPLAR */
         .network-bars {
             display: flex;
             align-items: flex-end;
@@ -88,7 +88,7 @@
         .bar3 { height: 7px; }
         .bar4 { height: 10px; }
 
-        /* ÄKTA iOS-BATTERI MED PROCENT INUTI */
+        /* BATTERI MED PERFEKT INPASSAD PROCENT */
         .battery-container {
             display: flex;
             align-items: center;
@@ -97,7 +97,7 @@
         .ios-battery {
             width: 25px;
             height: 12.5px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.45);
             border-radius: 4px;
             position: relative;
             padding: 1px;
@@ -110,27 +110,27 @@
             height: 100%;
             width: 88%; 
             background-color: #fff;
-            border-radius: 1.5px;
+            border-radius: 2px;
         }
 
-        /* Procent-texten placerad exakt inuti batteriet */
+        /* Finjusterad procent-look för att passa in mycket bättre */
         .battery-percent-inside {
             position: absolute;
-            left: 43%;
             top: 50%;
+            left: calc(50% - 1px); /* Centrerad i själva batterikroppen, borträknat piggen */
             transform: translate(-50%, -50%);
-            font-size: 8px;
-            font-weight: 800;
-            color: #000; /* Svart text mot den vita stapeln */
+            font-size: 7.5px;
+            font-weight: 700;
+            color: #000;
             z-index: 5;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.2px;
             line-height: 1;
         }
 
         .battery-head {
             width: 1.5px;
             height: 4.5px;
-            background-color: rgba(255, 255, 255, 0.4);
+            background-color: rgba(255, 255, 255, 0.45);
             position: absolute;
             right: -3px;
             border-radius: 0 1px 1px 0;
@@ -195,7 +195,6 @@
             transition: opacity 0.2s ease, width 0.2s ease;
         }
 
-        /* ANIMATIONER FÖR FACE ID / KANTER */
         .dynamic-island.expanded {
             width: 170px; 
             height: 34px;
@@ -210,7 +209,7 @@
             transform: translateY(-2px) rotate(-15px);
         }
 
-        /* NÄR MOBILEN ÄR UPPLÅST: Dölj låset helt och gör ön mindre */
+        /* LÅSET GÖMS HÄR NÄR UPPLÅST */
         .iphone-screen.is-unlocked .dynamic-island {
             width: 85px;
             padding: 0;
@@ -557,7 +556,6 @@
             document.getElementById('date').textContent = dateStr;
         }
 
-        // Aktivera hemskärmen (och göm låset)
         function swipeUpToHome() {
             const lockScreen = document.getElementById('lockScreen');
             const screen = document.querySelector('.iphone-screen');
@@ -565,7 +563,6 @@
             screen.classList.add('is-unlocked');
         }
 
-        // Lås telefonen igen (och visa låset)
         function lockPhone() {
             const lockScreen = document.getElementById('lockScreen');
             const screen = document.querySelector('.iphone-screen');
@@ -573,18 +570,15 @@
             screen.classList.remove('is-unlocked');
         }
 
-        // Styr vad som händer när man klickar på Dynamic Island
         let isAnimating = false;
         function handleIslandClick() {
             const screen = document.querySelector('.iphone-screen');
             
-            // Om den redan är upplåst, lås telefonen
             if (screen.classList.contains('is-unlocked')) {
                 lockPhone();
                 return;
             }
 
-            // Annars, kör Face ID upplåsnings-animationen
             if (isAnimating) return;
             isAnimating = true;
 
@@ -604,13 +598,11 @@
                 setTimeout(() => {
                     island.classList.remove('unlocked');
                     isAnimating = false;
-                    // Skicka användaren direkt till hemskärmen efter godkänt Face ID
                     swipeUpToHome();
                 }, 400);
             }, 2000);
         }
 
-        // Touch-stöd för mobilsvep uppåt
         let startY = 0;
         const lockScreenEl = document.getElementById('lockScreen');
 
