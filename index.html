@@ -9,7 +9,6 @@
             --spring-io: cubic-bezier(0.16, 1, 0.3, 1);
             --liquid-glass: rgba(255, 255, 255, 0.11);
             --glass-border: rgba(255, 255, 255, 0.18);
-            --siri-glow: radial-gradient(circle, rgba(100,80,250,0.8) 0%, rgba(255,80,150,0.8) 50%, rgba(0,240,255,0) 70%);
         }
 
         * {
@@ -130,7 +129,7 @@
             100% { height: 12px; }
         }
 
-        /* Statusfält (Med äkta 5G, Wifi och Batteri-ikoner) */
+        /* Statusfält */
         .status-bar {
             height: 48px;
             display: flex;
@@ -195,16 +194,16 @@
             z-index: 500;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 70px 0 40px 0;
+            justify-content: flex-start;
+            padding: 70px 0 0 0;
             transition: transform 0.6s var(--spring-io), opacity 0.4s ease, filter 0.4s ease;
+            pointer-events: none; /* Gör så att man klickar igenom låsskärmen till hemstrecket */
         }
 
         .lock-screen.unlocked-swipe {
             transform: translateY(-100%);
             opacity: 0;
             filter: blur(15px);
-            pointer-events: none;
         }
 
         #clock {
@@ -269,7 +268,7 @@
         .app-icon {
             width: 60px;
             height: 60px;
-            border-radius: 13.5px; /* iOS Squircle-förhållande för 60px */
+            border-radius: 13.5px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -330,7 +329,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
-            height: 30px;
+            height: 40px;
             display: flex;
             justify-content: center;
             align-items: flex-end;
@@ -386,55 +385,6 @@
             padding: 20px;
             color: #fff;
             overflow-y: auto;
-        }
-
-        /* Siri AI Panel */
-        .siri-panel {
-            position: absolute;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            height: 320px;
-            background: rgba(10, 10, 18, 0.85);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border-top: 1px solid rgba(255,255,255,0.15);
-            border-radius: 35px 35px 44px 44px;
-            z-index: 9999;
-            transition: bottom 0.5s var(--spring-io);
-            padding: 25px 25px 40px 25px;
-            box-sizing: border-box;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .siri-panel.active {
-            bottom: 0;
-        }
-
-        .siri-orb-container {
-            width: 100%;
-            height: 100px;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .siri-orb {
-            width: 140px;
-            height: 140px;
-            background: var(--siri-glow);
-            filter: blur(10px);
-            animation: pulse-siri 2s infinite ease-in-out;
-            border-radius: 50%;
-        }
-
-        @keyframes pulse-siri {
-            0%, 100% { transform: scale(0.9); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
         }
 
         /* Musik-element */
@@ -551,13 +501,10 @@
                 </div>
             </div>
 
-            <div class="lock-screen" id="lockScreen" onclick="unlockPhone()">
+            <div class="lock-screen" id="lockScreen">
                 <div>
                     <div id="date">Torsdag 16 juli</div>
                     <div id="clock">12:00</div>
-                </div>
-                <div style="text-align:center; color:rgba(255,255,255,0.6); font-size:14px; cursor:pointer;">
-        
                 </div>
             </div>
 
@@ -565,7 +512,7 @@
                 <div class="glass-widget">
                     <div style="font-size:11px; text-transform:uppercase; opacity:0.6; letter-spacing:1px;">Apple Intelligence</div>
                     <div style="font-size:16px; font-weight:700; margin-top:2px;">iOS 26.5 Aktivt</div>
-                    <div style="font-size:12px; opacity:0.8; margin-top:2px;">Svep uppåt på hem-strecket för att gå hem!</div>
+                    <div style="font-size:12px; opacity:0.8; margin-top:2px;">Svep upp eller tryck på hem-strecket längst ner!</div>
                 </div>
 
                 <div class="app-grid">
@@ -611,16 +558,6 @@
                 </div>
             </div>
 
-            <div class="siri-panel" id="siriPanel">
-                <div style="text-align:center;">
-                    <h3 style="font-size:18px; font-weight:700;" id="siriText">Hur kan jag hjälpa dig i iOS 26?</h3>
-                </div>
-                <div class="siri-orb-container">
-                    <div class="siri-orb"></div>
-                </div>
-                <button onclick="siriRespond()" style="width:100%; padding:12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); border-radius:15px; color:#fff; font-weight:600; cursor:pointer;">Prata med Siri</button>
-            </div>
-
             <div class="home-bar-container" id="homeGestureZone">
                 <div class="home-bar" id="homeBar"></div>
             </div>
@@ -633,6 +570,7 @@
     </div>
 
     <script>
+        let isLocked = true;
         let activeActivity = null; 
         let callTimer = null;
         let callSeconds = 0;
@@ -649,10 +587,11 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Lås upp
+        // Lås upp funktion
         function unlockPhone() {
             document.getElementById('lockScreen').classList.add('unlocked-swipe');
             document.querySelector('.iphone-screen').classList.add('is-unlocked');
+            isLocked = false;
         }
 
         // Global hemknappsfunktion (Svep & Klick-hanterare)
@@ -680,8 +619,13 @@
         });
 
         function triggerHomeAction() {
+            // Om telefonen är låst: Lås upp den!
+            if (isLocked) {
+                unlockPhone();
+                return;
+            }
+
             const appScreen = document.getElementById('appScreen');
-            const siriPanel = document.getElementById('siriPanel');
             
             if (isIslandExpanded) {
                 collapseIsland();
@@ -694,8 +638,6 @@
                     setIslandActivity('music');
                 }
                 closeApp();
-            } else if (siriPanel.classList.contains('active')) {
-                siriPanel.classList.remove('active');
             }
         }
 
@@ -747,12 +689,9 @@
         }
 
         function islandTap() {
+            if (!activeActivity) return;
+
             const island = document.getElementById('island');
-            
-            if (!activeActivity) {
-                toggleSiri();
-                return;
-            }
 
             if (isIslandExpanded) {
                 collapseIsland();
@@ -943,24 +882,6 @@
         function playMusicFromApp() {
             setIslandActivity('music');
             closeApp();
-        }
-
-        // Siri AI-kontroll
-        function toggleSiri() {
-            const siri = document.getElementById('siriPanel');
-            siri.classList.toggle('active');
-            if (siri.classList.contains('active')) {
-                document.getElementById('siriText').textContent = "Lyssnar...";
-            }
-        }
-
-        function siriRespond() {
-            const responses = [
-                "Jag har justerat gränssnittet i iOS 26 för maximal flytbarhet.",
-                "Söker efter spännande funktioner i den nya iOS 27 betan...",
-                "Här är dina senast använda appar."
-            ];
-            document.getElementById('siriText').textContent = responses[Math.floor(Math.random() * responses.length)];
         }
     </script>
 </body>
