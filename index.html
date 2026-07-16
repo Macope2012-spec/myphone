@@ -3,37 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>iOS Simulator Pro</title>
+    <title>iOS 26 & 27 Simulator</title>
     <style>
         :root {
             --spring-io: cubic-bezier(0.16, 1, 0.3, 1);
             --liquid-glass: rgba(255, 255, 255, 0.11);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --bg-color: #0d0e15;
-            --dark-filter: brightness(1);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --siri-glow: radial-gradient(circle, rgba(100,80,250,0.8) 0%, rgba(255,80,150,0.8) 50%, rgba(0,240,255,0) 70%);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
             user-select: none;
             -webkit-user-select: none;
         }
 
         body {
-            background: var(--bg-color);
+            background: #0d0e15;
             background-image: radial-gradient(circle at center, #1a1c29 0%, #0d0e15 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
-            transition: background 0.3s;
         }
 
-        /* Enheten: Titanium Ram */
+        /* Titanium Ram */
         .iphone-frame {
             width: 375px;
             height: 812px;
@@ -45,7 +43,7 @@
             padding: 10px;
         }
 
-        /* Skärmen med stöd för mörkt läge via filter */
+        /* Skärm */
         .iphone-screen {
             width: 100%;
             height: 100%;
@@ -57,8 +55,6 @@
             justify-content: space-between;
             border-radius: 44px;
             overflow: hidden;
-            filter: var(--dark-filter);
-            transition: filter 0.3s ease;
         }
 
         /* DYNAMIC ISLAND */
@@ -91,8 +87,17 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .dynamic-island.compact-music { width: 160px; height: 30px; }
-        .dynamic-island.compact-call { width: 170px; height: 30px; }
+        /* Olika tillstånd för islanden */
+        .dynamic-island.compact-music {
+            width: 160px;
+            height: 30px;
+        }
+
+        .dynamic-island.compact-call {
+            width: 170px;
+            height: 30px;
+        }
+
         .dynamic-island.expanded {
             width: 340px;
             height: 80px;
@@ -100,6 +105,7 @@
             padding: 15px 20px;
         }
 
+        /* Innehåll i Dynamic Island */
         .island-content {
             display: flex;
             align-items: center;
@@ -112,8 +118,11 @@
             transition: opacity 0.2s ease;
         }
 
-        .island-content.show { opacity: 1; }
+        .island-content.show {
+            opacity: 1;
+        }
 
+        /* Liten musikvåg i stängt läge */
         .island-wave {
             display: flex;
             gap: 2px;
@@ -123,7 +132,7 @@
         .island-wave span {
             width: 2px;
             height: 100%;
-            background: #30d158;
+            background: #1db954;
             animation: wave-bounce 0.8s ease-in-out infinite alternate;
         }
         .island-wave span:nth-child(2) { animation-delay: 0.15s; }
@@ -186,12 +195,12 @@
             text-align: center;
         }
 
-        /* Hemskärm */
+        /* Hemskärm med Liquid Glass design */
         .home-screen {
-            padding: 10px 16px;
+            padding: 15px 18px;
             display: flex;
             flex-direction: column;
-            gap: 28px;
+            gap: 20px;
             margin-top: 25px;
             opacity: 0;
             transform: scale(0.95);
@@ -203,23 +212,23 @@
             transform: scale(1);
         }
 
-        /* Widgets (iOS 18+ Design) */
+        /* Liquid Glass Widget */
         .glass-widget {
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--liquid-glass);
+            border: 1px solid var(--glass-border);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border-radius: 22px;
+            border-radius: 24px;
             padding: 16px;
             color: #fff;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
 
         /* App-rutnät */
         .app-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 22px 14px;
+            gap: 16px 14px;
         }
 
         .app-item {
@@ -227,26 +236,24 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            text-decoration: none;
         }
 
-        /* Äkta iOS Ikoner */
+        /* App-ikoner med glas-effekt */
         .app-icon {
             width: 60px;
             height: 60px;
-            border-radius: 14px; /* Äkta iOS-squircle kurva */
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-size: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
             transition: transform 0.2s var(--spring-io);
-            position: relative;
-            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .app-item:active .app-icon {
-            transform: scale(0.85);
+            transform: scale(0.88);
         }
 
         .app-label {
@@ -254,39 +261,14 @@
             font-size: 11px;
             font-weight: 500;
             margin-top: 6px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
             text-align: center;
             white-space: nowrap;
-            letter-spacing: 0.1px;
-        }
-
-        /* Sidväljare / Sök-bubbla */
-        .page-indicator-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: -12px;
-        }
-
-        .search-pill {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 4px 10px;
-            border-radius: 12px;
-            color: rgba(255,255,255,0.9);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.2px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
         /* Docka */
         .dock-container {
-            padding: 0 16px 35px 16px;
+            padding: 0 18px 35px 18px;
             opacity: 0;
             transform: translateY(20px);
             transition: transform 0.6s var(--spring-io), opacity 0.5s ease;
@@ -298,24 +280,23 @@
         }
 
         .dock {
-            background: rgba(255, 255, 255, 0.22);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-radius: 30px;
-            padding: 12px 14px;
+            background: var(--liquid-glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border-radius: 32px;
+            padding: 12px;
             display: flex;
-            justify-content: space-between;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            justify-content: space-around;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
 
         .dock .app-icon {
-            width: 58px;
-            height: 58px;
-            box-shadow: none;
+            width: 56px;
+            height: 56px;
         }
 
-        /* PERMANENT HEM-INDIKATOR */
+        /* Den fasta hem-indikatorn */
         .home-bar-container {
             position: absolute;
             bottom: 8px;
@@ -326,14 +307,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100000;
+            z-index: 10000;
             cursor: pointer;
         }
 
         .home-bar {
             width: 130px;
             height: 5px;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 3px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.3);
             transition: background 0.2s, transform 0.2s;
@@ -344,65 +325,6 @@
             background: rgba(255, 255, 255, 1);
         }
 
-        /* KONTROLLCENTER */
-        .control-center {
-            position: absolute;
-            top: -100%;
-            right: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 10, 15, 0.85);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            z-index: 99990;
-            border-radius: 44px;
-            transition: top 0.5s var(--spring-io);
-            padding: 70px 24px;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .control-center.active {
-            top: 0;
-        }
-
-        .cc-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .cc-square {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 130px;
-        }
-
-        .cc-btn {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cc-btn.active {
-            background: #007aff;
-        }
-
         /* Fullskärmsappar */
         .app-screen {
             position: absolute;
@@ -410,7 +332,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000;
+            background: #0c0d14;
             z-index: 1001;
             display: none;
             flex-direction: column;
@@ -427,6 +349,8 @@
             font-weight: 800;
             color: #fff;
             border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(12, 13, 20, 0.8);
+            backdrop-filter: blur(20px);
         }
 
         .app-body {
@@ -436,13 +360,85 @@
             overflow-y: auto;
         }
 
+        /* Siri AI Panel */
+        .siri-panel {
+            position: absolute;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            height: 320px;
+            background: rgba(10, 10, 18, 0.85);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-top: 1px solid rgba(255,255,255,0.15);
+            border-radius: 35px 35px 44px 44px;
+            z-index: 9999;
+            transition: bottom 0.5s var(--spring-io);
+            padding: 25px 25px 40px 25px;
+            box-sizing: border-box;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .siri-panel.active {
+            bottom: 0;
+        }
+
+        .siri-orb-container {
+            width: 100%;
+            height: 100px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .siri-orb {
+            width: 140px;
+            height: 140px;
+            background: var(--siri-glow);
+            filter: blur(10px);
+            animation: pulse-siri 2s infinite ease-in-out;
+            border-radius: 50%;
+        }
+
+        @keyframes pulse-siri {
+            0%, 100% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Musik-element */
+        .music-disc {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ff2d55, #000);
+            margin: 20px auto;
+            animation: spin 8s linear infinite;
+            box-shadow: 0 10px 30px rgba(255, 45, 85, 0.3);
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Safari Floating Bar */
+        .safari-bar {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 12px;
+            border-radius: 18px;
+            text-align: center;
+            color: #00c6ff;
+            margin-top: 20px;
+        }
+
         /* Telefon Keypad */
         .phone-display {
             font-size: 36px;
             text-align: center;
             margin-bottom: 20px;
             min-height: 44px;
-            color: #fff;
+            color: #38ef7d;
         }
         .keypad-grid {
             display: grid;
@@ -455,48 +451,22 @@
             width: 68px;
             height: 68px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            border: none;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
             color: #fff;
             font-size: 24px;
             cursor: pointer;
         }
 
-        /* Inställningar design */
         .setting-row {
             padding: 14px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
             border-radius: 14px;
             margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
         }
-
-        /* Kameraelement */
-        #camera-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 20px;
-            background: #222;
-        }
-
-        /* Musik-element */
-        .music-disc {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #ff2d55, #000);
-            margin: 20px auto;
-            animation: spin 8s linear infinite;
-            box-shadow: 0 10px 30px rgba(255, 45, 85, 0.3);
-            animation-play-state: paused;
-        }
-        .music-disc.playing {
-            animation-play-state: running;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -507,36 +477,36 @@
             <div class="dynamic-island" id="island" onclick="islandTap()">
                 <div id="islandDefault" class="island-content show"></div>
 
-                <div id="islandMusicCompact" class="island-content" style="display:none;">
+                <div id="islandMusicCompact" class="island-content" style="display:none; justify-content: space-between; width: 100%;">
                     <span>🎵</span>
                     <div class="island-wave"><span></span><span></span><span></span></div>
                 </div>
 
-                <div id="islandCallCompact" class="island-content" style="display:none;">
-                    <span style="color:#30d158;">📞</span>
-                    <span id="islandCallTimer">00:00</span>
+                <div id="islandCallCompact" class="island-content" style="display:none; justify-content: space-between; width: 100%;">
+                    <span style="color:#38ef7d;">📞</span>
+                    <span id="islandCallTimer" style="font-size:11px;">00:00</span>
                 </div>
 
-                <div id="islandMusicExpanded" class="island-content" style="display:none;">
+                <div id="islandMusicExpanded" class="island-content" style="display:none; flex-direction:row; align-items:center; justify-content:space-between; width:100%;">
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <div style="width:40px; height:40px; background:#ff2d55; border-radius:8px; display:flex; align-items:center; justify-content:center;">🎵</div>
+                        <div style="width:40px; height:40px; background:#ff2d55; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px;">🎵</div>
                         <div style="display:flex; flex-direction:column; text-align:left;">
-                            <span style="font-size:13px; font-weight:700;">Nu Spelas</span>
-                            <span style="font-size:11px; opacity:0.6;">iPhone Media</span>
+                            <span style="font-size:13px; font-weight:700;">Liquid Soundwave</span>
+                            <span style="font-size:11px; opacity:0.6;">iOS 26 Beats</span>
                         </div>
                     </div>
-                    <button onclick="stopMusic(event)" style="background:rgba(255,255,255,0.2); border:none; color:#fff; border-radius:50%; width:36px; height:36px; cursor:pointer;">⏸</button>
+                    <button onclick="pauseMusicFromIsland(event)" style="background:rgba(255,255,255,0.2); border:none; color:#fff; border-radius:50%; width:36px; height:36px; cursor:pointer; font-size:14px; font-weight:bold;">⏸</button>
                 </div>
 
-                <div id="islandCallExpanded" class="island-content" style="display:none;">
+                <div id="islandCallExpanded" class="island-content" style="display:none; flex-direction:row; align-items:center; justify-content:space-between; width:100%;">
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <div style="width:40px; height:40px; background:#30d158; border-radius:50%; display:flex; align-items:center; justify-content:center;">📞</div>
+                        <div style="width:40px; height:40px; background:#38ef7d; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px;">📞</div>
                         <div style="display:flex; flex-direction:column; text-align:left;">
-                            <span id="islandCallNumber" style="font-size:13px; font-weight:700;">Mamma</span>
+                            <span id="islandCallNumber" style="font-size:13px; font-weight:700;">Samtal</span>
                             <span id="islandCallTimerExpanded" style="font-size:11px; opacity:0.6;">00:00</span>
                         </div>
                     </div>
-                    <button onclick="hangUpCall(event)" style="background:#ff453a; border:none; color:#fff; border-radius:20px; padding:6px 14px; cursor:pointer; font-weight:bold;">Lägg på</button>
+                    <button onclick="hangUpFromIsland(event)" style="background:#ff3b30; border:none; color:#fff; border-radius:20px; padding:6px 14px; cursor:pointer; font-weight:bold;">Lägg på</button>
                 </div>
             </div>
         </div>
@@ -544,28 +514,9 @@
         <div class="iphone-screen">
             <div class="status-bar">
                 <span id="time-widget">12:00</span>
-                <div style="display:flex; gap:6px; cursor:pointer;" onclick="toggleControlCenter()">
+                <div style="display:flex; gap:6px;">
                     <span>📶</span>
                     <span>🔋</span>
-                </div>
-            </div>
-
-            <div class="control-center" id="controlCenter">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h2>Kontrollcenter</h2>
-                    <button onclick="toggleControlCenter()" style="background:none; border:none; color:#007aff; font-size:16px; cursor:pointer; font-weight:600;">Klar</button>
-                </div>
-                <div class="cc-grid">
-                    <div class="cc-square" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; align-content:center;">
-                        <button class="cc-btn active" id="wifi-btn" onclick="toggleCCBtn('wifi-btn')">📶</button>
-                        <button class="cc-btn active" id="bt-btn" onclick="toggleCCBtn('bt-btn')">🔷</button>
-                        <button class="cc-btn" id="flash-btn" onclick="toggleCCBtn('flash-btn')">🔦</button>
-                        <button class="cc-btn" id="dark-btn" onclick="toggleDarkMode()">🌙</button>
-                    </div>
-                    <div class="cc-square" style="justify-content:center; align-items:center; text-align:center;">
-                        <span style="font-size:30px;">☀️</span>
-                        <div style="margin-top:10px; font-weight:bold;">Ljusstyrka</div>
-                    </div>
                 </div>
             </div>
 
@@ -574,54 +525,61 @@
                     <div id="date">Torsdag 16 juli</div>
                     <div id="clock">12:00</div>
                 </div>
-                <div style="text-align:center; color:rgba(255,255,255,0.6); font-size:14px; margin-bottom:20px;">
-                    Klicka var som helst för att låsa upp
+                <div style="text-align:center; color:rgba(255,255,255,0.6); font-size:14px; animation: bounce 2s infinite; cursor:pointer;">
+                    Klicka för att låsa upp
                 </div>
             </div>
 
             <div class="home-screen">
-                <div class="glass-widget" style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="color: #ff453a; font-size: 11px; font-weight: 700; text-transform: uppercase;">Torsdag</div>
-                        <div style="font-size: 28px; font-weight: 300; line-height: 1.1;">16</div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 12px; opacity: 0.6;">Stockholm</div>
-                        <div style="font-size: 20px; font-weight: 600;">☀️ 21°</div>
-                    </div>
+                <div class="glass-widget">
+                    <div style="font-size:11px; text-transform:uppercase; opacity:0.6; letter-spacing:1px;">Apple Intelligence</div>
+                    <div style="font-size:16px; font-weight:700; margin-top:2px;">iOS 26.5 Aktivt</div>
+                    <div style="font-size:12px; opacity:0.8; margin-top:2px;">Dynamic Island visar nu dina aktiva appar live!</div>
                 </div>
 
                 <div class="app-grid">
                     <div class="app-item" onclick="openApp('safari')">
-                        <div class="app-icon" style="background: radial-gradient(circle, #00c6ff 0%, #0072ff 100%);">🌐</div>
+                        <div class="app-icon" style="background: linear-gradient(135deg, #00c6ff, #0072ff);">🌐</div>
                         <div class="app-label">Safari</div>
                     </div>
                     <div class="app-item" onclick="openApp('photos')">
-                        <div class="app-icon" style="background: #fff; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);">🖼️</div>
+                        <div class="app-icon" style="background: linear-gradient(135deg, #ff5e62, #ff9966);">🖼️</div>
                         <div class="app-label">Bilder</div>
                     </div>
                     <div class="app-item" onclick="openApp('settings')">
-                        <div class="app-icon" style="background: linear-gradient(135deg, #8e8e93, #636366);">⚙️</div>
+                        <div class="app-icon" style="background: linear-gradient(135deg, #4b5563, #1f2937);">⚙️</div>
                         <div class="app-label">Inställningar</div>
                     </div>
-                    <div class="app-item" onclick="openApp('camera')">
-                        <div class="app-icon" style="background: linear-gradient(135deg, #1c1c1e, #3a3a3c);">📷</div>
-                        <div class="app-label">Kamera</div>
+                    <div class="app-item" onclick="openApp('appstore')">
+                        <div class="app-icon" style="background: linear-gradient(135deg, #185a9d, #43cea2);">🅰️</div>
+                        <div class="app-label">App Store</div>
                     </div>
-                </div>
-
-                <div class="page-indicator-container">
-                    <div class="search-pill">
-                        <span>🔍</span> Sök
+                    <div class="app-item" onclick="openApp('messages')">
+                        <div class="app-icon" style="background: linear-gradient(135deg, #00B4DB, #0083B0);">💬</div>
+                        <div class="app-label">Meddelanden</div>
+                    </div>
+                    <div class="app-item" onclick="openApp('camera')">
+                        <div class="app-icon" style="background: linear-gradient(135deg, #757F9A, #D7DDE8);">📷</div>
+                        <div class="app-label">Kamera</div>
                     </div>
                 </div>
             </div>
 
             <div class="dock-container">
                 <div class="dock">
-                    <div class="app-icon" style="background: linear-gradient(135deg, #2fc854, #189e3a); cursor:pointer;" onclick="openApp('phone')">📞</div>
-                    <div class="app-icon" style="background: linear-gradient(135deg, #fc3c44, #fa233b); cursor:pointer;" onclick="openApp('music')">🎵</div>
+                    <div class="app-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d); cursor:pointer;" onclick="openApp('phone')">📞</div>
+                    <div class="app-icon" style="background: linear-gradient(135deg, #ea00d9, #711c91); cursor:pointer;" onclick="openApp('music')">🎵</div>
                 </div>
+            </div>
+
+            <div class="siri-panel" id="siriPanel">
+                <div style="text-align:center;">
+                    <h3 style="font-size:18px; font-weight:700;" id="siriText">Hur kan jag hjälpa dig i iOS 26?</h3>
+                </div>
+                <div class="siri-orb-container">
+                    <div class="siri-orb"></div>
+                </div>
+                <button onclick="siriRespond()" style="width:100%; padding:12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); border-radius:15px; color:#fff; font-weight:600; cursor:pointer;">Prata med Siri</button>
             </div>
 
             <div class="home-bar-container" onclick="handleHomeButton()">
@@ -636,14 +594,13 @@
     </div>
 
     <script>
+        // Systemvariabler för bakgrundsaktiviteter
         let activeActivity = null; 
         let callTimer = null;
         let callSeconds = 0;
         let isIslandExpanded = false;
-        let isMusicPlaying = false;
-        let cameraStream = null;
 
-        // Uppdatera klockan till realtid
+        // Klocka
         function updateClock() {
             const now = new Date();
             const h = now.getHours().toString().padStart(2, '0');
@@ -654,51 +611,30 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Lås upp skärmen
+        // Lås upp
         function unlockPhone() {
             document.getElementById('lockScreen').classList.add('unlocked-swipe');
             document.querySelector('.iphone-screen').classList.add('is-unlocked');
         }
 
-        // Kontrollcenter
-        function toggleControlCenter() {
-            document.getElementById('controlCenter').classList.toggle('active');
-        }
-
-        function toggleCCBtn(id) {
-            document.getElementById(id).classList.toggle('active');
-        }
-
-        function toggleDarkMode() {
-            const btn = document.getElementById('dark-btn');
-            btn.classList.toggle('active');
-            if(btn.classList.contains('active')) {
-                document.documentElement.style.setProperty('--bg-color', '#030305');
-                document.documentElement.style.setProperty('--dark-filter', 'brightness(0.85) contrast(1.05)');
-            } else {
-                document.documentElement.style.setProperty('--bg-color', '#0d0e15');
-                document.documentElement.style.setProperty('--dark-filter', 'brightness(1)');
-            }
-        }
-
-        // Hemknappshantering
+        // Global hemknappsfunktion
         function handleHomeButton() {
             const appScreen = document.getElementById('appScreen');
-            const controlCenter = document.getElementById('controlCenter');
+            const siriPanel = document.getElementById('siriPanel');
             
-            if (controlCenter.classList.contains('active')) {
-                controlCenter.classList.remove('active');
-                return;
-            }
-
             if (isIslandExpanded) {
                 collapseIsland();
                 return;
             }
 
             if (appScreen.classList.contains('open')) {
-                stopCamera();
+                const currentApp = document.getElementById('appTitle').textContent;
+                if (currentApp === "Nu Spelas") {
+                    setIslandActivity('music');
+                }
                 closeApp();
+            } else if (siriPanel.classList.contains('active')) {
+                siriPanel.classList.remove('active');
             }
         }
 
@@ -719,7 +655,7 @@
                 setTimeout(() => musicCompact.classList.add('show'), 50);
             } else if (type === 'call') {
                 island.className = "dynamic-island compact-call";
-                document.getElementById('islandCallNumber').textContent = extraData;
+                document.getElementById('islandCallNumber').textContent = extraData || "Mamma";
                 const callCompact = document.getElementById('islandCallCompact');
                 callCompact.style.display = 'flex';
                 setTimeout(() => callCompact.classList.add('show'), 50);
@@ -733,6 +669,8 @@
                         const timeStr = `${mins}:${secs}`;
                         document.getElementById('islandCallTimer').textContent = timeStr;
                         document.getElementById('islandCallTimerExpanded').textContent = timeStr;
+                        const screenTimer = document.getElementById('screenCallTimer');
+                        if (screenTimer) screenTimer.textContent = timeStr;
                     }, 1000);
                 }
             } else {
@@ -749,7 +687,11 @@
 
         function islandTap() {
             const island = document.getElementById('island');
-            if (!activeActivity) return;
+            
+            if (!activeActivity) {
+                toggleSiri();
+                return;
+            }
 
             if (isIslandExpanded) {
                 collapseIsland();
@@ -780,57 +722,75 @@
             setIslandActivity(activeActivity);
         }
 
-        function stopMusic(event) {
-            if(event) event.stopPropagation();
-            isMusicPlaying = false;
+        function pauseMusicFromIsland(event) {
+            event.stopPropagation();
             setIslandActivity(null);
-            const disc = document.querySelector('.music-disc');
-            if(disc) disc.classList.remove('playing');
         }
 
-        function hangUpCall(event) {
-            if(event) event.stopPropagation();
+        function hangUpFromIsland(event) {
+            event.stopPropagation();
             setIslandActivity(null);
             closeApp();
         }
 
-        // Appar
+        // App-innehåll
         const appContents = {
             safari: {
-                title: 'Safari',
+                title: 'Safari 26',
                 body: `
                     <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px;">
-                        <h3>Sök på webben</h3>
-                        <p style="font-size:14px; opacity:0.7; margin-top:8px;">Ange sökord eller URL i fältet nedan.</p>
+                        <h3>Sök med AI-sammanfattning</h3>
+                        <p style="font-size:14px; opacity:0.7; margin-top:8px;">Sidor anpassas nu automatiskt för enklare läsning.</p>
                     </div>
-                    <input type="text" placeholder="Sök eller ange webbplats" style="width:100%; padding:14px; background:rgba(255,255,255,0.1); border:none; border-radius:14px; color:#fff; margin-top:15px; outline:none;">
+                    <div class="safari-bar">🔍 Sök i iOS 26...</div>
                 `
             },
             photos: {
                 title: 'Bilder',
                 body: `
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                        <div style="aspect-ratio:1; background:#1c1c1e; border-radius:14px; display:flex; justify-content:center; align-items:center; font-size:24px;">🌄</div>
-                        <div style="aspect-ratio:1; background:#1c1c1e; border-radius:14px; display:flex; justify-content:center; align-items:center; font-size:24px;">🌊</div>
+                        <div style="aspect-ratio:1; background:rgba(255,255,255,0.1); border-radius:10px; display:flex; justify-content:center; align-items:center;">🌄</div>
+                        <div style="aspect-ratio:1; background:rgba(255,255,255,0.1); border-radius:10px; display:flex; justify-content:center; align-items:center;">🌌</div>
                     </div>
                 `
             },
             settings: {
                 title: 'Inställningar',
                 body: `
-                    <div class="setting-row"><span>Wi-Fi</span><input type="checkbox" checked style="width:20px; height:20px;"></div>
-                    <div class="setting-row"><span>Bluetooth</span><input type="checkbox" checked style="width:20px; height:20px;"></div>
-                    <div class="setting-row"><span>Hjälpmedel</span><span>›</span></div>
+                    <div class="setting-row"><span>Wi-Fi</span><span style="opacity:0.5;">Ansluten ›</span></div>
+                    <div class="setting-row"><span>Bluetooth</span><span style="opacity:0.5;">På ›</span></div>
+                    <div class="setting-row" style="border: 1px solid #8e2de2; background: rgba(142, 45, 226, 0.1);">
+                        <span>iOS 27 Beta</span><span style="color:#8e2de2; font-weight:bold;">Tillgänglig ›</span>
+                    </div>
+                `
+            },
+            appstore: {
+                title: 'App Store',
+                body: `
+                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4>Siri AI Chat</h4>
+                            <p style="font-size:12px; opacity:0.6;">Produktivitet</p>
+                        </div>
+                        <button style="background:#007aff; color:#fff; padding:6px 14px; border:none; border-radius:12px; font-weight:bold;">HÄMTA</button>
+                    </div>
+                `
+            },
+            messages: {
+                title: 'Meddelanden',
+                body: `
+                    <div style="padding:10px; background:rgba(255,255,255,0.05); border-radius:12px; margin-bottom:10px;">
+                        <strong style="font-size:14px;">Mamma</strong>
+                        <p style="font-size:13px; opacity:0.7; margin-top:2px;">Kommer du hem snart? 👍</p>
+                    </div>
                 `
             },
             camera: {
                 title: 'Kamera',
                 body: `
-                    <div style="height:100%; display:flex; flex-direction:column; justify-content:space-between;">
-                        <video id="camera-video" autoplay playsinline></video>
-                        <div style="display:flex; justify-content:center; padding:15px 0;">
-                            <div style="width:65px; height:65px; border-radius:50%; border:5px solid #fff; cursor:pointer;" onclick="takePhoto()"></div>
-                        </div>
+                    <div style="height:100%; display:flex; flex-direction:column; justify-content:space-between; align-items:center; padding:40px 0;">
+                        <div style="width:200px; height:200px; border:2px dashed rgba(255,255,255,0.3); border-radius:20px; display:flex; justify-content:center; align-items:center; opacity:0.5;">Sökare</div>
+                        <div style="width:70px; height:70px; border-radius:50%; border:5px solid #fff; cursor:pointer;"></div>
                     </div>
                 `
             },
@@ -844,18 +804,18 @@
                         <button onclick="pressKey('7')">7</button><button onclick="pressKey('8')">8</button><button onclick="pressKey('9')">9</button>
                         <button onclick="pressKey('*')">*</button><button onclick="pressKey('0')">0</button><button onclick="pressKey('⌫')">⌫</button>
                     </div>
-                    <button onclick="startCall()" style="width:68px; height:68px; border-radius:50%; background:#30d158; border:none; color:#fff; font-size:26px; display:block; margin:20px auto 0 auto; cursor:pointer;">📞</button>
+                    <button onclick="startCall()" style="width:68px; height:68px; border-radius:50%; background:#38ef7d; border:none; color:#fff; font-size:26px; display:block; margin:20px auto 0 auto; cursor:pointer;">📞</button>
                 `
             },
             music: {
-                title: 'Musik',
+                title: 'Nu Spelas',
                 body: `
-                    <div class="music-disc" id="app-disc"></div>
-                    <div style="text-align:center; margin-top:20px;">
-                        <h3>Välj musikspår</h3>
-                        <p style="opacity:0.6; font-size:14px; margin-top:4px;">Klicka nedan för att starta bakgrundslyssning.</p>
+                    <div class="music-disc"></div>
+                    <div style="text-align:center; margin-top:10px;">
+                        <h3>Liquid Soundwave</h3>
+                        <p style="opacity:0.6; font-size:14px; margin-top:4px;">iOS 26 Beats</p>
                     </div>
-                    <button onclick="playMusicFromApp()" style="display:block; margin:20px auto; background:#ff2d55; border:none; border-radius:15px; color:#fff; padding:12px 24px; font-weight:600; cursor:pointer; width:80%;">Spela musik</button>
+                    <button onclick="playMusicFromApp()" style="display:block; margin:20px auto; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:15px; color:#fff; padding:10px 24px; font-weight:600; cursor:pointer;">Minimera till Dynamic Island</button>
                 `
             }
         };
@@ -866,50 +826,13 @@
             document.getElementById('appTitle').textContent = app.title;
             document.getElementById('appBody').innerHTML = app.body;
             document.getElementById('appScreen').classList.add('open');
-
-            if (appId === 'camera') {
-                startCamera();
-            }
-            if (appId === 'music' && isMusicPlaying) {
-                document.getElementById('app-disc').classList.add('playing');
-            }
         }
 
         function closeApp() {
             document.getElementById('appScreen').classList.remove('open');
         }
 
-        // Kamera streaming
-        async function startCamera() {
-            try {
-                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-                const videoEl = document.getElementById('camera-video');
-                if (videoEl) videoEl.srcObject = cameraStream;
-            } catch (err) {
-                console.log("Kameraåtkomst nekad eller ej tillgänglig.");
-            }
-        }
-
-        function stopCamera() {
-            if (cameraStream) {
-                cameraStream.getTracks().forEach(track => track.stop());
-                cameraStream = null;
-            }
-        }
-
-        function takePhoto() {
-            const flash = document.createElement('div');
-            flash.style.position = 'absolute';
-            flash.style.top = 0; flash.style.left = 0;
-            flash.style.width = '100%'; flash.style.height = '100%';
-            flash.style.background = '#fff'; flash.style.zIndex = '999999';
-            flash.style.transition = 'opacity 0.2s';
-            document.getElementById('appScreen').appendChild(flash);
-            setTimeout(() => { flash.style.opacity = '0'; }, 50);
-            setTimeout(() => { flash.remove(); }, 250);
-        }
-
-        // Knappsats & Samtal
+        // Knappsatshantering för samtal
         function pressKey(val) {
             const disp = document.getElementById('phoneDisplay');
             if (!disp) return;
@@ -923,15 +846,39 @@
         function startCall() {
             const nr = document.getElementById('phoneDisplay').textContent || "Mamma";
             setIslandActivity('call', nr);
+            
+            document.getElementById('appTitle').textContent = "Pågående Samtal";
+            document.getElementById('appBody').innerHTML = `
+                <div style="text-align:center; padding-top:40px;">
+                    <div style="font-size:40px; margin-bottom:10px;">📞</div>
+                    <h2>${nr}</h2>
+                    <p id="screenCallTimer" style="font-size:18px; opacity:0.6; margin-top:10px;">00:00</p>
+                    <button onclick="hangUpFromIsland(event)" style="background:#ff3b30; color:#fff; border:none; padding:15px 35px; border-radius:30px; margin-top:50px; font-weight:bold; cursor:pointer; font-size:16px;">Lägg på</button>
+                </div>
+            `;
+        }
+
+        function playMusicFromApp() {
+            setIslandActivity('music');
             closeApp();
         }
 
-        // Musikhantering
-        function playMusicFromApp() {
-            isMusicPlaying = true;
-            setIslandActivity('music');
-            const disc = document.getElementById('app-disc');
-            if(disc) disc.classList.add('playing');
+        // Siri AI-kontroll
+        function toggleSiri() {
+            const siri = document.getElementById('siriPanel');
+            siri.classList.toggle('active');
+            if (siri.classList.contains('active')) {
+                document.getElementById('siriText').textContent = "Lyssnar...";
+            }
+        }
+
+        function siriRespond() {
+            const responses = [
+                "Jag har justerat gränssnittet i iOS 26 för maximal flytbarhet.",
+                "Söker efter spännande funktioner i den nya iOS 27 betan...",
+                "Här är dina senast använda appar."
+            ];
+            document.getElementById('siriText').textContent = responses[Math.floor(Math.random() * responses.length)];
         }
     </script>
 </body>
