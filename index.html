@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Simulator</title>
+    <title>iOS Simulator</title>
     <style>
         :root {
-            --spring-io: cubic-bezier(0.16, 1, 0.3, 1);
-            --liquid-glass: rgba(255, 255, 255, 0.11);
-            --glass-border: rgba(255, 255, 255, 0.18);
+            /* Apples klassiska spring-animation */
+            --spring-io: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --spring-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+            --liquid-glass: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
         }
 
         * {
@@ -22,7 +24,7 @@
 
         body {
             background: #0d0e15;
-            background-image: radial-gradient(circle at center, #1a1c29 0%, #0d0e15 100%);
+            background-image: radial-gradient(circle at top left, #1a1c29 0%, #08090d 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -36,7 +38,7 @@
             height: 812px;
             background: #000;
             border-radius: 54px;
-            box-shadow: 0 0 0 4px #3a3a3c, 0 30px 100px rgba(0, 0, 0, 0.8);
+            box-shadow: inset 0 0 0 2px #5a5a5c, 0 0 0 4px #2a2a2c, 0 30px 100px rgba(0, 0, 0, 0.8);
             position: relative;
             overflow: hidden;
             padding: 10px;
@@ -47,6 +49,7 @@
             width: 100%;
             height: 100%;
             background: url('blackbakgrund.webp') no-repeat center center;
+            background-color: #000; /* Fallback om bilden saknas */
             background-size: cover;
             position: relative;
             display: flex;
@@ -78,7 +81,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 12px;
-            transition: all 0.5s var(--spring-io);
+            transition: all 0.4s var(--spring-smooth);
             cursor: pointer;
             pointer-events: auto;
             overflow: hidden;
@@ -137,30 +140,32 @@
             align-items: center;
             padding: 0 28px;
             color: #fff;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             z-index: 1000;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         .status-icons {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
 
+        /* Uppdaterad, korrekt iOS Wi-Fi ikon */
         .icon-wifi {
-            width: 16px;
-            height: 16px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 21l-12-12c5-5 14-5 19 0l-7 12z'/%3E%3C/svg%3E") no-repeat center center;
+            width: 18px;
+            height: 18px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm7.7-6.3a11 11 0 0 0-15.4 0l1.4 1.4a9 9 0 0 1 12.6 0l1.4-1.4zm2.8-2.8a15 15 0 0 0-21 0l1.4 1.4a13 13 0 0 1 18.2 0l1.4-1.4z'/%3E%3C/svg%3E") no-repeat center center;
             background-size: contain;
         }
 
         .icon-battery {
-            width: 25px;
-            height: 12px;
-            border: 1px solid #fff;
+            width: 26px;
+            height: 13px;
+            border: 1px solid rgba(255,255,255,0.8);
             border-radius: 4px;
-            padding: 1px;
+            padding: 1.5px;
             position: relative;
             display: flex;
             align-items: center;
@@ -168,18 +173,18 @@
         .icon-battery::after {
             content: '';
             position: absolute;
-            right: -3px;
+            right: -4px;
             top: 3px;
             width: 2px;
-            height: 4px;
-            background: #fff;
-            border-radius: 0 1px 1px 0;
+            height: 5px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 0 2px 2px 0;
         }
         .battery-level {
-            width: 90%;
+            width: 85%;
             height: 100%;
             background: #fff;
-            border-radius: 2px;
+            border-radius: 1.5px;
         }
 
         /* Låsskärm */
@@ -196,9 +201,10 @@
             flex-direction: column;
             justify-content: space-between;
             padding: 70px 0 35px 0;
-            transition: transform 0.5s var(--spring-io), opacity 0.4s ease;
+            transition: transform 0.6s var(--spring-smooth), opacity 0.5s ease;
             pointer-events: auto;
             cursor: grab;
+            backdrop-filter: blur(0px); /* Beredd för upplåsnings-blur */
         }
 
         .lock-screen:active {
@@ -206,35 +212,37 @@
         }
 
         #clock {
-            font-size: 80px;
+            font-size: 82px;
             font-weight: 800;
             letter-spacing: -2px;
             color: #fff;
             text-align: center;
+            text-shadow: 0 2px 15px rgba(0,0,0,0.2);
         }
 
         #date {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 500;
-            color: rgba(255,255,255,0.85);
+            color: rgba(255,255,255,0.9);
             text-align: center;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.2);
         }
 
-        /* Svep upp-indikator (Äkta iOS-stil) */
         .swipe-indicator {
             text-align: center;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 13px;
+            color: #fff;
+            font-size: 14px;
             font-weight: 500;
-            letter-spacing: 0.3px;
-            animation: breathe-swipe 2s infinite ease-in-out;
+            letter-spacing: 0.5px;
+            animation: breathe-swipe 2.5s infinite ease-in-out;
             margin-bottom: 30px;
             cursor: pointer;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
         }
 
         @keyframes breathe-swipe {
-            0%, 100% { opacity: 0.35; transform: translateY(0); }
-            50% { opacity: 0.9; transform: translateY(-5px); }
+            0%, 100% { opacity: 0.5; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-6px); }
         }
 
         /* Hemskärm */
@@ -246,8 +254,8 @@
             justify-content: flex-start;
             margin-top: 15px;
             opacity: 0;
-            transform: scale(0.95);
-            transition: transform 0.6s var(--spring-io), opacity 0.5s ease;
+            transform: scale(0.92);
+            transition: transform 0.6s var(--spring-smooth), opacity 0.5s ease;
         }
 
         .is-unlocked .home-screen {
@@ -259,8 +267,8 @@
         .app-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 22px 14px;
-            padding-top: 10px;
+            gap: 24px 14px;
+            padding-top: 15px;
         }
 
         .app-item {
@@ -270,35 +278,37 @@
             cursor: pointer;
         }
 
-        /* App-ikoner */
+        /* ÄKTA iOS SQUIRCLE IKONER */
         .app-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 13.5px;
+            width: 62px;
+            height: 62px;
+            /* 22.5% skapar den magiska iOS-formen bättre än pixlar */
+            border-radius: 22.5%; 
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.22);
-            transition: transform 0.2s var(--spring-io);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s var(--spring-io), filter 0.2s;
             position: relative;
             overflow: hidden;
             background: #fff;
         }
 
         .app-item:active .app-icon {
-            transform: scale(0.88);
+            transform: scale(0.85);
+            filter: brightness(0.8);
         }
 
-        /* Safari original-look */
+        /* Safari */
         .icon-safari {
-            background: radial-gradient(circle, #25a4e4 0%, #0d60b5 100%);
+            background: radial-gradient(circle at 50% 0%, #30b0e8 0%, #0d60b5 100%);
         }
         .icon-safari::before {
             content: '';
             position: absolute;
-            width: 42px;
-            height: 42px;
-            border: 2px solid rgba(255,255,255,0.3);
+            width: 44px;
+            height: 44px;
+            border: 2px solid rgba(255,255,255,0.4);
             border-radius: 50%;
         }
         .icon-safari::after {
@@ -306,65 +316,62 @@
             position: absolute;
             width: 0;
             height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-bottom: 20px solid #ff3b30;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 22px solid #ff3b30;
             transform: rotate(45deg);
             transform-origin: 50% 100%;
-            top: 10px;
+            top: 9px;
+            z-index: 3;
         }
         .safari-needle-south {
             position: absolute;
             width: 0;
             height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 20px solid #f0f0f0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 22px solid #fff;
             transform: rotate(45deg);
             transform-origin: 50% 0%;
-            bottom: 10px;
+            bottom: 9px;
             z-index: 2;
         }
 
-        /* Bilder (Blomman) */
-        .icon-photos {
-            background: #ffffff;
-        }
+        /* Bilder (Stilren blomma) */
+        .icon-photos { background: #fff; }
         .photos-flower {
             position: relative;
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
         }
         .petal {
             position: absolute;
-            width: 10px;
-            height: 20px;
-            border-radius: 5px;
-            opacity: 0.85;
+            width: 12px;
+            height: 18px;
+            border-radius: 6px;
+            opacity: 0.8;
             left: 11px;
-            top: 6px;
-            transform-origin: 5px 10px;
+            top: 8px;
+            transform-origin: 6px 9px;
+            mix-blend-mode: multiply; /* Ger den äkta överlappande looken */
         }
-        .petal:nth-child(1) { background: #ff2a6d; transform: rotate(0deg) translateY(-6px); }
-        .petal:nth-child(2) { background: #ff5e3a; transform: rotate(45deg) translateY(-6px); }
-        .petal:nth-child(3) { background: #ffdb4c; transform: rotate(90deg) translateY(-6px); }
-        .petal:nth-child(4) { background: #87fc70; transform: rotate(135deg) translateY(-6px); }
-        .petal:nth-child(5) { background: #55e9bc; transform: rotate(180deg) translateY(-6px); }
-        .petal:nth-child(6) { background: #52edc7; transform: rotate(225deg) translateY(-6px); }
-        .petal:nth-child(7) { background: #1ad6fd; transform: rotate(270deg) translateY(-6px); }
-        .petal:nth-child(8) { background: #b545ff; transform: rotate(315deg) translateY(-6px); }
+        .petal:nth-child(1) { background: #ff2a6d; transform: rotate(0deg) translateY(-8px); }
+        .petal:nth-child(2) { background: #ff5e3a; transform: rotate(45deg) translateY(-8px); }
+        .petal:nth-child(3) { background: #ffdb4c; transform: rotate(90deg) translateY(-8px); }
+        .petal:nth-child(4) { background: #87fc70; transform: rotate(135deg) translateY(-8px); }
+        .petal:nth-child(5) { background: #55e9bc; transform: rotate(180deg) translateY(-8px); }
+        .petal:nth-child(6) { background: #52edc7; transform: rotate(225deg) translateY(-8px); }
+        .petal:nth-child(7) { background: #1ad6fd; transform: rotate(270deg) translateY(-8px); }
+        .petal:nth-child(8) { background: #b545ff; transform: rotate(315deg) translateY(-8px); }
 
-        /* Inställningar */
+        /* Inställningar (Mer metallisk) */
         .icon-settings {
-            background: linear-gradient(135deg, #f5f5f7 0%, #e3e3e8 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: linear-gradient(135deg, #c7c7cc 0%, #8e8e93 100%);
         }
         .settings-gear {
-            width: 34px;
-            height: 34px;
-            background: #8e8e93;
+            width: 36px;
+            height: 36px;
+            background: #3a3a3c;
             border-radius: 50%;
             position: relative;
             display: flex;
@@ -374,26 +381,17 @@
         .settings-gear::before {
             content: '';
             position: absolute;
-            width: 22px;
-            height: 22px;
-            background: #e3e3e8;
+            width: 20px;
+            height: 20px;
+            background: #8e8e93;
             border-radius: 50%;
             z-index: 2;
         }
-        .settings-gear::after {
-            content: '';
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #8e8e93;
-            border-radius: 50%;
-            z-index: 3;
-        }
         .gear-tooth {
             position: absolute;
-            width: 6px;
-            height: 38px;
-            background: #8e8e93;
+            width: 8px;
+            height: 42px;
+            background: #3a3a3c;
             border-radius: 2px;
         }
         .gear-tooth:nth-child(2) { transform: rotate(45deg); }
@@ -402,123 +400,108 @@
 
         /* App Store */
         .icon-appstore {
-            background: linear-gradient(180deg, #1d9dfd 0%, #0076e4 100%);
+            background: linear-gradient(180deg, #1d9dfd 0%, #007aff 100%);
         }
         .appstore-a {
             position: relative;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
         }
         .appstore-line {
             position: absolute;
             background: #fff;
-            border-radius: 4px;
+            border-radius: 5px;
         }
-        .appstore-line.l1 {
-            width: 6px;
-            height: 30px;
-            left: 13px;
-            transform: rotate(-30deg);
-        }
-        .appstore-line.l2 {
-            width: 6px;
-            height: 30px;
-            left: 13px;
-            transform: rotate(30deg);
-        }
-        .appstore-line.l3 {
-            width: 24px;
-            height: 6px;
-            top: 18px;
-            left: 4px;
-        }
+        .appstore-line.l1 { width: 6px; height: 32px; left: 15px; transform: rotate(-30deg); }
+        .appstore-line.l2 { width: 6px; height: 32px; left: 15px; transform: rotate(30deg); }
+        .appstore-line.l3 { width: 24px; height: 6px; top: 19px; left: 6px; }
 
         /* Meddelanden */
         .icon-messages {
-            background: linear-gradient(180deg, #53d769 0%, #34c759 100%);
+            background: linear-gradient(180deg, #5de575 0%, #34c759 100%);
         }
         .message-bubble {
-            width: 34px;
-            height: 26px;
+            width: 38px;
+            height: 28px;
             background: #fff;
-            border-radius: 13px;
+            border-radius: 14px;
             position: relative;
         }
         .message-bubble::after {
             content: '';
             position: absolute;
-            bottom: -2px;
-            left: -4px;
-            width: 12px;
-            height: 12px;
+            bottom: -3px;
+            left: -3px;
+            width: 14px;
+            height: 14px;
             background: #fff;
-            border-bottom-right-radius: 10px;
-            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 12px;
+            border-bottom-left-radius: 18px;
             transform: rotate(-10deg);
         }
 
-        /* Kamera */
+        /* Kamera (Mer realistisk) */
         .icon-camera {
-            background: linear-gradient(180deg, #eff0f1 0%, #dcdde0 100%);
+            background: #e5e5ea;
         }
         .camera-body {
-            width: 38px;
-            height: 26px;
-            background: #8a8a8f;
+            width: 42px;
+            height: 28px;
+            background: #8e8e93;
             border-radius: 6px;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: inset 0 1px 3px rgba(255,255,255,0.3);
         }
         .camera-lens {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             background: #1c1c1e;
-            border: 2px solid #fff;
+            border: 2px solid #d1d1d6;
             border-radius: 50%;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
         }
         .camera-flash {
             position: absolute;
             top: 4px;
-            right: 5px;
-            width: 4px;
-            height: 4px;
-            background: #f1c40f;
+            right: 6px;
+            width: 5px;
+            height: 5px;
+            background: #ffcc00;
             border-radius: 50%;
         }
 
         /* Kartor */
-        .icon-maps {
-            background: #e5e5ea;
-        }
+        .icon-maps { background: #f2f2f7; }
         .maps-grid {
             position: absolute;
             width: 100%;
             height: 100%;
             background: 
-                linear-gradient(90deg, transparent 50%, #fff 50%, #fff 54%, transparent 54%),
-                linear-gradient(0deg, transparent 40%, #ffcc00 40%, #ffcc00 46%, transparent 46%);
-            background-size: 100% 100%;
+                linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.1) 48%, rgba(0,0,0,0.1) 52%, transparent 52%),
+                linear-gradient(0deg, transparent 38%, #ffd60a 38%, #ffd60a 44%, transparent 44%);
         }
         .maps-pin {
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background: #ff3b30;
             border-radius: 50%;
             top: 18px;
             left: 26px;
             z-index: 2;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .maps-pin::after {
             content: '';
             position: absolute;
-            bottom: -5px;
-            left: 1px;
-            border-left: 3px solid transparent;
-            border-right: 3px solid transparent;
-            border-top: 6px solid #ff3b30;
+            bottom: -6px;
+            left: 1.5px;
+            border-left: 3.5px solid transparent;
+            border-right: 3.5px solid transparent;
+            border-top: 7px solid #ff3b30;
         }
 
         /* Väder */
@@ -526,30 +509,30 @@
             background: linear-gradient(180deg, #5ac8fa 0%, #007aff 100%);
         }
         .weather-sun {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             background: #ffcc00;
             border-radius: 50%;
             position: absolute;
-            top: 16px;
-            left: 16px;
-            box-shadow: 0 0 8px #ffcc00;
+            top: 14px;
+            left: 14px;
+            box-shadow: 0 0 10px rgba(255,204,0,0.8);
         }
         .weather-cloud {
-            width: 24px;
-            height: 14px;
-            background: rgba(255,255,255,0.9);
+            width: 28px;
+            height: 16px;
+            background: #fff;
             border-radius: 10px;
             position: absolute;
             top: 24px;
-            left: 22px;
+            left: 20px;
         }
         .weather-cloud::before {
             content: '';
             position: absolute;
-            width: 12px;
-            height: 12px;
-            background: rgba(255,255,255,0.9);
+            width: 14px;
+            height: 14px;
+            background: #fff;
             border-radius: 50%;
             top: -6px;
             left: 4px;
@@ -557,23 +540,23 @@
 
         /* Telefon */
         .icon-phone {
-            background: linear-gradient(180deg, #53d769 0%, #34c759 100%);
+            background: linear-gradient(180deg, #5de575 0%, #34c759 100%);
         }
         .phone-receiver {
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             background: #fff;
-            border-radius: 4px;
+            border-radius: 5px;
             transform: rotate(-45deg);
             position: relative;
         }
         .phone-receiver::before {
             content: '';
             position: absolute;
-            width: 10px;
-            height: 18px;
+            width: 12px;
+            height: 20px;
             background: #fff;
-            border-radius: 3px;
+            border-radius: 4px;
             top: 4px;
             left: -4px;
             box-shadow: 24px 0 0 #fff;
@@ -584,8 +567,8 @@
             background: linear-gradient(180deg, #ff5e3a 0%, #ff2a68 100%);
         }
         .music-note {
-            width: 20px;
-            height: 24px;
+            width: 22px;
+            height: 26px;
             position: relative;
         }
         .music-note-stem {
@@ -595,13 +578,11 @@
             background: #fff;
             right: 2px;
         }
-        .music-note-stem.left {
-            right: 14px;
-        }
+        .music-note-stem.left { right: 15px; }
         .music-note-flag {
             position: absolute;
-            width: 15px;
-            height: 5px;
+            width: 16px;
+            height: 6px;
             background: #fff;
             top: 0;
             right: 2px;
@@ -610,24 +591,24 @@
         }
         .music-note-bubble {
             position: absolute;
-            width: 8px;
-            height: 6px;
+            width: 9px;
+            height: 7px;
             background: #fff;
             border-radius: 50%;
-            bottom: 2px;
+            bottom: 4px;
             transform: rotate(-15deg);
         }
         .music-note-bubble.left {
             left: -3px;
-            bottom: 2px;
+            bottom: 4px;
         }
 
         .app-label {
             color: #fff;
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 500;
             margin-top: 6px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
             text-align: center;
             white-space: nowrap;
         }
@@ -637,7 +618,7 @@
             padding: 0 18px 35px 18px;
             opacity: 0;
             transform: translateY(20px);
-            transition: transform 0.6s var(--spring-io), opacity 0.5s ease;
+            transition: transform 0.6s var(--spring-smooth), opacity 0.5s ease;
         }
 
         .is-unlocked .dock-container {
@@ -650,19 +631,19 @@
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(35px);
             -webkit-backdrop-filter: blur(35px);
-            border-radius: 32px;
-            padding: 12px;
+            border-radius: 34px; /* Också lite mer squircle */
+            padding: 14px;
             display: flex;
             justify-content: space-around;
             box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
 
         .dock .app-icon {
-            width: 56px;
-            height: 56px;
+            width: 60px;
+            height: 60px;
         }
 
-        /* SVEP-STRECK LÄNGST NER (Aktivt först efter upplåsning!) */
+        /* Home Bar */
         .home-bar-container {
             position: absolute;
             bottom: 8px;
@@ -676,23 +657,23 @@
             z-index: 10000;
             cursor: pointer;
             padding-bottom: 8px;
-            pointer-events: none; /* Inaktiverat vid låst skärm för att låta svep passera fritt! */
+            pointer-events: none; 
         }
 
         .is-unlocked .home-bar-container {
-            pointer-events: auto !important; /* Aktivt igen vid upplåst skärm */
+            pointer-events: auto !important; 
         }
 
         .home-bar {
-            width: 130px;
+            width: 135px;
             height: 5px;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 3px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-            transition: background 0.2s, transform 0.3s var(--spring-io);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Fullskärmsappar */
+        /* FULLSKÄRMSAPPAR MED MJUKARE ANIMATIONER */
         .app-screen {
             position: absolute;
             top: 0;
@@ -701,28 +682,33 @@
             height: 100%;
             background: #0c0d14;
             z-index: 1001;
-            display: none;
+            display: none; /* Display flex togglas via JS */
             flex-direction: column;
             border-radius: 44px;
             overflow: hidden;
             padding-bottom: 40px;
-            transform: translateY(100%);
-            transition: transform 0.5s var(--spring-io);
+            
+            /* Ny iOS zoom/fade-in effekt */
+            opacity: 0;
+            transform: scale(0.85);
+            transition: transform 0.4s var(--spring-smooth), opacity 0.3s ease;
         }
 
         .app-screen.open {
-            display: flex;
-            transform: translateY(0);
+            opacity: 1;
+            transform: scale(1);
         }
 
         .app-header {
             padding: 55px 24px 15px 24px;
-            font-size: 26px;
-            font-weight: 800;
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
             color: #fff;
             border-bottom: 1px solid rgba(255,255,255,0.08);
-            background: rgba(12, 13, 20, 0.8);
-            backdrop-filter: blur(20px);
+            background: rgba(12, 13, 20, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
         }
 
         .app-body {
@@ -732,7 +718,7 @@
             overflow-y: auto;
         }
 
-        /* Musik-element */
+        /* --- Extrastilar för inuti apparna --- */
         .music-disc {
             width: 180px;
             height: 180px;
@@ -744,51 +730,52 @@
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Safari Floating Bar */
         .safari-bar {
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.12);
-            padding: 12px;
-            border-radius: 18px;
+            background: rgba(255,255,255,0.1);
+            padding: 14px;
+            border-radius: 14px;
             text-align: center;
-            color: #00c6ff;
+            color: #007aff;
             margin-top: 20px;
+            font-weight: 500;
         }
 
-        /* Telefon Keypad */
         .phone-display {
-            font-size: 36px;
+            font-size: 38px;
             text-align: center;
             margin-bottom: 20px;
             min-height: 44px;
-            color: #38ef7d;
+            color: #fff;
+            letter-spacing: 2px;
         }
         .keypad-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            width: 240px;
+            gap: 16px;
+            width: 260px;
             margin: 0 auto;
         }
         .keypad-grid button {
-            width: 68px;
-            height: 68px;
+            width: 75px;
+            height: 75px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.1);
+            border: none;
             color: #fff;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
+            transition: background 0.2s;
         }
+        .keypad-grid button:active { background: rgba(255,255,255,0.3); }
 
         .setting-row {
-            padding: 14px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 14px;
-            margin-bottom: 8px;
+            padding: 16px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 12px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -799,23 +786,23 @@
         <div class="dynamic-island-container">
             <div class="dynamic-island" id="island" onclick="islandTap()">
                 <div id="islandDefault" class="island-content show"></div>
-
+                
                 <div id="islandMusicCompact" class="island-content" style="display:none; justify-content: space-between; width: 100%;">
                     <span>🎵</span>
                     <div class="island-wave"><span></span><span></span><span></span></div>
                 </div>
 
                 <div id="islandCallCompact" class="island-content" style="display:none; justify-content: space-between; width: 100%;">
-                    <span style="color:#38ef7d;">📞</span>
+                    <span style="color:#34c759;">📞</span>
                     <span id="islandCallTimer" style="font-size:11px;">00:00</span>
                 </div>
 
                 <div id="islandMusicExpanded" class="island-content" style="display:none; flex-direction:row; align-items:center; justify-content:space-between; width:100%;">
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <div style="width:40px; height:40px; background:#ff2d55; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px;">🎵</div>
+                        <div style="width:40px; height:40px; background:#ff2d55; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px;">🎵</div>
                         <div style="display:flex; flex-direction:column; text-align:left;">
-                            <span style="font-size:13px; font-weight:700;">Liquid Soundwave</span>
-                            <span style="font-size:11px; opacity:0.6;">Beats</span>
+                            <span style="font-size:14px; font-weight:600;">Liquid Soundwave</span>
+                            <span style="font-size:12px; opacity:0.6;">Beats</span>
                         </div>
                     </div>
                     <button onclick="pauseMusicFromIsland(event)" style="background:rgba(255,255,255,0.2); border:none; color:#fff; border-radius:50%; width:36px; height:36px; cursor:pointer; font-size:14px; font-weight:bold;">⏸</button>
@@ -823,13 +810,13 @@
 
                 <div id="islandCallExpanded" class="island-content" style="display:none; flex-direction:row; align-items:center; justify-content:space-between; width:100%;">
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <div style="width:40px; height:40px; background:#38ef7d; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px;">📞</div>
+                        <div style="width:40px; height:40px; background:#34c759; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px;">📞</div>
                         <div style="display:flex; flex-direction:column; text-align:left;">
-                            <span id="islandCallNumber" style="font-size:13px; font-weight:700;">Samtal</span>
-                            <span id="islandCallTimerExpanded" style="font-size:11px; opacity:0.6;">00:00</span>
+                            <span id="islandCallNumber" style="font-size:14px; font-weight:600;">Samtal</span>
+                            <span id="islandCallTimerExpanded" style="font-size:12px; opacity:0.6;">00:00</span>
                         </div>
                     </div>
-                    <button onclick="hangUpFromIsland(event)" style="background:#ff3b30; border:none; color:#fff; border-radius:20px; padding:6px 14px; cursor:pointer; font-weight:bold;">Lägg på</button>
+                    <button onclick="hangUpFromIsland(event)" style="background:#ff3b30; border:none; color:#fff; border-radius:20px; padding:8px 16px; cursor:pointer; font-weight:bold;">Lägg på</button>
                 </div>
             </div>
         </div>
@@ -838,11 +825,9 @@
             <div class="status-bar">
                 <span id="time-widget">12:00</span>
                 <div class="status-icons">
-                    <span style="font-size: 11px; margin-right: 2px; letter-spacing: 0.5px;">5G</span>
+                    <span style="font-size: 12px; margin-right: 4px; letter-spacing: 0.5px;">5G</span>
                     <div class="icon-wifi"></div>
-                    <div class="icon-battery">
-                        <div class="battery-level"></div>
-                    </div>
+                    <div class="icon-battery"><div class="battery-level"></div></div>
                 </div>
             </div>
 
@@ -851,101 +836,26 @@
                     <div id="date">Torsdag 16 juli</div>
                     <div id="clock">12:00</div>
                 </div>
-                <div class="swipe-indicator" onclick="unlockPhone()">Klicka eller svep upp för att öppna</div>
+                <div class="swipe-indicator" onclick="unlockPhone()">Svep upp för att låsa upp</div>
             </div>
 
             <div class="home-screen">
                 <div class="app-grid">
-                    
-                    <div class="app-item" onclick="openApp('safari')">
-                        <div class="app-icon icon-safari">
-                            <div class="safari-needle-south"></div>
-                        </div>
-                        <div class="app-label">Safari</div>
-                    </div>
-                    
-                    <div class="app-item" onclick="openApp('photos')">
-                        <div class="app-icon icon-photos">
-                            <div class="photos-flower">
-                                <div class="petal"></div><div class="petal"></div>
-                                <div class="petal"></div><div class="petal"></div>
-                                <div class="petal"></div><div class="petal"></div>
-                                <div class="petal"></div><div class="petal"></div>
-                            </div>
-                        </div>
-                        <div class="app-label">Bilder</div>
-                    </div>
-                    
-                    <div class="app-item" onclick="openApp('settings')">
-                        <div class="app-icon icon-settings">
-                            <div class="settings-gear">
-                                <div class="gear-tooth"></div><div class="gear-tooth"></div>
-                                <div class="gear-tooth"></div><div class="gear-tooth"></div>
-                            </div>
-                        </div>
-                        <div class="app-label">Inställningar</div>
-                    </div>
-                    
-                    <div class="app-item" onclick="openApp('appstore')">
-                        <div class="app-icon icon-appstore">
-                            <div class="appstore-a">
-                                <div class="appstore-line l1"></div>
-                                <div class="appstore-line l2"></div>
-                                <div class="appstore-line l3"></div>
-                            </div>
-                        </div>
-                        <div class="app-label">App Store</div>
-                    </div>
-                    
-                    <div class="app-item" onclick="openApp('messages')">
-                        <div class="app-icon icon-messages">
-                            <div class="message-bubble"></div>
-                        </div>
-                        <div class="app-label">Meddelanden</div>
-                    </div>
-                    
-                    <div class="app-item" onclick="openApp('camera')">
-                        <div class="app-icon icon-camera">
-                            <div class="camera-body">
-                                <div class="camera-lens"></div>
-                                <div class="camera-flash"></div>
-                            </div>
-                        </div>
-                        <div class="app-label">Kamera</div>
-                    </div>
-                    
-                    <div class="app-item" onclick="openApp('maps')">
-                        <div class="app-icon icon-maps">
-                            <div class="maps-grid"></div>
-                            <div class="maps-pin"></div>
-                        </div>
-                        <div class="app-label">Kartor</div>
-                    </div>
-                    
-                    <div class="app-item" onclick="openApp('weather')">
-                        <div class="app-icon icon-weather">
-                            <div class="weather-sun"></div>
-                            <div class="weather-cloud"></div>
-                        </div>
-                        <div class="app-label">Väder</div>
-                    </div>
+                    <div class="app-item" onclick="openApp('safari')"><div class="app-icon icon-safari"><div class="safari-needle-south"></div></div><div class="app-label">Safari</div></div>
+                    <div class="app-item" onclick="openApp('photos')"><div class="app-icon icon-photos"><div class="photos-flower"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div></div></div><div class="app-label">Bilder</div></div>
+                    <div class="app-item" onclick="openApp('settings')"><div class="app-icon icon-settings"><div class="settings-gear"><div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div></div></div><div class="app-label">Inställningar</div></div>
+                    <div class="app-item" onclick="openApp('appstore')"><div class="app-icon icon-appstore"><div class="appstore-a"><div class="appstore-line l1"></div><div class="appstore-line l2"></div><div class="appstore-line l3"></div></div></div><div class="app-label">App Store</div></div>
+                    <div class="app-item" onclick="openApp('messages')"><div class="app-icon icon-messages"><div class="message-bubble"></div></div><div class="app-label">Meddelanden</div></div>
+                    <div class="app-item" onclick="openApp('camera')"><div class="app-icon icon-camera"><div class="camera-body"><div class="camera-lens"></div><div class="camera-flash"></div></div></div><div class="app-label">Kamera</div></div>
+                    <div class="app-item" onclick="openApp('maps')"><div class="app-icon icon-maps"><div class="maps-grid"></div><div class="maps-pin"></div></div><div class="app-label">Kartor</div></div>
+                    <div class="app-item" onclick="openApp('weather')"><div class="app-icon icon-weather"><div class="weather-sun"></div><div class="weather-cloud"></div></div><div class="app-label">Väder</div></div>
                 </div>
             </div>
 
             <div class="dock-container">
                 <div class="dock">
-                    <div class="app-icon icon-phone" style="cursor:pointer;" onclick="openApp('phone')">
-                        <div class="phone-receiver"></div>
-                    </div>
-                    <div class="app-icon icon-music" style="cursor:pointer;" onclick="openApp('music')">
-                        <div class="music-note">
-                            <div class="music-note-stem left"></div>
-                            <div class="music-note-stem"></div>
-                            <div class="music-note-flag"></div>
-                            <div class="music-note-bubble left"></div>
-                            <div class="music-note-bubble"></div>
-                        </div>
-                    </div>
+                    <div class="app-icon icon-phone" style="cursor:pointer;" onclick="openApp('phone')"><div class="phone-receiver"></div></div>
+                    <div class="app-icon icon-music" style="cursor:pointer;" onclick="openApp('music')"><div class="music-note"><div class="music-note-stem left"></div><div class="music-note-stem"></div><div class="music-note-flag"></div><div class="music-note-bubble left"></div><div class="music-note-bubble"></div></div></div>
                 </div>
             </div>
 
@@ -978,25 +888,22 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Lås upp funktion
+        // Lås upp (Förbättrad animation)
         function unlockPhone() {
             if (!isLocked) return;
             isLocked = false;
             
             const lockScreen = document.getElementById('lockScreen');
-            lockScreen.style.transition = 'transform 0.5s var(--spring-io), opacity 0.4s ease';
-            lockScreen.style.transform = 'translateY(-100%)';
+            lockScreen.style.transition = 'transform 0.6s var(--spring-smooth), opacity 0.4s ease, filter 0.5s';
+            lockScreen.style.transform = 'translateY(-100%) scale(1.05)';
             lockScreen.style.opacity = '0';
+            lockScreen.style.filter = 'blur(10px)';
             
-            // Inaktivera helt efter animationen så den inte blockerar klick på hemskärmen
-            setTimeout(() => {
-                lockScreen.style.display = 'none';
-            }, 500);
-            
+            setTimeout(() => { lockScreen.style.display = 'none'; }, 600);
             document.querySelector('.iphone-screen').classList.add('is-unlocked');
         }
 
-        // --- ULTRA-ROBUST SVEP-OCH-KLICK-GESTER FÖR LÅSSKÄRMEN ---
+        // Gest för låsskärm
         const lockScreen = document.getElementById('lockScreen');
         let dragStartY = 0;
         let dragCurrentY = 0;
@@ -1014,96 +921,55 @@
             if (!isDragging) return;
             dragCurrentY = y;
             let diff = dragStartY - dragCurrentY;
-            if (diff > 0) {
-                // Skärmen glider upp med fingret/musen
-                lockScreen.style.transform = `translateY(-${diff}px)`;
-            }
+            if (diff > 0) lockScreen.style.transform = `translateY(-${diff}px)`;
         }
 
         function handleDragEnd() {
             if (!isDragging) return;
             isDragging = false;
             let diff = dragStartY - dragCurrentY;
-
-            // Om man svept uppåt mer än 80px, ELLER om det bara var ett enkelt tryck/klick (diff nära noll)
-            if (diff > 80 || Math.abs(diff) < 8) {
+            if (diff > 60 || Math.abs(diff) < 8) {
                 unlockPhone();
             } else {
-                // Studsa tillbaka om svepet var för kort
-                lockScreen.style.transition = 'transform 0.5s var(--spring-io)';
+                lockScreen.style.transition = 'transform 0.5s var(--spring-smooth)';
                 lockScreen.style.transform = 'translateY(0)';
             }
         }
 
-        // Touch-händelser (Mobil & surfplattor)
-        lockScreen.addEventListener('touchstart', (e) => {
-            handleDragStart(e.touches[0].clientY);
-        }, { passive: true });
+        lockScreen.addEventListener('touchstart', e => handleDragStart(e.touches[0].clientY), { passive: true });
+        lockScreen.addEventListener('touchmove', e => handleDragMove(e.touches[0].clientY), { passive: true });
+        lockScreen.addEventListener('touchend', handleDragEnd);
+        lockScreen.addEventListener('mousedown', e => handleDragStart(e.clientY));
+        window.addEventListener('mousemove', e => handleDragMove(e.clientY));
+        window.addEventListener('mouseup', handleDragEnd);
 
-        lockScreen.addEventListener('touchmove', (e) => {
-            handleDragMove(e.touches[0].clientY);
-        }, { passive: true });
-
-        lockScreen.addEventListener('touchend', () => {
-            handleDragEnd();
-        });
-
-        // Mus-händelser (Dator)
-        lockScreen.addEventListener('mousedown', (e) => {
-            handleDragStart(e.clientY);
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            handleDragMove(e.clientY);
-        });
-
-        window.addEventListener('mouseup', () => {
-            handleDragEnd();
-        });
-
-
-        // Global hemknappsfunktion (För hemskärmen/minimering av appar)
+        // Hemgest (Stänga appar)
         const gestureZone = document.getElementById('homeGestureZone');
         const homeBar = document.getElementById('homeBar');
         let startY = 0;
 
-        gestureZone.addEventListener('click', () => {
-            triggerHomeAction();
-        });
-
+        gestureZone.addEventListener('click', triggerHomeAction);
         gestureZone.addEventListener('touchstart', (e) => {
             startY = e.touches[0].clientY;
-            homeBar.style.transform = "scaleX(0.85) translateY(-5px)";
+            homeBar.style.transform = "scaleX(0.7) translateY(-3px)";
         });
-
         gestureZone.addEventListener('touchend', (e) => {
             let endY = e.changedTouches[0].clientY;
             homeBar.style.transform = "none";
-            if (startY - endY > 30) {
-                triggerHomeAction();
-            }
+            if (startY - endY > 20) triggerHomeAction();
         });
 
         function triggerHomeAction() {
             if (isLocked) return; 
-
             const appScreen = document.getElementById('appScreen');
-            
-            if (isIslandExpanded) {
-                collapseIsland();
-                return;
-            }
-
+            if (isIslandExpanded) { collapseIsland(); return; }
             if (appScreen.classList.contains('open')) {
-                const currentApp = document.getElementById('appTitle').textContent;
-                if (currentApp === "Nu Spelas") {
-                    setIslandActivity('music');
-                }
+                if (document.getElementById('appTitle').textContent === "Nu Spelas") setIslandActivity('music');
                 closeApp();
             }
         }
 
-        // Dynamic Island Hantering
+        // Dynamic Island
         function setIslandActivity(type, extraData = "") {
             activeActivity = type;
             const island = document.getElementById('island');
@@ -1129,9 +995,7 @@
                     callSeconds = 0;
                     callTimer = setInterval(() => {
                         callSeconds++;
-                        const mins = Math.floor(callSeconds / 60).toString().padStart(2, '0');
-                        const secs = (callSeconds % 60).toString().padStart(2, '0');
-                        const timeStr = `${mins}:${secs}`;
+                        const timeStr = `${Math.floor(callSeconds / 60).toString().padStart(2, '0')}:${(callSeconds % 60).toString().padStart(2, '0')}`;
                         document.getElementById('islandCallTimer').textContent = timeStr;
                         document.getElementById('islandCallTimerExpanded').textContent = timeStr;
                         const screenTimer = document.getElementById('screenCallTimer');
@@ -1143,39 +1007,27 @@
                 const def = document.getElementById('islandDefault');
                 def.style.display = 'flex';
                 setTimeout(() => def.classList.add('show'), 50);
-                if (callTimer) {
-                    clearInterval(callTimer);
-                    callTimer = null;
-                }
+                if (callTimer) { clearInterval(callTimer); callTimer = null; }
             }
         }
 
         function islandTap() {
             if (!activeActivity) return;
-
             const island = document.getElementById('island');
-
-            if (isIslandExpanded) {
-                collapseIsland();
-                return;
-            }
-
+            if (isIslandExpanded) { collapseIsland(); return; }
+            
             isIslandExpanded = true;
             island.className = "dynamic-island expanded";
-            
-            document.querySelectorAll('.island-content').forEach(el => {
-                el.style.display = 'none';
-                el.classList.remove('show');
-            });
+            document.querySelectorAll('.island-content').forEach(el => { el.style.display = 'none'; el.classList.remove('show'); });
 
             if (activeActivity === 'music') {
-                const musicExp = document.getElementById('islandMusicExpanded');
-                musicExp.style.display = 'flex';
-                setTimeout(() => musicExp.classList.add('show'), 50);
+                const exp = document.getElementById('islandMusicExpanded');
+                exp.style.display = 'flex';
+                setTimeout(() => exp.classList.add('show'), 50);
             } else if (activeActivity === 'call') {
-                const callExp = document.getElementById('islandCallExpanded');
-                callExp.style.display = 'flex';
-                setTimeout(() => callExp.classList.add('show'), 50);
+                const exp = document.getElementById('islandCallExpanded');
+                exp.style.display = 'flex';
+                setTimeout(() => exp.classList.add('show'), 50);
             }
         }
 
@@ -1184,121 +1036,54 @@
             setIslandActivity(activeActivity);
         }
 
-        function pauseMusicFromIsland(event) {
-            event.stopPropagation();
-            setIslandActivity(null);
-        }
+        function pauseMusicFromIsland(e) { e.stopPropagation(); setIslandActivity(null); }
+        function hangUpFromIsland(e) { e.stopPropagation(); setIslandActivity(null); closeApp(); }
 
-        function hangUpFromIsland(event) {
-            event.stopPropagation();
-            setIslandActivity(null);
-            closeApp();
-        }
-
-        // App-innehåll
+        // Innehåll för Appar
         const appContents = {
             safari: {
                 title: 'Safari',
-                body: `
-                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px;">
-                        <h3>Sök</h3>
-                        <p style="font-size:14px; opacity:0.7; margin-top:8px;">Sidor anpassas nu automatiskt för enklare läsning.</p>
-                    </div>
-                    <div class="safari-bar">🔍 Sök...</div>
-                `
+                body: `<div style="background:rgba(255,255,255,0.08); padding:20px; border-radius:20px;"><h3>Startsida</h3><p style="opacity:0.7; margin-top:5px;">Sök eller ange en webbadress.</p></div><div class="safari-bar">🔍 Sök...</div>`
             },
             photos: {
                 title: 'Bilder',
-                body: `
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                        <div style="aspect-ratio:1; background:rgba(255,255,255,0.1); border-radius:10px; display:flex; justify-content:center; align-items:center;">🌄</div>
-                        <div style="aspect-ratio:1; background:rgba(255,255,255,0.1); border-radius:10px; display:flex; justify-content:center; align-items:center;">🌌</div>
-                    </div>
-                `
+                body: `<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;"><div style="aspect-ratio:1; background:rgba(255,255,255,0.1); border-radius:12px; display:flex; justify-content:center; align-items:center; font-size:30px;">🌄</div><div style="aspect-ratio:1; background:rgba(255,255,255,0.1); border-radius:12px; display:flex; justify-content:center; align-items:center; font-size:30px;">🌌</div></div>`
             },
             settings: {
                 title: 'Inställningar',
-                body: `
-                    <div class="setting-row"><span>Wi-Fi</span><span style="opacity:0.5;">Ansluten ›</span></div>
-                    <div class="setting-row"><span>Bluetooth</span><span style="opacity:0.5;">På ›</span></div>
-                `
+                body: `<div class="setting-row"><span>Wi-Fi</span><span style="opacity:0.5;">Ansluten ›</span></div><div class="setting-row"><span>Bluetooth</span><span style="opacity:0.5;">På ›</span></div><div class="setting-row"><span>Notiser</span><span style="opacity:0.5;">›</span></div>`
             },
             appstore: {
                 title: 'App Store',
-                body: `
-                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <h4>Chat</h4>
-                            <p style="font-size:12px; opacity:0.6;">Produktivitet</p>
-                        </div>
-                        <button style="background:#0a84ff; color:#fff; padding:6px 14px; border:none; border-radius:12px; font-weight:bold;">HÄMTA</button>
-                    </div>
-                `
+                body: `<div style="background:rgba(255,255,255,0.08); padding:20px; border-radius:20px; display:flex; justify-content:space-between; align-items:center;"><div><h4 style="font-size:18px;">Spel</h4><p style="font-size:13px; opacity:0.6;">Dagens rekommendation</p></div><button style="background:#007aff; color:#fff; padding:8px 18px; border:none; border-radius:15px; font-weight:bold;">HÄMTA</button></div>`
             },
             messages: {
                 title: 'Meddelanden',
-                body: `
-                    <div style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; margin-bottom:10px;">
-                        <strong style="font-size:14px;">Mamma</strong>
-                        <p style="font-size:13px; opacity:0.7; margin-top:2px;">Kommer du hem snart? 👍</p>
-                    </div>
-                `
+                body: `<div style="padding:15px; background:rgba(255,255,255,0.08); border-radius:16px; margin-bottom:10px;"><strong style="font-size:15px;">Mamma</strong><p style="font-size:14px; opacity:0.7; margin-top:4px;">Kommer du hem snart? 👍</p></div>`
             },
             camera: {
                 title: 'Kamera',
-                body: `
-                    <div style="height:100%; display:flex; flex-direction:column; justify-content:space-between; align-items:center; padding:40px 0;">
-                        <div style="width:200px; height:200px; border:2px dashed rgba(255,255,255,0.3); border-radius:20px; display:flex; justify-content:center; align-items:center; opacity:0.5;">Sökare</div>
-                        <div style="width:70px; height:70px; border-radius:50%; border:5px solid #fff; cursor:pointer;"></div>
-                    </div>
-                `
+                body: `<div style="height:100%; display:flex; flex-direction:column; justify-content:space-between; align-items:center; padding:30px 0;"><div style="width:220px; height:220px; border:1px solid rgba(255,255,255,0.2); border-radius:20px; display:flex; justify-content:center; align-items:center; opacity:0.5;">[Kamera-vy]</div><div style="width:75px; height:75px; border-radius:50%; border:6px solid #fff; cursor:pointer;"></div></div>`
             },
             maps: {
                 title: 'Kartor',
-                body: `
-                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom: 15px;">
-                        <h3>Sök i närheten</h3>
-                        <p style="font-size:13px; opacity:0.6;">Hitta restauranger, bensinstationer och mer.</p>
-                    </div>
-                    <div style="height:180px; background:rgba(255,255,255,0.1); border-radius:14px; display:flex; justify-content:center; align-items:center; color:rgba(255,255,255,0.5);">[Karta laddas...]</div>
-                `
+                body: `<div style="background:rgba(255,255,255,0.08); padding:20px; border-radius:20px; margin-bottom: 20px;"><h3>Sök i närheten</h3><p style="font-size:14px; opacity:0.6; margin-top:5px;">Hitta restauranger, etc.</p></div><div style="height:200px; background:rgba(255,255,255,0.1); border-radius:20px; display:flex; justify-content:center; align-items:center; color:rgba(255,255,255,0.5);">[Karta laddas...]</div>`
             },
             weather: {
                 title: 'Väder',
-                body: `
-                    <div style="text-align:center; padding:20px 0;">
-                        <h2 style="font-size:48px; font-weight:200;">21°</h2>
-                        <p style="font-size:16px;">Mestadels soligt</p>
-                        <p style="opacity:0.6; font-size:13px; margin-top:5px;">H: 24° L: 14°</p>
-                    </div>
-                `
+                body: `<div style="text-align:center; padding:30px 0;"><h2 style="font-size:60px; font-weight:200;">21°</h2><p style="font-size:18px;">Mestadels soligt</p><p style="opacity:0.6; font-size:14px; margin-top:8px;">H: 24° L: 14°</p></div>`
             },
             phone: {
                 title: 'Telefon',
-                body: `
-                    <div class="phone-display" id="phoneDisplay"></div>
-                    <div class="keypad-grid">
-                        <button onclick="pressKey('1')">1</button><button onclick="pressKey('2')">2</button><button onclick="pressKey('3')">3</button>
-                        <button onclick="pressKey('4')">4</button><button onclick="pressKey('5')">5</button><button onclick="pressKey('6')">6</button>
-                        <button onclick="pressKey('7')">7</button><button onclick="pressKey('8')">8</button><button onclick="pressKey('9')">9</button>
-                        <button onclick="pressKey('*')">*</button><button onclick="pressKey('0')">0</button><button onclick="pressKey('⌫')">⌫</button>
-                    </div>
-                    <button onclick="startCall()" style="width:68px; height:68px; border-radius:50%; background:#2fc854; border:none; color:#fff; font-size:26px; display:block; margin:20px auto 0 auto; cursor:pointer;">📞</button>
-                `
+                body: `<div class="phone-display" id="phoneDisplay"></div><div class="keypad-grid"><button onclick="pressKey('1')">1</button><button onclick="pressKey('2')">2</button><button onclick="pressKey('3')">3</button><button onclick="pressKey('4')">4</button><button onclick="pressKey('5')">5</button><button onclick="pressKey('6')">6</button><button onclick="pressKey('7')">7</button><button onclick="pressKey('8')">8</button><button onclick="pressKey('9')">9</button><button onclick="pressKey('*')">*</button><button onclick="pressKey('0')">0</button><button onclick="pressKey('⌫')">⌫</button></div><button onclick="startCall()" style="width:75px; height:75px; border-radius:50%; background:#34c759; border:none; color:#fff; font-size:30px; display:block; margin:30px auto 0 auto; cursor:pointer;">📞</button>`
             },
             music: {
                 title: 'Nu Spelas',
-                body: `
-                    <div class="music-disc"></div>
-                    <div style="text-align:center; margin-top:10px;">
-                        <h3>Liquid Soundwave</h3>
-                        <p style="opacity:0.6; font-size:14px; margin-top:4px;">Beats</p>
-                    </div>
-                    <button onclick="playMusicFromApp()" style="display:block; margin:20px auto; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:15px; color:#fff; padding:10px 24px; font-weight:600; cursor:pointer;">Minimera till Dynamic Island</button>
-                `
+                body: `<div class="music-disc"></div><div style="text-align:center; margin-top:20px;"><h3 style="font-size:22px;">Liquid Soundwave</h3><p style="opacity:0.6; font-size:16px; margin-top:6px;">Beats</p></div><button onclick="playMusicFromApp()" style="display:block; margin:30px auto; background:rgba(255,255,255,0.15); border:none; border-radius:20px; color:#fff; padding:15px 30px; font-weight:600; cursor:pointer; font-size:16px;">Skicka till Dynamic Island</button>`
             }
         };
 
+        // Öppna App (Zoom-in animation)
         function openApp(appId) {
             const app = appContents[appId];
             if(!app) return;
@@ -1309,36 +1094,26 @@
             setTimeout(() => screen.classList.add('open'), 10);
         }
 
+        // Stäng App (Zoom-ut animation)
         function closeApp() {
             const screen = document.getElementById('appScreen');
             screen.classList.remove('open');
-            setTimeout(() => screen.style.display = 'none', 500);
+            setTimeout(() => screen.style.display = 'none', 400); // Tiden matchar CSS-transition
         }
 
-        // Knappsatshantering för samtal
+        // Telefon
         function pressKey(val) {
             const disp = document.getElementById('phoneDisplay');
             if (!disp) return;
-            if (val === '⌫') {
-                disp.textContent = disp.textContent.slice(0, -1);
-            } else {
-                if (disp.textContent.length < 15) disp.textContent += val;
-            }
+            if (val === '⌫') { disp.textContent = disp.textContent.slice(0, -1); } 
+            else { if (disp.textContent.length < 15) disp.textContent += val; }
         }
 
         function startCall() {
             const nr = document.getElementById('phoneDisplay').textContent || "Mamma";
             setIslandActivity('call', nr);
-            
             document.getElementById('appTitle').textContent = "Pågående Samtal";
-            document.getElementById('appBody').innerHTML = `
-                <div style="text-align:center; padding-top:40px;">
-                    <div style="font-size:40px; margin-bottom:10px;">📞</div>
-                    <h2>${nr}</h2>
-                    <p id="screenCallTimer" style="font-size:18px; opacity:0.6; margin-top:10px;">00:00</p>
-                    <button onclick="hangUpFromIsland(event)" style="background:#ff3b30; color:#fff; border:none; padding:15px 35px; border-radius:30px; margin-top:50px; font-weight:bold; cursor:pointer; font-size:16px;">Lägg på</button>
-                </div>
-            `;
+            document.getElementById('appBody').innerHTML = `<div style="text-align:center; padding-top:50px;"><div style="font-size:48px; margin-bottom:15px;">📞</div><h2>${nr}</h2><p id="screenCallTimer" style="font-size:20px; opacity:0.6; margin-top:15px;">00:00</p><button onclick="hangUpFromIsland(event)" style="background:#ff3b30; color:#fff; border:none; padding:18px 40px; border-radius:30px; margin-top:60px; font-weight:bold; cursor:pointer; font-size:18px;">Lägg på</button></div>`;
         }
 
         function playMusicFromApp() {
