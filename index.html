@@ -3,22 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>iOS 18 Simulator - Fixed</title>
+    <title>iOS 18 Ultimate Camera Simulator</title>
     <style>
         :root {
             --ios-spring-in: cubic-bezier(0.16, 1, 0.3, 1);
+            --ios-spring-out: cubic-bezier(0.25, 1, 0.5, 1);
+            --ios-island-spring: cubic-bezier(0.175, 0.885, 0.32, 1.2);
+            
+            --blur-glass: rgba(120, 120, 128, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.15);
             --ios-blue: #007aff;
             --ios-green: #34c759;
             --ios-red: #ff3b30;
+            --ios-orange: #ff9500;
+            --ios-yellow: #ffcc00;
             --ios-dark-gray: #1c1c1e;
             --ios-light-gray: #2c2c2e;
+            
+            --origin-x: 50%;
+            --origin-y: 50%;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -34,7 +44,7 @@
             overflow: hidden;
         }
 
-        /* IPHONE RAM */
+        /* IPHONE 16 PRO MAX RAM */
         .iphone-frame {
             width: 390px;
             height: 844px;
@@ -46,8 +56,22 @@
                 0 25px 90px rgba(0, 0, 0, 0.9);
             position: relative;
             padding: 14px;
+            transition: all 0.3s var(--ios-spring-out);
         }
 
+        /* Hårdvaruknappar */
+        .button-side {
+            position: absolute;
+            background: #252529;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .btn-action { left: -3px; top: 125px; width: 3px; height: 32px; }
+        .btn-volume-up { left: -3px; top: 180px; width: 3px; height: 50px; }
+        .btn-volume-down { left: -3px; top: 245px; width: 3px; height: 50px; }
+        .btn-power { right: -3px; top: 210px; width: 3px; height: 75px; }
+
+        /* Skärmen */
         .iphone-screen {
             width: 100%;
             height: 100%;
@@ -61,613 +85,1278 @@
             z-index: 1;
         }
 
-        /* BAKGRUND - Ligger helt i botten av skärmen */
+        /* Bakgrundsbild */
         .wallpaper-bg {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000 url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000') no-repeat center center;
+            background: #000 url('blackbakgrund.webp') no-repeat center center;
             background-size: cover;
-            z-index: 1;
-            transition: background 0.5s ease;
+            z-index: -1;
+            transform: scale3d(1, 1, 1);
+            transition: transform 0.65s var(--ios-spring-in), filter 0.65s var(--ios-spring-in);
+            will-change: transform, filter;
         }
 
-        /* DYNAMIC ISLAND - Placerad perfekt över allt utom statusbar */
+        /* RESPONSIVITET FÖR MOBILER */
+        @media (max-width: 600px) {
+            .iphone-frame {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                padding: 0;
+                box-shadow: none;
+                background: none;
+            }
+            .button-side { display: none; }
+            .iphone-screen { border-radius: 0; }
+            .status-bar { padding-top: env(safe-area-inset-top, 12px) !important; height: calc(48px + env(safe-area-inset-top, 0px)) !important; }
+            .lock-screen { padding-top: calc(75px + env(safe-area-inset-top, 0px)) !important; padding-bottom: calc(35px + env(safe-area-inset-bottom, 0px)) !important; }
+            .dock-container { padding-bottom: calc(20px + env(safe-area-inset-bottom, 15px)) !important; }
+            .home-bar-container { padding-bottom: calc(env(safe-area-inset-bottom, 8px) + 4px) !important; }
+        }
+
+        /* DYNAMIC ISLAND */
         .dynamic-island-container {
             position: absolute;
-            top: 11px; 
+            top: 15px; 
             left: 50%;
             transform: translate3d(-50%, 0, 0);
             z-index: 99999;
             pointer-events: none;
         }
         .dynamic-island {
-            width: 110px; 
+            width: 115px; 
             height: 30px; 
             background: #000;
             border-radius: 20px;
-            transition: all 0.3s var(--ios-spring-in);
-        }
-        .island-recording {
-            width: 130px !important;
-            background: #ff3b30 !important;
-        }
-
-        /* STATUSFÄLT - Ligger över bakgrunden men under island mässigt */
-        .status-bar {
-            height: 44px; 
-            display: flex; 
-            justify-content: space-between; 
+            border: 0.5px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            position: relative;
+            display: flex;
             align-items: center;
-            padding: 0 32px; 
-            color: #fff; 
-            font-size: 14px; 
-            font-weight: 600; 
-            z-index: 10000;
-            position: relative;
-            pointer-events: none;
+            justify-content: flex-end;
+            padding: 0 14px;
+            transition: all 0.5s var(--ios-island-spring);
+            will-change: width, height, transform;
+        }
+        .camera-indicator {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: #30d158; opacity: 0;
+            transform: scale3d(0, 0, 1);
+            transition: all 0.3s var(--ios-spring-in);
+            box-shadow: 0 0 6px rgba(48, 209, 88, 0.8);
+        }
+        .camera-active .camera-indicator { opacity: 1; transform: scale3d(1, 1, 1); }
+
+        /* Dynamic Island Notis-utvidgning */
+        .island-expand-notification {
+            width: 280px !important;
+            height: 55px !important;
+            border-radius: 28px !important;
+            justify-content: space-between !important;
         }
 
-        /* LOCKSCREEN */
-        .lockscreen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9000; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: space-between; 
-            padding-bottom: 60px;
-            transition: transform 0.4s var(--ios-spring-in), opacity 0.3s ease;
-            transform-origin: top center;
-            background: rgba(0,0,0,0.1); /* Låter wallpapern synas igenom */
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        /* Statusfält */
+        .status-bar {
+            height: 48px; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 28px; color: #fff; font-size: 13.5px; font-weight: 600; z-index: 1000; position: relative;
+            letter-spacing: -0.1px;
         }
-        .lock-header {
-            display: flex; flex-direction: column; align-items: center;
-            color: #fff; margin-top: 70px;
-        }
-        .lock-time { font-size: 76px; font-weight: 200; letter-spacing: -1px; line-height: 1; }
-        .lock-date { font-size: 20px; font-weight: 500; margin-top: 6px; }
-        .lock-footer {
-            display: flex; flex-direction: column; align-items: center; color: #fff; gap: 10px;
-        }
-        .lock-swipe-text { font-size: 13px; font-weight: 500; opacity: 0.8; animation: pulse 2s infinite; }
+        .status-left { display: flex; align-items: center; width: 80px; }
+        #time-widget, #carrier-widget { position: absolute; transition: opacity 0.3s ease; }
+        #time-widget { opacity: 0; }
+        #carrier-widget { opacity: 1; font-size: 12.5px; font-weight: 500; }
+        .is-unlocked #time-widget { opacity: 1; }
+        .is-unlocked #carrier-widget { opacity: 0; }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.4; transform: translateY(0); }
-            50% { opacity: 0.9; transform: translateY(-4px); }
-        }
+        .status-icons { display: flex; align-items: center; gap: 6.5px; }
+        .icon-signal { width: 17px; height: 11px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M2 22h4V14H2v8zm6 0h4V10H8v12zm6 0h4V6h-4v16zm6-20v20h4V2h-4z'/%3E%3C/svg%3E") no-repeat center center; background-size: contain; }
+        .icon-wifi { width: 15px; height: 15px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 21c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm7.7-6.3c-4.3-4.3-11.2-4.3-15.4 0l1.4 1.4c3.5-3.5 9.1-3.5 12.6 0l1.4-1.4zm2.8-2.8c-5.8-5.8-15.2-5.8-21 0l1.4 1.4c5-5 13.2-5 18.2 0l1.4-1.4z'/%3E%3C/svg%3E") no-repeat center center; background-size: contain; }
+        .icon-battery { width: 25px; height: 11.5px; border: 1px solid rgba(255,255,255,0.6); border-radius: 4px; padding: 1px; position: relative; }
+        .icon-battery::after { content: ''; position: absolute; right: -4px; top: 3px; width: 2.5px; height: 4px; background: rgba(255,255,255,0.6); border-radius: 0 1px 1px 0; }
+        .battery-level { width: 100%; height: 100%; background: #fff; border-radius: 2px; }
 
-        /* HEMSKÄRM */
+        /* Låsskärm */
+        .lock-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 500; display: flex; flex-direction: column; justify-content: space-between;
+            padding: 75px 0 35px 0; transition: transform 0.65s var(--ios-spring-in), opacity 0.4s ease;
+        }
+        #clock { font-size: 84px; font-weight: 200; color: #fff; text-align: center; letter-spacing: -1.5px; }
+        #date { font-size: 19px; font-weight: 400; color: #fff; text-align: center; margin-bottom: 5px; opacity: 0.95; letter-spacing: -0.2px; }
+        .swipe-indicator { text-align: center; color: #fff; font-size: 13.5px; font-weight: 500; animation: breathe-swipe 2s infinite; opacity: 0.8; }
+        @keyframes breathe-swipe { 0%, 100% { opacity: 0.35; transform: translate3d(0, 0, 0); } 50% { opacity: 0.95; transform: translate3d(0, -6px, 0); } }
+
+        /* Hemskärm */
         .home-screen {
-            position: relative;
-            padding: 20px 20px 20px 20px; 
-            display: flex; 
-            flex-direction: column; 
-            flex-grow: 1;
-            z-index: 5;
+            padding: 25px 18px 10px 18px; display: flex; flex-direction: column; flex-grow: 1;
+            opacity: 0; transform: scale3d(0.96, 0.96, 1);
+            transition: transform 0.65s var(--ios-spring-in), opacity 0.4s ease, filter 0.5s ease;
+            will-change: transform, opacity, filter;
         }
-        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px 15px; padding-top: 15px; }
+        .dock-container {
+            padding: 0 18px 30px 18px; opacity: 0; transform: translate3d(0, 30px, 0);
+            transition: transform 0.65s var(--ios-spring-in), opacity 0.4s ease, filter 0.5s ease;
+            will-change: transform, opacity, filter;
+        }
+        .is-unlocked .home-screen { opacity: 1; transform: scale3d(1, 1, 1); }
+        .is-unlocked .dock-container { opacity: 1; transform: translate3d(0, 0, 0); }
+
+        /* Bakgrundszoom vid öppning */
+        .app-is-open .wallpaper-bg { transform: scale3d(1.08, 1.08, 1); filter: blur(24px) brightness(0.65); }
+        .app-is-open .home-screen, .app-is-open .dock-container { transform: scale3d(0.93, 0.93, 1); opacity: 0.12; filter: blur(12px); }
+
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 14px; padding-top: 20px; }
         .app-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         
         .app-icon {
-            width: 58px; height: 58px; border-radius: 22%;
+            width: 60px; height: 60px; border-radius: 22%;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
-            position: relative;
-            overflow: hidden;
+            box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0,0,0,0.35);
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s ease;
+            position: relative; overflow: hidden; background: #fff;
         }
-        .app-item:active .app-icon { transform: scale3d(0.85, 0.85, 1); }
+        .app-item:active .app-icon { transform: scale3d(0.84, 0.84, 1); filter: brightness(0.82); }
 
         /* Ikoner */
-        .icon-messages { background: linear-gradient(180deg, #5fe46e 0%, #2bd04a 100%); }
-        .message-bubble { width: 30px; height: 20px; background: #fff; border-radius: 10px; position: relative; }
-        .message-bubble::after { content: ''; position: absolute; bottom: -2px; left: -3px; width: 10px; height: 10px; background: #fff; border-bottom-right-radius: 8px; border-bottom-left-radius: 12px; transform: rotate(-10deg); }
-
         .icon-safari { background: linear-gradient(180deg, #30b0e8 0%, #0d60b5 100%); }
-        .safari-compass { width: 28px; height: 28px; border: 2px solid #fff; border-radius: 50%; position: relative; }
-        .safari-compass::before { content: ''; position: absolute; top: 50%; left: 50%; width: 4px; height: 18px; background: #ff3b30; transform: translate(-50%, -50%) rotate(45deg); border-radius: 2px; }
+        .icon-safari::before { content: ''; position: absolute; width: 42px; height: 42px; background: #fff; border-radius: 50%; }
+        .icon-safari::after { content: ''; position: absolute; width: 38px; height: 38px; background: radial-gradient(circle, #32b5ee 0%, #0a56aa 100%); border-radius: 50%; }
+        .safari-compass-dots { position: absolute; z-index: 2; width: 32px; height: 32px; border: 1.5px dashed rgba(255,255,255,0.4); border-radius: 50%; }
+        .safari-needle { position: absolute; z-index: 3; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 18px solid #ff3b30; transform: rotate(45deg); transform-origin: 50% 100%; top: 11px; filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.2)); }
+        .safari-needle-south { position: absolute; z-index: 2; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 18px solid #f2f2f7; transform: rotate(45deg); transform-origin: 50% 0%; bottom: 11px; filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.12)); }
 
-        .icon-photos { background: #fff; display: grid; grid-template-columns: repeat(2, 1fr); padding: 8px; gap: 2px; }
-        .photo-dot { border-radius: 50%; }
-        .photo-dot:nth-child(1) { background: #ff3b30; } .photo-dot:nth-child(2) { background: #ffcc00; }
-        .photo-dot:nth-child(3) { background: #007aff; } .photo-dot:nth-child(4) { background: #34c759; }
-
-        .icon-camera { background: linear-gradient(180deg, #444 0%, #111 100%); }
-        .camera-lens { width: 24px; height: 24px; background: #000; border: 3px solid #666; border-radius: 50%; }
+        .icon-photos { background: #fff; }
+        .photos-flower { position: relative; width: 30px; height: 30px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15)); }
+        .petal { position: absolute; width: 10px; height: 16px; border-radius: 5px; left: 10px; top: 7px; transform-origin: 5px 8px; mix-blend-mode: multiply; opacity: 0.95; }
+        .petal:nth-child(1) { background: #ff2d55; transform: rotate(0deg) translateY(-6px); }
+        .petal:nth-child(2) { background: #ff9500; transform: rotate(45deg) translateY(-6px); }
+        .petal:nth-child(3) { background: #ffcc00; transform: rotate(90deg) translateY(-6px); }
+        .petal:nth-child(4) { background: #4cd964; transform: rotate(135deg) translateY(-6px); }
+        .petal:nth-child(5) { background: #5ac8fa; transform: rotate(180deg) translateY(-6px); }
+        .petal:nth-child(6) { background: #007aff; transform: rotate(225deg) translateY(-6px); }
+        .petal:nth-child(7) { background: #5856d6; transform: rotate(270deg) translateY(-6px); }
+        .petal:nth-child(8) { background: #ff2d55; transform: rotate(315deg) translateY(-6px); }
 
         .icon-settings { background: linear-gradient(135deg, #f2f2f7 0%, #8e8e93 100%); }
-        .settings-cog { width: 26px; height: 26px; border: 4px dashed #555; border-radius: 50%; }
+        .settings-gear { width: 38px; height: 38px; background: #636366; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; }
+        .settings-gear::before { content: ''; position: absolute; width: 20px; height: 20px; background: linear-gradient(135deg, #d1d1d6, #8e8e93); border-radius: 50%; z-index: 2; }
+        .gear-tooth { position: absolute; width: 6px; height: 42px; background: #636366; border-radius: 2px; }
+        .gear-tooth:nth-child(2) { transform: rotate(45deg); }
+        .gear-tooth:nth-child(3) { transform: rotate(90deg); }
+        .gear-tooth:nth-child(4) { transform: rotate(135deg); }
 
-        .icon-phone { background: linear-gradient(180deg, #34c759 0%, #1c9439 100%); }
-        .phone-handset { width: 20px; height: 20px; background: #fff; border-radius: 4px; transform: rotate(-45deg); }
+        .icon-appstore { background: linear-gradient(180deg, #34aadc 0%, #007aff 100%); }
+        .appstore-a { position: relative; width: 32px; height: 32px; }
+        .appstore-line { position: absolute; background: #fff; border-radius: 3px; }
+        .appstore-line.l1 { width: 5px; height: 30px; left: 13.5px; transform: rotate(-30deg); z-index: 2; }
+        .appstore-line.l2 { width: 5px; height: 30px; left: 13.5px; transform: rotate(30deg); z-index: 1; }
+        .appstore-line.l3 { width: 20px; height: 5px; top: 18px; left: 6px; z-index: 3; }
 
-        .icon-appstore { background: linear-gradient(180deg, #1d71f2 0%, #0a4da2 100%); font-size: 26px; color: #fff; font-weight: bold; }
+        .icon-messages { background: linear-gradient(180deg, #5fe46e 0%, #2bd04a 100%); }
+        .message-bubble { width: 34px; height: 24px; background: #fff; border-radius: 12px; position: relative; }
+        .message-bubble::after { content: ''; position: absolute; bottom: -2px; left: -3px; width: 11px; height: 11px; background: #fff; border-bottom-right-radius: 9px; border-bottom-left-radius: 14px; transform: rotate(-10deg); }
 
-        .app-label { color: #fff; font-size: 11px; font-weight: 500; margin-top: 6px; text-align: center; }
+        .icon-camera { background: linear-gradient(180deg, #f2f2f7 0%, #8e8e93 100%); position: relative; }
+        .camera-body-deco { width: 42px; height: 26px; background: #3a3a3c; border-radius: 6px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .camera-body-deco::before { content: ''; position: absolute; top: -4px; width: 12px; height: 5px; background: #3a3a3c; border-radius: 3px 3px 0 0; }
+        .camera-lens { width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle, #1c1c1e 30%, #2c2c2e 80%); border: 2px solid #545456; display: flex; align-items: center; justify-content: center; }
+        .camera-lens::before { content: ''; width: 8px; height: 8px; background: radial-gradient(circle, #0a84ff 10%, #000 80%); border-radius: 50%; }
 
-        /* FULLSKÄRMS APPAR */
-        .app-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 1000; display: none; flex-direction: column;
-            border-radius: 45px; overflow: hidden; padding-bottom: 30px;
-            transform-origin: bottom center;
-            transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+        .icon-phone { background: linear-gradient(180deg, #5fe46e 0%, #2bd04a 100%); }
+        .phone-receiver { width: 26px; height: 26px; background: #fff; border-radius: 4px; transform: rotate(-45deg); position: relative; }
+        .phone-receiver::before { content: ''; position: absolute; width: 10px; height: 18px; background: #fff; border-radius: 3px; top: 4px; left: -4px; box-shadow: 24px 0 0 #fff; }
+
+        .app-label { color: #fff; font-size: 11.5px; font-weight: 500; margin-top: 6px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; letter-spacing: -0.1px; }
+
+        /* Docka */
+        .dock {
+            background: var(--blur-glass);
+            border: 0.5px solid var(--glass-border);
+            backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+            border-radius: 32px; padding: 12px; display: flex; justify-content: space-around;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.45);
         }
-        .app-screen.active { display: flex; }
-        
-        .app-header {
-            padding: 55px 24px 15px 24px; font-size: 22px; font-weight: 700;
-            color: #fff; border-bottom: 0.5px solid #2c2c2e; display: flex; justify-content: space-between; align-items: center;
-        }
-        .app-body { flex: 1; padding: 18px; display: flex; flex-direction: column; color: #fff; overflow-y: auto; }
+        .dock .app-icon { width: 58px; height: 58px; }
 
-        /* SVEP-STRECKET LÄNGST NER (Styr både Lockscreen och Appar) */
+        /* HEM-SVEP */
         .home-bar-container {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 40px;
             display: flex; justify-content: center; align-items: flex-end;
-            z-index: 99999; padding-bottom: 12px; cursor: grab;
+            z-index: 10005; padding-bottom: 10px; cursor: pointer;
         }
-        .home-bar-container:active { cursor: grabbing; }
-        .home-bar { width: 130px; height: 5px; background: rgba(255, 255, 255, 0.95); border-radius: 3px; pointer-events: none; }
+        .home-bar { width: 135px; height: 5px; background: rgba(255, 255, 255, 0.95); border-radius: 3px; transition: transform 0.2s var(--ios-spring-out); }
+        .home-bar-container:active .home-bar { transform: scale3d(0.95, 0.8, 1); }
 
-        /* App-specifik CSS */
-        .messages-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px; }
+        /* DYNAMISK APP-SKÄRM */
+        .app-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 1001; display: none; flex-direction: column;
+            border-radius: 45px; overflow: hidden; padding-bottom: 35px;
+            transform-origin: var(--origin-x) var(--origin-y); opacity: 0;
+            transform: scale3d(0.04, 0.04, 1);
+            will-change: transform, opacity;
+            transition: transform 0.45s var(--ios-spring-out), opacity 0.25s ease-out;
+        }
+        .app-screen.open {
+            opacity: 1; transform: scale3d(1, 1, 1) !important;
+            transition: transform 0.58s var(--ios-spring-in), opacity 0.3s ease-out;
+        }
+
+        /* DESIGN FOR APP-INSIDOR */
+        .app-header {
+            padding: 55px 24px 15px 24px; font-size: 26px; font-weight: 700; letter-spacing: -0.6px;
+            color: #fff; background: #000; display: flex; justify-content: space-between; align-items: center;
+        }
+        @media (max-width: 600px) { .app-header { padding-top: calc(50px + env(safe-area-inset-top, 0px)) !important; } }
+        .app-body { flex: 1; padding: 18px; color: #fff; background: #000; overflow-y: auto; }
+
+        /* --- SAFARI --- */
+        .safari-search-bar { display: flex; background: var(--ios-dark-gray); border-radius: 14px; padding: 10px 14px; margin-bottom: 15px; align-items: center; }
+        .safari-search-bar input { background: none; border: none; color: #fff; flex: 1; margin-left: 8px; font-size: 15px; outline: none; }
+        .safari-search-bar button { background: var(--ios-blue); color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .safari-frame { width: 100%; height: 80%; border: none; border-radius: 12px; background: #fff; }
+        .safari-welcome { text-align: center; margin-top: 50px; color: #8e8e93; }
+
+        /* --- INSTÄLLNINGAR --- */
+        .settings-profile { display: flex; align-items: center; background: var(--ios-dark-gray); padding: 14px; border-radius: 14px; margin-bottom: 20px; }
+        .profile-pic { width: 50px; height: 50px; background: var(--ios-light-gray); border-radius: 50%; margin-right: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .settings-group { background: var(--ios-dark-gray); border-radius: 14px; overflow: hidden; margin-bottom: 20px; }
+        .settings-row { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid #2c2c2e; font-size: 16px; }
+        .settings-row:last-child { border-bottom: none; }
+        .settings-row span { display: flex; align-items: center; gap: 10px; }
+        .ios-switch { width: 46px; height: 26px; background: #39393d; border-radius: 15px; position: relative; cursor: pointer; transition: background 0.2s; }
+        .ios-switch::after { content: ''; position: absolute; width: 22px; height: 22px; background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: transform 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .ios-switch.active { background: var(--ios-green); }
+        .ios-switch.active::after { transform: translate3d(20px, 0, 0); }
+
+        /* --- BILDER --- */
+        .photos-tabs { display: flex; gap: 12px; margin-bottom: 15px; }
+        .photos-tab { padding: 6px 14px; background: var(--ios-dark-gray); border-radius: 15px; font-size: 13px; font-weight: 600; color: #8e8e93; cursor: pointer; }
+        .photos-tab.active { background: var(--ios-blue); color: #fff; }
+        .photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+        .photo-thumbnail { width: 100%; aspect-ratio: 1; background-size: cover; background-position: center; border-radius: 4px; background-color: #111; cursor: pointer; }
+
+        /* --- APP STORE --- */
+        .store-hero { background: linear-gradient(135deg, #1d1d26, #322b40); border-radius: 18px; padding: 20px; margin-bottom: 20px; position: relative; }
+        .store-hero span { font-size: 11px; font-weight: 700; color: #ff3b30; text-transform: uppercase; }
+        .store-hero h2 { margin: 6px 0; font-size: 24px; }
+        .store-hero p { font-size: 14px; color: #8e8e93; margin-bottom: 15px; }
+        .store-list-item { display: flex; align-items: center; background: var(--ios-dark-gray); padding: 12px; border-radius: 14px; margin-bottom: 10px; }
+        .store-app-icon { width: 48px; height: 48px; border-radius: 10px; margin-right: 12px; background-size: cover; }
+        .store-app-info { flex: 1; }
+        .store-app-info h4 { font-size: 15px; }
+        .store-app-info p { font-size: 12px; color: #8e8e93; }
+        .btn-get { background: rgba(255,255,255,0.15); color: var(--ios-blue); font-size: 12px; font-weight: 700; padding: 6px 16px; border-radius: 15px; border: none; cursor: pointer; transition: background 0.2s; }
+
+        /* --- CHATT --- */
+        .chat-area { display: flex; flex-direction: column; height: 100%; justify-content: space-between; }
+        .messages-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 15px; }
         .msg-bubble { max-width: 75%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.4; }
         .msg-sender { background: var(--ios-blue); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .chat-input-bar { display: flex; gap: 8px; }
-        .chat-input-bar input { flex: 1; background: var(--ios-dark-gray); border: none; border-radius: 20px; padding: 12px 16px; color: #fff; outline: none; }
-        .chat-send-btn { background: var(--ios-blue); border: none; width: 38px; height: 38px; border-radius: 50%; color: #fff; cursor: pointer; }
+        .msg-receiver { background: var(--ios-dark-gray); color: #fff; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .chat-input-bar { display: flex; gap: 8px; padding-top: 10px; border-top: 1px solid var(--ios-dark-gray); }
+        .chat-input-bar input { flex: 1; background: var(--ios-dark-gray); border: none; border-radius: 20px; padding: 10px 16px; color: #fff; font-size: 15px; outline: none; }
+        .chat-send-btn { background: var(--ios-blue); border: none; width: 36px; height: 36px; border-radius: 50%; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        .safari-bar { display: flex; background: var(--ios-dark-gray); border-radius: 12px; padding: 8px 12px; align-items: center; gap: 8px; margin-bottom: 15px; }
-        .safari-bar input { background: none; border: none; color: #fff; flex: 1; outline: none; }
-        .safari-content { flex: 1; background: #111; border-radius: 12px; padding: 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        /* --- TELEFON --- */
+        .phone-display { text-align: center; padding: 20px 0; font-size: 32px; font-weight: 400; height: 80px; letter-spacing: 1px; }
+        .phone-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; max-width: 270px; margin: 0 auto; }
+        .phone-key { width: 70px; height: 70px; border-radius: 50%; background: var(--ios-dark-gray); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: background 0.15s; }
+        .phone-key:active { background: #3a3a3c; }
+        .phone-key span { font-size: 10px; color: #8e8e93; text-transform: uppercase; margin-top: 2px; }
+        .phone-call-btn { width: 70px; height: 70px; border-radius: 50%; background: var(--ios-green); display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; margin: 20px auto 0 auto; grid-column: 2; }
 
-        .photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
-        .photo-thumb { aspect-ratio: 1; background-size: cover; background-position: center; border-radius: 4px; }
+        /* ==================== 100x BÄTTRE KAMERA UI ==================== */
+        .camera-screen .app-header { display: none !important; }
+        .camera-screen .app-body { padding: 0 !important; overflow: hidden; background: #000; }
+        
+        .camera-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+            padding-top: env(safe-area-inset-top, 40px);
+            padding-bottom: 20px;
+            position: relative;
+        }
 
-        .camera-view { flex: 1; background: #111; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; }
-        .camera-view video { width: 100%; height: 100%; object-fit: cover; display: none; }
-        .camera-fallback { color: #8e8e93; font-size: 14px; text-align: center; padding: 20px; position: absolute; }
-        .camera-shutter { width: 66px; height: 66px; background: #fff; border: 4px solid #2c2c2e; border-radius: 50%; align-self: center; margin-top: 15px; cursor: pointer; }
+        /* Övre Kamerareglage */
+        .camera-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 24px;
+            z-index: 10;
+        }
+        .cam-icon-btn {
+            background: rgba(0,0,0,0.5);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .cam-icon-btn.active { color: var(--ios-yellow); }
 
-        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--ios-dark-gray); border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
-        .wallpaper-picker { display: flex; gap: 10px; margin-top: 10px; }
-        .wallpaper-option { width: 55px; height: 90px; border-radius: 8px; border: 2px solid transparent; background-size: cover; cursor: pointer; }
+        /* Sökare */
+        .camera-view-wrapper {
+            position: relative;
+            width: 100%;
+            height: 52%;
+            background: #111;
+            overflow: hidden;
+            border-radius: 12px;
+            cursor: crosshair;
+        }
+        #cameraVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+            transition: filter 0.3s ease, transform 0.3s var(--ios-spring-in);
+        }
+        #cameraVideo.back-cam { transform: scaleX(1); }
 
-        .phone-number { font-size: 32px; text-align: center; margin-bottom: 15px; height: 40px; }
-        .dial-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px 20px; justify-items: center; margin-bottom: 15px; }
-        .dial-btn { width: 60px; height: 60px; background: var(--ios-dark-gray); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 22px; }
-        .dial-btn:active { background: #3a3a3c; }
-        .call-btn { width: 60px; height: 60px; background: var(--ios-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; align-self: center; cursor: pointer; font-size: 22px; }
+        /* Realistiskt Fokus-fyrkant */
+        .camera-focus-ring {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 1.5px solid var(--ios-yellow);
+            border-radius: 4px;
+            pointer-events: none;
+            transform: translate3d(-50%, -50%, 0) scale3d(1.5, 1.5, 1);
+            opacity: 0;
+            transition: transform 0.25s var(--ios-island-spring), opacity 0.2s ease;
+            z-index: 20;
+        }
+        .camera-focus-ring.active {
+            opacity: 1;
+            transform: translate3d(-50%, -50%, 0) scale3d(1, 1, 1);
+        }
 
-        .store-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--ios-dark-gray); border-radius: 12px; margin-bottom: 10px; }
-        .store-info { display: flex; gap: 10px; align-items: center; }
-        .store-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--ios-blue); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .store-get { background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; color: var(--ios-blue); }
+        /* Kamerans olika digitala filter */
+        .filter-cinematic { filter: sepia(0.35) contrast(1.15) saturate(1.1) brightness(0.9) !important; }
+        .filter-portrait { filter: contrast(1.05) saturate(1.05) !important; } /* Oskärpa appliceras via CSS-backdrop vid foto */
 
-        @media (max-width: 600px) {
-            .iphone-frame { width: 100vw; height: 100dvh; border-radius: 0; padding: 0; }
-            .iphone-screen { border-radius: 0; }
+        /* Exponeringsindikator */
+        .exposure-indicator {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.6);
+            border-radius: 15px;
+            padding: 8px 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 12;
+            border: 0.5px solid rgba(255,255,255,0.1);
+        }
+        .exposure-step {
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .exposure-step.active {
+            background: var(--ios-yellow);
+            color: #000;
+        }
+
+        /* Zoom-väljare */
+        .zoom-selector {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translate3d(-50%, 0, 0);
+            background: rgba(0,0,0,0.65);
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: flex;
+            gap: 14px;
+            z-index: 12;
+            backdrop-filter: blur(10px);
+        }
+        .zoom-btn {
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        .zoom-btn.active {
+            background: rgba(255,255,255,0.25);
+            color: var(--ios-yellow);
+        }
+
+        /* Kameratyp-rulle */
+        .camera-modes {
+            display: flex;
+            justify-content: center;
+            gap: 22px;
+            font-size: 12px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.4);
+            padding: 8px 0;
+            letter-spacing: 0.5px;
+        }
+        .camera-modes span { cursor: pointer; transition: color 0.2s; }
+        .camera-modes span.active { color: var(--ios-yellow); }
+
+        /* Bottenkontroller */
+        .camera-bar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 5px 24px 15px 24px;
+        }
+        .shutter-button {
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            background: #fff;
+            border: 4px solid #000;
+            outline: 3px solid #fff;
+            cursor: pointer;
+            transition: transform 0.1s var(--ios-spring-out);
+        }
+        .shutter-button:active { transform: scale3d(0.88, 0.88, 1); }
+        .camera-thumbnail {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #222;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .camera-thumbnail:active { transform: scale3d(0.9, 0.9, 1); }
+        .camera-flip {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        /* Blixt-skärmeffekt */
+        .shutter-flash {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; opacity: 0; pointer-events: none;
+            z-index: 100; transition: opacity 0.08s ease;
+        }
+        .shutter-flash.flash-active { opacity: 1; transition: none; }
+
+        /* FULLSKÄRMS BILDGALLERI INUTI KAMERAN */
+        .camera-gallery-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 60px 20px 40px 20px;
+        }
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .gallery-viewport {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .gallery-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .gallery-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
         }
     </style>
 </head>
 <body>
 
     <div class="iphone-frame">
-        <div class="dynamic-island-container">
-            <div class="dynamic-island" id="island"></div>
+        <div class="button-side btn-action"></div>
+        <div class="button-side btn-volume-up"></div>
+        <div class="button-side btn-volume-down"></div>
+        <div class="button-side btn-power"></div>
+
+        <div class="dynamic-island-container" id="islandContainer">
+            <div class="dynamic-island" id="island">
+                <div id="islandContent" style="display: none; color: #fff; font-size: 12px; font-weight: 500; width: 100%; align-items: center; justify-content: space-between;">
+                    <span id="islandText"></span>
+                    <span style="color: var(--ios-green);">✓</span>
+                </div>
+                <div class="camera-indicator"></div>
+            </div>
         </div>
         
-        <div class="iphone-screen">
+        <div class="iphone-screen" id="mainScreen">
             <div class="wallpaper-bg" id="wallpaper"></div>
 
             <div class="status-bar">
-                <span id="statusBarTime">12:00</span>
-                <span>📶 🔋</span>
+                <div class="status-left">
+                    <span id="time-widget">12:00</span>
+                    <span id="carrier-widget">Telenor SE</span>
+                </div>
+                <div class="status-icons">
+                    <div class="icon-signal"></div>
+                    <div class="icon-wifi"></div>
+                    <div class="icon-battery"><div class="battery-level"></div></div>
+                </div>
             </div>
 
-            <div class="lockscreen" id="lockscreen">
-                <div class="lock-header">
-                    <span style="font-size: 14px; font-weight: 600; letter-spacing: 1px;">🔒 LÅST</span>
-                    <span class="lock-time" id="lockTime">12:00</span>
-                    <span class="lock-date" id="lockDate">Torsdag 16 juli</span>
+            <div class="lock-screen" id="lockScreen" onclick="unlockPhone()">
+                <div style="margin-top: 15px;">
+                    <div id="date">Torsdag 16 juli</div>
+                    <div id="clock">12:00</div>
                 </div>
-                <div class="lock-footer">
-                    <span class="lock-swipe-text">Svep uppåt för att låsa upp</span>
-                </div>
+                <div class="swipe-indicator">Klicka för att låsa upp</div>
             </div>
 
             <div class="home-screen">
-                <div class="app-grid" id="homeAppGrid">
-                    
-                    <div class="app-item" onclick="openApp('chatApp')">
-                        <div class="app-icon icon-messages"><div class="message-bubble"></div></div>
-                        <div class="app-label">iMessage</div>
-                    </div>
-
-                    <div class="app-item" onclick="openApp('safariApp')">
-                        <div class="app-icon icon-safari"><div class="safari-compass"></div></div>
+                <div class="app-grid">
+                    <div class="app-item" data-id="safari" onclick="openApp(this)">
+                        <div class="app-icon icon-safari">
+                            <div class="safari-compass-dots"></div>
+                            <div class="safari-needle"></div>
+                            <div class="safari-needle-south"></div>
+                        </div>
                         <div class="app-label">Safari</div>
                     </div>
-
-                    <div class="app-item" onclick="openApp('photosApp')">
+                    <div class="app-item" data-id="photos" onclick="openApp(this)">
                         <div class="app-icon icon-photos">
-                            <div class="photo-dot"></div><div class="photo-dot"></div>
-                            <div class="photo-dot"></div><div class="photo-dot"></div>
+                            <div class="photos-flower">
+                                <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+                            </div>
                         </div>
-                        <div class="app-label">Foton</div>
+                        <div class="app-label">Bilder</div>
                     </div>
-
-                    <div class="app-item" onclick="openApp('cameraApp'); initCamera();">
-                        <div class="app-icon icon-camera"><div class="camera-lens"></div></div>
-                        <div class="app-label">Kamera</div>
-                    </div>
-
-                    <div class="app-item" onclick="openApp('settingsApp')">
-                        <div class="app-icon icon-settings"><div class="settings-cog"></div></div>
+                    <div class="app-item" data-id="settings" onclick="openApp(this)">
+                        <div class="app-icon icon-settings">
+                            <div class="settings-gear">
+                                <div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div>
+                            </div>
+                        </div>
                         <div class="app-label">Inställningar</div>
                     </div>
-
-                    <div class="app-item" onclick="openApp('phoneApp')">
-                        <div class="app-icon icon-phone"><div class="phone-handset"></div></div>
-                        <div class="app-label">Telefon</div>
-                    </div>
-
-                    <div class="app-item" onclick="openApp('storeApp')">
-                        <div class="app-icon icon-appstore">A</div>
+                    <div class="app-item" data-id="appstore" onclick="openApp(this)">
+                        <div class="app-icon icon-appstore">
+                            <div class="appstore-a">
+                                <div class="appstore-line l1"></div><div class="appstore-line l2"></div><div class="appstore-line l3"></div>
+                            </div>
+                        </div>
                         <div class="app-label">App Store</div>
                     </div>
-
+                    <div class="app-item" data-id="messages" onclick="openApp(this)">
+                        <div class="app-icon icon-messages">
+                            <div class="message-bubble"></div>
+                        </div>
+                        <div class="app-label">Meddelanden</div>
+                    </div>
+                    <div class="app-item" data-id="camera" onclick="openApp(this)">
+                        <div class="app-icon icon-camera">
+                            <div class="camera-body-deco">
+                                <div class="camera-lens"></div>
+                            </div>
+                        </div>
+                        <div class="app-label">Kamera</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="app-screen" id="chatApp">
-            <div class="app-header">
-                <span>Anteckningar</span>
-                <span style="font-size: 14px; color: var(--ios-red); cursor: pointer;" onclick="clearChat()">Rensa</span>
-            </div>
-            <div class="app-body">
-                <div class="messages-list" id="msgList"></div>
-                <div class="chat-input-bar">
-                    <input type="text" id="chatInput" placeholder="Skriv något..." onkeydown="if(event.key === 'Enter') sendMsg()">
-                    <button class="chat-send-btn" onclick="sendMsg()">⬆️</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-screen" id="safariApp">
-            <div class="app-header"><span>Safari</span></div>
-            <div class="app-body">
-                <div class="safari-bar">
-                    <span>🔍</span>
-                    <input type="text" id="safariSearch" placeholder="Sök på webben..." onkeydown="if(event.key==='Enter') searchSafari()">
-                </div>
-                <div class="safari-content" id="safariContent">
-                    <h3>Välkommen till Safari</h3>
-                    <p style="color: #8e8e93; margin-top: 10px; font-size: 14px;">Skriv i sökfältet och klicka Enter.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-screen" id="photosApp">
-            <div class="app-header"><span>Bibliotek</span></div>
-            <div class="app-body">
-                <div class="photos-grid">
-                    <div class="photo-thumb" style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=200')"></div>
-                    <div class="photo-thumb" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=200')"></div>
-                    <div class="photo-thumb" style="background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=200')"></div>
-                    <div class="photo-thumb" style="background-image: url('https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=200')"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-screen" id="cameraApp">
-            <div class="app-header"><span>Kamera</span></div>
-            <div class="app-body" style="padding: 0;">
-                <div class="camera-view">
-                    <video id="cameraVideo" autoplay playsinline></video>
-                    <div class="camera-fallback" id="cameraFallback">Godkänn kameratillstånd för sökaren.</div>
-                </div>
-                <div style="height: 110px; display: flex; justify-content: center; align-items: center;">
-                    <div class="camera-shutter" onclick="takePhoto()"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-screen" id="settingsApp">
-            <div class="app-header"><span>Inställningar</span></div>
-            <div class="app-body">
-                <div class="setting-row"><span>WiFi</span><span style="color: #8e8e93;">Ansluten 📶</span></div>
-                <h3 style="margin-top: 20px; margin-bottom: 10px; font-size: 16px;">Välj Bakgrundsbild</h3>
-                <div class="wallpaper-picker">
-                    <div class="wallpaper-option" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100')" onclick="setWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000')"></div>
-                    <div class="wallpaper-option" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=100')" onclick="setWallpaper('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=1000')"></div>
-                    <div class="wallpaper-option" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=100')" onclick="setWallpaper('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000')"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-screen" id="phoneApp">
-            <div class="app-header"><span>Knappsats</span></div>
-            <div class="app-body">
-                <div class="phone-number" id="phoneNumberDisplay"></div>
-                <div class="dial-pad">
-                    <div class="dial-btn" onclick="dial('1')">1</div><div class="dial-btn" onclick="dial('2')">2</div><div class="dial-btn" onclick="dial('3')">3</div>
-                    <div class="dial-btn" onclick="dial('4')">4</div><div class="dial-btn" onclick="dial('5')">5</div><div class="dial-btn" onclick="dial('6')">6</div>
-                    <div class="dial-btn" onclick="dial('7')">7</div><div class="dial-btn" onclick="dial('8')">8</div><div class="dial-btn" onclick="dial('9')">9</div>
-                    <div class="dial-btn" onclick="dial('*')">*</div><div class="dial-btn" onclick="dial('0')">0</div><div class="dial-btn" onclick="dial('#')">#</div>
-                </div>
-                <div style="display: flex; justify-content: center; gap: 40px;">
-                    <div class="call-btn" onclick="startCall()">📞</div>
-                    <div class="call-btn" style="background: #3a3a3c; font-size: 16px;" onclick="backspaceDial()">⌫</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-screen" id="storeApp">
-            <div class="app-header"><span>App Store</span></div>
-            <div class="app-body">
-                <h3 style="margin-bottom: 15px;">Populära appar</h3>
-                <div class="store-item">
-                    <div class="store-info">
-                        <div class="store-icon" style="background: #ff5e3a;">🎮</div>
-                        <div>
-                            <div>Flappy Bird</div>
-                            <div style="font-size: 12px; color: #8e8e93;">Spel</div>
+            <div class="dock-container">
+                <div class="dock">
+                    <div class="app-item" data-id="phone" onclick="openApp(this)">
+                        <div class="app-icon icon-phone">
+                            <div class="phone-receiver"></div>
                         </div>
                     </div>
-                    <div class="store-get" onclick="downloadApp('Flappy Bird', '🎮')">HÄMTA</div>
                 </div>
             </div>
         </div>
 
-        <div class="home-bar-container" id="swipeZone">
-            <div class="home-bar" id="homeBar"></div>
+        <div class="app-screen" id="appScreen">
+            <div class="app-header" id="appTitle">App</div>
+            <div class="app-body" id="appBody">Innehåll</div>
+        </div>
+
+        <div class="home-bar-container" id="homeGestureZone">
+            <div class="home-bar"></div>
         </div>
     </div>
 
-    <script>
-        let currentStream = null;
-        let isLocked = true;
+    <div class="camera-gallery-overlay" id="galleryOverlay">
+        <div class="gallery-header">
+            <span onclick="closeGallery()" style="cursor: pointer; color: var(--ios-blue);">Stäng</span>
+            <span>Alla bilder</span>
+            <span style="opacity: 0;">Edit</span>
+        </div>
+        <div class="gallery-viewport">
+            <img id="galleryViewerImg" class="gallery-image" src="" alt="Förhandsgranskning">
+        </div>
+        <div class="gallery-footer">
+            <span onclick="deleteCurrentImage()" style="color: var(--ios-red); cursor: pointer; font-size: 15px; font-weight: 600;">Radera</span>
+            <span id="galleryIndex" style="color: #8e8e93; font-size: 14px;">0 av 0</span>
+        </div>
+    </div>
 
-        // Klocka och Datumhantering
+    <canvas id="photoCanvas" style="display: none;"></canvas>
+
+    <script>
+        let isLocked = true;
+        let lastClickedIcon = null;
+        let activeStream = null;
+        let currentFacingMode = 'user';
+        let capturedPhotos = [];
+        let currentGalleryIndex = 0;
+        let currentZoom = 1;
+        let currentExposure = 0;
+        let currentMode = 'FOTO'; // FOTO, PORTRAIT, CINEMATIC
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSystemSound(frequency, duration, type = 'sine') {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function playUnlockSound() {
+            playSystemSound(800, 0.08, 'triangle');
+            setTimeout(() => playSystemSound(1200, 0.12, 'triangle'), 60);
+        }
+
+        function playLockSound() {
+            playSystemSound(150, 0.15, 'sine');
+        }
+
+        function playCameraShutterSound() {
+            try {
+                const bufferSize = audioCtx.sampleRate * 0.12;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1100;
+                
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                noise.start();
+            } catch(e) {}
+        }
+
+        // Klocka
         function updateClock() {
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
-            
-            document.getElementById('statusBarTime').textContent = timeStr;
-            document.getElementById('lockTime').textContent = timeStr;
-
-            const options = { weekday: 'long', day: 'numeric', month: 'long' };
-            const dateStr = now.toLocaleDateString('sv-SE', options);
-            document.getElementById('lockDate').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+            const format = (t) => t.toString().padStart(2, '0');
+            const h = format(now.getHours());
+            const m = format(now.getMinutes());
+            document.getElementById('clock').textContent = `${h}:${m}`;
+            document.getElementById('time-widget').textContent = `${h}:${m}`;
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // ÖPPNA OCH STÄNGA APPAR
-        function openApp(appId) {
-            if (isLocked) return; 
-            closeAllApps();
-            const app = document.getElementById(appId);
-            app.classList.add('active');
-            app.style.transform = 'translateY(0) scale(1)';
-            app.style.opacity = '1';
-        }
-
-        function closeAllApps() {
-            const screens = document.querySelectorAll('.app-screen');
-            screens.forEach(screen => screen.classList.remove('active'));
-            
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-                currentStream = null;
-            }
-            document.getElementById('island').classList.remove('island-recording');
-        }
-
-        // --- 1. iMESSAGE ---
-        function sendMsg() {
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if (!text) return;
-
-            let savedMessages = JSON.parse(localStorage.getItem('my_messages')) || [];
-            savedMessages.push(text);
-            localStorage.setItem('my_messages', JSON.stringify(savedMessages));
-
-            renderMessage(text);
-            input.value = '';
-        }
-
-        function renderMessage(text) {
-            const list = document.getElementById('msgList');
-            list.innerHTML += `<div class="msg-bubble msg-sender">${text}</div>`;
-            list.scrollTop = list.scrollHeight;
-        }
-
-        function loadMessages() {
-            const list = document.getElementById('msgList');
-            let savedMessages = JSON.parse(localStorage.getItem('my_messages')) || [];
-            list.innerHTML = '';
-            if (savedMessages.length === 0) {
-                list.innerHTML = `<div class="msg-bubble msg-sender" style="background: var(--ios-dark-gray); align-self: center; border-radius: 12px; font-size: 13px;">Skriv dina privata anteckningar här...</div>`;
-            } else {
-                savedMessages.forEach(msg => renderMessage(msg));
-            }
-        }
-        loadMessages();
-
-        function clearChat() {
-            localStorage.removeItem('my_messages');
-            loadMessages();
-        }
-
-        // --- 2. SAFARI ---
-        function searchSafari() {
-            const input = document.getElementById('safariSearch');
-            const query = input.value.trim();
-            const content = document.getElementById('safariContent');
-            if (!query) return;
-
-            content.innerHTML = `
-                <div style="text-align: left; width: 100%;">
-                    <h4 style="color: var(--ios-blue); cursor: pointer;">${query}</h4>
-                    <p style="color: #34c759; font-size: 11px; margin-bottom: 6px;">https://www.google.com/search?q=${encodeURIComponent(query)}</p>
-                    <p style="color: #8e8e93; font-size: 13px; line-height: 1.4;">Här visas sökresultat för "${query}" inuti Safari.</p>
-                </div>
-            `;
-        }
-
-        // --- 4. KAMERA ---
-        async function initCamera() {
-            const video = document.getElementById('cameraVideo');
-            const fallback = document.getElementById('cameraFallback');
+        function triggerNotification(text) {
             const island = document.getElementById('island');
+            const content = document.getElementById('islandContent');
+            const textEl = document.getElementById('islandText');
 
-            try {
-                currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-                video.srcObject = currentStream;
-                fallback.style.display = 'none';
-                video.style.display = 'block';
-                island.classList.add('island-recording');
-            } catch (err) {
-                fallback.textContent = "Kameran blockerad eller saknas.";
-                video.style.display = 'none';
-            }
-        }
+            textEl.textContent = text;
+            island.classList.add('island-expand-notification');
+            content.style.display = 'flex';
 
-        function takePhoto() {
-            alert("📸 Bilden sparades i Foton!");
-        }
-
-        // --- 5. INSTÄLLNINGAR ---
-        function setWallpaper(url) {
-            document.getElementById('wallpaper').style.backgroundImage = `url('${url}')`;
-        }
-
-        // --- 6. TELEFON ---
-        let currentDial = '';
-        function dial(num) {
-            currentDial += num;
-            document.getElementById('phoneNumberDisplay').textContent = currentDial;
-        }
-        function backspaceDial() {
-            currentDial = currentDial.slice(0, -1);
-            document.getElementById('phoneNumberDisplay').textContent = currentDial;
-        }
-        function startCall() {
-            if (!currentDial) return;
-            alert(`Ringer ${currentDial}... 📞`);
-            currentDial = '';
-            document.getElementById('phoneNumberDisplay').textContent = '';
-        }
-
-        // --- 7. APP STORE ---
-        function downloadApp(name, icon) {
-            alert(`Hämtar ${name}...`);
             setTimeout(() => {
-                const grid = document.getElementById('homeAppGrid');
-                grid.innerHTML += `
-                    <div class="app-item" onclick="alert('Öppnade installerad app: ${name}')">
-                        <div class="app-icon" style="background: #333; font-size: 24px;">${icon}</div>
-                        <div class="app-label">${name}</div>
+                island.classList.remove('island-expand-notification');
+                content.style.display = 'none';
+            }, 2500);
+        }
+
+        function bumpIsland() {
+            const island = document.getElementById('island');
+            island.classList.remove('island-pulse');
+            void island.offsetWidth; 
+            island.classList.add('island-pulse');
+        }
+
+        function unlockPhone() {
+            if (!isLocked) return;
+            isLocked = false;
+            playUnlockSound();
+            bumpIsland();
+            const lockScreen = document.getElementById('lockScreen');
+            lockScreen.style.transform = 'translate3d(0, -100%, 0)';
+            lockScreen.style.opacity = '0';
+            document.getElementById('mainScreen').classList.add('is-unlocked');
+            setTimeout(() => { lockScreen.style.display = 'none'; }, 650);
+        }
+
+        // --- APPARNA ---
+        const contents = {
+            safari: {
+                title: 'Safari',
+                render: () => `
+                    <div class="safari-search-bar">
+                        🔍 <input type="text" id="safariUrl" value="apple.com" placeholder="Sök eller ange webbadress">
+                        <button onclick="navigateSafari()">Sök</button>
                     </div>
-                `;
-                alert(`"${name}" har lagts till på din hemskärm!`);
-                closeAllApps();
+                    <div style="height: calc(100% - 70px);" id="safariView">
+                        <div class="safari-welcome">
+                            <h2>Sök säkert i Safari</h2>
+                            <p style="margin-top:10px; font-size:14px; color:#8e8e93;">Dina data skyddas av iOS Private Sandboxing.</p>
+                        </div>
+                    </div>
+                `
+            },
+            photos: {
+                title: 'Bilder',
+                render: () => {
+                    let imagesHTML = capturedPhotos.map((src, i) => `<div class="photo-thumbnail" style="background-image: url(${src});" onclick="openPhotoViewer(${i})"></div>`).join('');
+                    if (capturedPhotos.length === 0) {
+                        imagesHTML = `
+                            <div class="photo-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300');"></div>
+                            <div class="photo-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300');"></div>
+                            <div class="photo-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300');"></div>
+                        `;
+                    }
+                    return `
+                        <div class="photos-tabs">
+                            <span class="photos-tab active">Bibliotek</span>
+                            <span class="photos-tab">Album</span>
+                            <span class="photos-tab">Sök</span>
+                        </div>
+                        <div class="photos-grid">
+                            ${imagesHTML}
+                        </div>
+                    `;
+                }
+            },
+            settings: {
+                title: 'Inställningar',
+                render: () => `
+                    <div class="settings-profile">
+                        <div class="profile-pic">🍎</div>
+                        <div>
+                            <h4 style="font-size:16px;">Konfigurera Simulator</h4>
+                            <p style="font-size:12px; color:#8e8e93;">iCloud, system och säkerhet</p>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-row">
+                            <span>📶 Wi-Fi</span>
+                            <div class="ios-switch active" onclick="toggleSwitch(this); triggerNotification('Wi-Fi ändrat')"></div>
+                        </div>
+                        <div class="settings-row">
+                            <span>🔵 Bluetooth</span>
+                            <div class="ios-switch active" onclick="toggleSwitch(this); triggerNotification('Bluetooth ändrat')"></div>
+                        </div>
+                    </div>
+                `
+            },
+            appstore: {
+                title: 'App Store',
+                render: () => `
+                    <div class="store-hero">
+                        <span>Relevanta appar</span>
+                        <h2>Lär dig bygga iOS</h2>
+                        <p>Utforska Swift, SwiftUI och moderna webbramverk.</p>
+                        <button class="btn-get" onclick="downloadApp(this)">HÄMTA</button>
+                    </div>
+                `
+            },
+            messages: {
+                title: 'Meddelanden',
+                render: () => `
+                    <div class="chat-area">
+                        <div class="messages-list" id="msgList">
+                            <div class="msg-bubble msg-receiver">Tja! Kolla in den nya kameraappen, den är magisk! 📸</div>
+                            <div class="msg-bubble msg-sender">Ja! Det där Cinematic-läget ger riktig biokänsla.</div>
+                        </div>
+                        <div class="chat-input-bar">
+                            <input type="text" id="chatInput" placeholder="iMessage" onkeydown="if(event.key === 'Enter') sendChatMessage()">
+                            <button class="chat-send-btn" onclick="sendChatMessage()">⬆️</button>
+                        </div>
+                    </div>
+                `
+            },
+            phone: {
+                title: 'Telefon',
+                render: () => `
+                    <div class="phone-display" id="phoneNum"></div>
+                    <div class="phone-keypad">
+                        <div class="phone-key" onclick="pressKey('1')">1<span>&nbsp;</span></div>
+                        <div class="phone-key" onclick="pressKey('2')">2<span>ABC</span></div>
+                        <div class="phone-key" onclick="pressKey('3')">3<span>DEF</span></div>
+                        <div class="phone-key" onclick="pressKey('4')">4<span>GHI</span></div>
+                        <div class="phone-key" onclick="pressKey('5')">5<span>JKL</span></div>
+                        <div class="phone-key" onclick="pressKey('6')">6<span>MNO</span></div>
+                        <div class="phone-key" onclick="pressKey('7')">7<span>PQRS</span></div>
+                        <div class="phone-key" onclick="pressKey('8')">8<span>TUV</span></div>
+                        <div class="phone-key" onclick="pressKey('9')">9<span>WXYZ</span></div>
+                        <div class="phone-key" onclick="pressKey('*')">*<span>&nbsp;</span></div>
+                        <div class="phone-key" onclick="pressKey('0')">0<span>+</span></div>
+                        <div class="phone-key" onclick="pressKey('#')">#<span>&nbsp;</span></div>
+                        <div class="phone-call-btn" onclick="makePhoneCall()">📞</div>
+                    </div>
+                `
+            },
+            camera: {
+                title: 'Kamera',
+                render: () => `
+                    <div class="camera-container">
+                        <div class="camera-top-bar">
+                            <button class="cam-icon-btn" onclick="toggleFlash(this)">⚡</button>
+                            <button class="cam-icon-btn" id="nightModeIndicator" style="display:none; color:var(--ios-yellow)">🌙</button>
+                            <button class="cam-icon-btn" onclick="triggerNotification('Live Photo Aktiverad')">🟡</button>
+                        </div>
+
+                        <div class="camera-view-wrapper" onclick="triggerManualFocus(event)">
+                            <video id="cameraVideo" autoplay playsinline></video>
+                            <div class="camera-focus-ring" id="focusRing"></div>
+                            <div class="shutter-flash" id="flash"></div>
+
+                            <div class="exposure-indicator">
+                                <div class="exposure-step" onclick="changeExposure(0.7, this)">+0.7</div>
+                                <div class="exposure-step active" onclick="changeExposure(0, this)">±0</div>
+                                <div class="exposure-step" onclick="changeExposure(-0.7, this)">-0.7</div>
+                            </div>
+
+                            <div class="zoom-selector">
+                                <button class="zoom-btn" onclick="changeZoom(0.5, this)">0.5</button>
+                                <button class="zoom-btn active" onclick="changeZoom(1, this)">1x</button>
+                                <button class="zoom-btn" onclick="changeZoom(3, this)">3</button>
+                            </div>
+                        </div>
+
+                        <div class="camera-modes">
+                            <span onclick="setCameraMode('CINEMATIC', this)">CINEMATIC</span>
+                            <span class="active" onclick="setCameraMode('FOTO', this)">FOTO</span>
+                            <span onclick="setCameraMode('PORTRAIT', this)">PORTRAIT</span>
+                        </div>
+
+                        <div class="camera-bar">
+                            <div class="camera-thumbnail" id="thumbPreview" onclick="openGallery()" style="${capturedPhotos.length > 0 ? `background-image:url(${capturedPhotos[capturedPhotos.length - 1]})` : ''}"></div>
+                            <button class="shutter-button" onclick="capturePhoto()"></button>
+                            <div class="camera-flip" onclick="flipCamera()">🔄</div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function navigateSafari() {
+            let url = document.getElementById('safariUrl').value.trim();
+            if(!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            document.getElementById('safariView').innerHTML = `<iframe class="safari-frame" src="${url}"></iframe>`;
+            triggerNotification('Navigerar i Safari');
+        }
+
+        function toggleSwitch(el) {
+            playSystemSound(600, 0.05);
+            el.classList.toggle('active');
+        }
+
+        function downloadApp(btn) {
+            playSystemSound(700, 0.05);
+            btn.textContent = 'Hämtar...';
+            setTimeout(() => {
+                btn.textContent = 'ÖPPNA';
+                btn.style.background = 'var(--ios-green)';
+                triggerNotification('App installerad');
             }, 1500);
         }
 
-        // ================= MULTI-SWIPE-LOGIK (Lås upp & Stäng appar) =================
-        const swipeZone = document.getElementById('swipeZone');
-        const homeBar = document.getElementById('homeBar');
-        const lockscreen = document.getElementById('lockscreen');
-
-        let startY = 0;
-        let currentY = 0;
-        let isDragging = false;
-
-        function dragStart(e) {
-            isDragging = true;
-            startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            if (!input || !input.value.trim()) return;
+            const text = input.value;
+            const list = document.getElementById('msgList');
             
-            const activeApp = document.querySelector('.app-screen.active');
-            if (activeApp) activeApp.style.transition = 'none';
-            lockscreen.style.transition = 'none';
-            
-            homeBar.style.transform = 'scaleY(1.3)';
+            list.innerHTML += `<div class="msg-bubble msg-sender">${text}</div>`;
+            input.value = '';
+            list.scrollTop = list.scrollHeight;
+            playSystemSound(900, 0.08);
+
+            setTimeout(() => {
+                list.innerHTML += `<div class="msg-bubble msg-receiver">Häftigt! 👍</div>`;
+                list.scrollTop = list.scrollHeight;
+                playSystemSound(800, 0.08);
+            }, 1000);
         }
 
-        function dragMove(e) {
-            if (!isDragging) return;
-            currentY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-            let diffY = startY - currentY;
+        function pressKey(val) {
+            playSystemSound(500, 0.04);
+            const disp = document.getElementById('phoneNum');
+            if (disp.textContent.length < 15) {
+                disp.textContent += val;
+            }
+        }
 
-            if (diffY > 0) {
-                let dragPercent = Math.min(diffY / 250, 1);
+        function makePhoneCall() {
+            playSystemSound(1000, 0.1);
+            const num = document.getElementById('phoneNum').textContent;
+            if (!num) return;
+            document.getElementById('phoneNum').textContent = "Ringer...";
+            triggerNotification('Initierar samtal');
+            setTimeout(() => {
+                document.getElementById('phoneNum').textContent = "";
+            }, 2500);
+        }
 
-                if (isLocked) {
-                    lockscreen.style.transform = `translateY(${-diffY}px)`;
-                    lockscreen.style.opacity = 1 - dragPercent;
-                } else {
-                    const activeApp = document.querySelector('.app-screen.active');
-                    if (activeApp) {
-                        let scaleValue = 1 - (dragPercent * 0.15);
-                        activeApp.style.transform = `translateY(${-diffY}px) scale(${scaleValue})`;
-                        activeApp.style.opacity = 1 - (dragPercent * 0.4);
+        // ==================== HÖGPRESTERANDE KAMERAFUNKTIONER ====================
+        
+        async function startCamera() {
+            try {
+                if (activeStream) {
+                    activeStream.getTracks().forEach(track => track.stop());
+                }
+                const constraints = { video: { facingMode: currentFacingMode }, audio: false };
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                activeStream = stream;
+                
+                const videoEl = document.getElementById('cameraVideo');
+                if (videoEl) {
+                    videoEl.srcObject = stream;
+                    if (currentFacingMode === 'user') {
+                        videoEl.classList.remove('back-cam');
+                    } else {
+                        videoEl.classList.add('back-cam');
                     }
                 }
+                document.getElementById('islandContainer').classList.add('camera-active');
+            } catch (err) {
+                console.error(err);
+                triggerNotification('Kameratillgång krävs');
             }
         }
 
-        function dragEnd() {
-            if (!isDragging) return;
-            isDragging = false;
-            homeBar.style.transform = 'none';
+        function flipCamera() {
+            playSystemSound(600, 0.05);
+            currentFacingMode = (currentFacingMode === 'user') ? 'environment' : 'user';
+            startCamera();
+        }
 
-            let diffY = startY - currentY;
+        function toggleFlash(btn) {
+            playSystemSound(550, 0.05);
+            btn.classList.toggle('active');
+            triggerNotification(btn.classList.contains('active') ? 'Blixt: På' : 'Blixt: Av');
+        }
 
-            lockscreen.style.transition = 'transform 0.4s var(--ios-spring-in), opacity 0.3s ease';
-            const activeApp = document.querySelector('.app-screen.active');
-            if (activeApp) activeApp.style.transition = 'transform 0.4s var(--ios-spring-in), opacity 0.3s ease';
+        // Manuellt fokus-system (Klicka på sökaren)
+        function triggerManualFocus(event) {
+            const wrapper = event.currentTarget;
+            const rect = wrapper.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
 
-            if (diffY > 100) {
-                if (isLocked) {
-                    lockscreen.style.transform = 'translateY(-100%)';
-                    lockscreen.style.opacity = '0';
-                    isLocked = false;
-                    setTimeout(() => { lockscreen.style.display = 'none'; }, 400);
-                } else if (activeApp) {
-                    activeApp.style.transform = 'translateY(-100%) scale(0.85)';
-                    activeApp.style.opacity = '0';
-                    setTimeout(() => { closeAllApps(); }, 300);
-                }
+            const ring = document.getElementById('focusRing');
+            ring.style.left = `${x}px`;
+            ring.style.top = `${y}px`;
+            ring.classList.add('active');
+
+            // Haptiskt ljud för autofokus
+            playSystemSound(1200, 0.03, 'sine');
+            setTimeout(() => playSystemSound(1200, 0.03, 'sine'), 50);
+
+            setTimeout(() => {
+                ring.classList.remove('active');
+            }, 1000);
+        }
+
+        // Ändra Exponering
+        function changeExposure(val, stepEl) {
+            playSystemSound(600, 0.03);
+            currentExposure = val;
+            
+            document.querySelectorAll('.exposure-step').forEach(e => e.classList.remove('active'));
+            stepEl.classList.add('active');
+
+            const video = document.getElementById('cameraVideo');
+            if (video) {
+                video.style.filter = `brightness(${1 + val}) ${getModeFilterCss()}`;
+            }
+        }
+
+        // Ändra Zoom (Digital stimulering)
+        function changeZoom(zoomVal, btnEl) {
+            playSystemSound(700, 0.04);
+            currentZoom = zoomVal;
+
+            document.querySelectorAll('.zoom-btn').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+
+            const video = document.getElementById('cameraVideo');
+            if (video) {
+                video.style.transform = `${currentFacingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)'} scale(${zoomVal})`;
+            }
+        }
+
+        // Byt Kameramode (Cinematic, Foto, Portrait)
+        function setCameraMode(mode, spanEl) {
+            playSystemSound(800, 0.04);
+            currentMode = mode;
+
+            document.querySelectorAll('.camera-modes span').forEach(s => s.classList.remove('active'));
+            spanEl.classList.add('active');
+
+            const video = document.getElementById('cameraVideo');
+            if (!video) return;
+
+            // Nollställ filterklasser
+            video.className = '';
+            if (currentFacingMode === 'environment') video.classList.add('back-cam');
+
+            if (mode === 'CINEMATIC') {
+                video.classList.add('filter-cinematic');
+                triggerNotification('Cinematic Mode aktiverat');
+            } else if (mode === 'PORTRAIT') {
+                video.classList.add('filter-portrait');
+                triggerNotification('Portrait Mode: F/1.8 Bokeh');
             } else {
-                if (isLocked) {
-                    lockscreen.style.transform = 'translateY(0)';
-                    lockscreen.style.opacity = '1';
-                } else if (activeApp) {
-                    activeApp.style.transform = 'translateY(0) scale(1)';
-                    activeApp.style.opacity = '1';
-                }
+                triggerNotification('Standard Foto');
             }
         }
 
-        // EventListeners
-        swipeZone.addEventListener('touchstart', dragStart, { passive: true });
-        window.addEventListener('touchmove', dragMove, { passive: false });
-        window.addEventListener('touchend', dragEnd);
+        function getModeFilterCss() {
+            if (currentMode === 'CINEMATIC') return 'sepia(0.35) contrast(1.15) saturate(1.1)';
+            return '';
+        }
 
-        swipeZone.addEventListener('mousedown', dragStart);
-        window.addEventListener('mousemove', dragMove);
-        window.addEventListener('mouseup', dragEnd);
+        // Ta foto med avancerad filterrendering
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('photoCanvas');
+            const flash = document.getElementById('flash');
+            const thumb = document.getElementById('thumbPreview');
+
+            if (!video || !canvas) return;
+
+            playCameraShutterSound();
+            flash.classList.add('flash-active');
+            setTimeout(() => flash.classList.remove('flash-active'), 80);
+
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            
+            if (currentFacingMode === 'user') {
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+            }
+            
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Om läget är Portrait, simulera vacker bokeh runt mitten digitalt
+            if (currentMode === 'PORTRAIT') {
+                ctx.globalCompositeOperation = 'destination-in';
+                let gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 50, canvas.width/2, canvas.height/2, canvas.width * 0.45);
+                gradient.addColorStop(0, 'rgba(0,0,0,1)');
+                gradient.addColorStop(0.8, 'rgba(0,0,0,0.95)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0.4)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0,0,canvas.width,canvas.height);
+            }
+
+            const imgData = canvas.toDataURL('image/png');
+            capturedPhotos.push(imgData);
+            
+            if(thumb) thumb.style.backgroundImage = `url(${imgData})`;
+            triggerNotification('Foto sparat');
+        }
+
+        // ==================== KONTROLLER FOR PROFESSIONELLT GALLERI ====================
+        function openGallery() {
+            if (capturedPhotos.length === 0) {
+                triggerNotification('Inga sparade bilder');
+                return;
+            }
+            playSystemSound(600, 0.05);
+            currentGalleryIndex = capturedPhotos.length - 1;
+            updateGalleryUI();
+            document.getElementById('galleryOverlay').style.display = 'flex';
+        }
+
+        function closeGallery() {
+            playSystemSound(150, 0.1);
+            document.getElementById('galleryOverlay').style.display = 'none';
+        }
+
+        function updateGalleryUI() {
+            const img = document.getElementById('galleryViewerImg');
+            const indexLabel = document.getElementById('galleryIndex');
+            img.src = capturedPhotos[currentGalleryIndex];
+            indexLabel.textContent = `${currentGalleryIndex + 1} av ${capturedPhotos.length}`;
+        }
+
+        function deleteCurrentImage() {
+            playSystemSound(150, 0.2);
+            capturedPhotos.splice(currentGalleryIndex, 1);
+            if (capturedPhotos.length === 0) {
+                closeGallery();
+                const thumb = document.getElementById('thumbPreview');
+                if (thumb) thumb.style.backgroundImage = '';
+            } else {
+                currentGalleryIndex = Math.max(0, currentGalleryIndex - 1);
+                updateGalleryUI();
+                const thumb = document.getElementById('thumbPreview');
+                if (thumb) thumb.style.backgroundImage = `url(${capturedPhotos[capturedPhotos.length - 1]})`;
+            }
+        }
+
+        function openPhotoViewer(index) {
+            playSystemSound(600, 0.05);
+            currentGalleryIndex = index;
+            updateGalleryUI();
+            document.getElementById('galleryOverlay').style.display = 'flex';
+        }
+
+        // Öppna App
+        function openApp(appElement) {
+            playSystemSound(600, 0.05);
+            const appId = appElement.getAttribute('data-id');
+            const app = contents[appId];
+            if (!app) return;
+
+            bumpIsland();
+            lastClickedIcon = appElement.querySelector('.app-icon');
+            
+            const iconRect = lastClickedIcon.getBoundingClientRect();
+            const screenRect = document.getElementById('mainScreen').getBoundingClientRect();
+            const xPercent = ((iconRect.left + iconRect.width / 2 - screenRect.left) / screenRect.width) * 100;
+            const yPercent = ((iconRect.top + iconRect.height / 2 - screenRect.top) / screenRect.height) * 100;
+
+            const appScreen = document.getElementById('appScreen');
+            appScreen.style.setProperty('--origin-x', `${xPercent}%`);
+            appScreen.style.setProperty('--origin-y', `${yPercent}%`);
+            
+            document.getElementById('appTitle').textContent = app.title;
+            document.getElementById('appBody').innerHTML = app.render();
+
+            if (appId === 'camera') {
+                appScreen.classList.add('camera-screen');
+            } else {
+                appScreen.classList.remove('camera-screen');
+            }
+
+            appScreen.style.display = 'flex';
+            document.getElementById('mainScreen').classList.add('app-is-open');
+
+            setTimeout(() => {
+                appScreen.classList.add('open');
+                if (appId === 'camera') {
+                    startCamera();
+                }
+            }, 15);
+        }
+
+        // Stäng App
+        function closeApp() {
+            if (isLocked) return;
+            const appScreen = document.getElementById('appScreen');
+            if (!appScreen.classList.contains('open')) return;
+
+            playLockSound();
+            bumpIsland();
+            
+            document.getElementById('islandContainer').classList.remove('camera-active');
+            if (activeStream) {
+                activeStream.getTracks().forEach(track => track.stop());
+                activeStream = null;
+            }
+
+            appScreen.classList.remove('open');
+            document.getElementById('mainScreen').classList.remove('app-is-open');
+
+            setTimeout(() => {
+                appScreen.style.display = 'none';
+            }, 450); 
+        }
+
+        const gestureZone = document.getElementById('homeGestureZone');
+        let touchStartY = 0;
+
+        gestureZone.addEventListener('click', closeApp);
+        
+        gestureZone.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        gestureZone.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            if (touchStartY - touchEndY > 35) {
+                closeApp();
+            }
+        }, { passive: true });
     </script>
 </body>
 </html>
