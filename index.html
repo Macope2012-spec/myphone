@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>iOS 18 Ultimate Simulator</title>
+    <title>iOS 18 Premium Simulator</title>
     <style>
         :root {
-            /* Fysik och fjädrar för animationer */
-            --ios-open-spring: cubic-bezier(0.22, 1.25, 0.36, 1); 
-            --ios-close-spring: cubic-bezier(0.25, 1, 0.3, 1);    
-            --ios-island-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* iOS 18 Fjäder-fysik för fysikaliska animationer */
+            --ios-spring-in: cubic-bezier(0.16, 1, 0.3, 1);
+            --ios-spring-out: cubic-bezier(0.25, 1, 0.5, 1);
+            --ios-island-spring: cubic-bezier(0.175, 0.885, 0.32, 1.2);
             
-            --liquid-glass: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.12);
+            --blur-glass: rgba(120, 120, 128, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.15);
             --ios-blue: #007aff;
             --ios-green: #34c759;
-            --ios-gray: #1c1c1e;
+            --ios-red: #ff3b30;
+            --ios-orange: #ff9500;
+            --ios-dark-gray: #1c1c1e;
+            --ios-light-gray: #2c2c2e;
             
             --origin-x: 50%;
             --origin-y: 50%;
@@ -25,14 +28,14 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: #0d0d11;
+            background: #08080a;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -41,31 +44,32 @@
             overflow: hidden;
         }
 
-        /* PREMIUM TELEFONRAM MED KNAPPAR */
+        /* IPHONE 16 PRO MAX RAM */
         .iphone-frame {
-            width: 385px;
-            height: 822px;
-            background: #1a1a1e;
-            border-radius: 56px;
+            width: 390px;
+            height: 844px;
+            background: #151516;
+            border-radius: 58px;
             box-shadow: 
-                inset 0 0 4px 2px rgba(255, 255, 255, 0.1),
-                inset 0 0 0 6px #09090b,
-                0 20px 80px rgba(0, 0, 0, 0.8);
+                inset 0 0 4px 2px rgba(255, 255, 255, 0.12),
+                inset 0 0 0 7px #050507,
+                0 25px 90px rgba(0, 0, 0, 0.9);
             position: relative;
-            padding: 12px;
-            transition: all 0.3s var(--ios-close-spring);
+            padding: 14px;
+            transition: all 0.3s var(--ios-spring-out);
         }
 
-        /* Fysiska knappar på sidan */
+        /* Hårdvaruknappar */
         .button-side {
             position: absolute;
-            background: #2a2a2e;
-            border-radius: 3px;
+            background: #252529;
+            border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
-        .btn-volume-up { left: -3px; top: 170px; width: 3px; height: 50px; }
-        .btn-volume-down { left: -3px; top: 235px; width: 3px; height: 50px; }
-        .btn-power { right: -3px; top: 200px; width: 3px; height: 75px; }
+        .btn-action { left: -3px; top: 125px; width: 3px; height: 32px; }
+        .btn-volume-up { left: -3px; top: 180px; width: 3px; height: 50px; }
+        .btn-volume-down { left: -3px; top: 245px; width: 3px; height: 50px; }
+        .btn-power { right: -3px; top: 210px; width: 3px; height: 75px; }
 
         /* Skärmen */
         .iphone-screen {
@@ -76,12 +80,12 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border-radius: 44px;
+            border-radius: 45px;
             overflow: hidden;
             z-index: 1;
         }
 
-        /* Parallax Wallpaper */
+        /* Bakgrundsbild */
         .wallpaper-bg {
             position: absolute;
             top: 0;
@@ -92,7 +96,7 @@
             background-size: cover;
             z-index: -1;
             transform: scale3d(1, 1, 1);
-            transition: transform 0.65s var(--ios-open-spring), filter 0.65s var(--ios-open-spring);
+            transition: transform 0.65s var(--ios-spring-in), filter 0.65s var(--ios-spring-in);
             will-change: transform, filter;
         }
 
@@ -109,7 +113,7 @@
             .button-side { display: none; }
             .iphone-screen { border-radius: 0; }
             .status-bar { padding-top: env(safe-area-inset-top, 12px) !important; height: calc(48px + env(safe-area-inset-top, 0px)) !important; }
-            .lock-screen { padding-top: calc(70px + env(safe-area-inset-top, 0px)) !important; padding-bottom: calc(35px + env(safe-area-inset-bottom, 0px)) !important; }
+            .lock-screen { padding-top: calc(75px + env(safe-area-inset-top, 0px)) !important; padding-bottom: calc(35px + env(safe-area-inset-bottom, 0px)) !important; }
             .dock-container { padding-bottom: calc(20px + env(safe-area-inset-bottom, 15px)) !important; }
             .home-bar-container { padding-bottom: calc(env(safe-area-inset-bottom, 8px) + 4px) !important; }
         }
@@ -124,250 +128,275 @@
             pointer-events: none;
         }
         .dynamic-island {
-            width: 125px; 
-            height: 35px; 
+            width: 115px; 
+            height: 30px; 
             background: #000;
-            border-radius: 22px;
-            border: 0.5px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            border-radius: 20px;
+            border: 0.5px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding: 0 16px;
-            transition: all 0.55s var(--ios-island-spring);
+            padding: 0 14px;
+            transition: all 0.5s var(--ios-island-spring);
             will-change: width, height, transform;
         }
         .camera-indicator {
-            width: 6px; height: 6px; border-radius: 50%;
+            width: 5px; height: 5px; border-radius: 50%;
             background: #30d158; opacity: 0;
             transform: scale3d(0, 0, 1);
-            transition: all 0.3s var(--ios-open-spring);
+            transition: all 0.3s var(--ios-spring-in);
             box-shadow: 0 0 6px rgba(48, 209, 88, 0.8);
         }
         .camera-active .camera-indicator { opacity: 1; transform: scale3d(1, 1, 1); }
 
-        .island-pulse { animation: islandBump 0.4s var(--ios-island-spring); }
-        @keyframes islandBump {
-            0% { transform: scale3d(1, 1, 1); }
-            50% { transform: scale3d(1.08, 0.94, 1); }
-            100% { transform: scale3d(1, 1, 1); }
+        /* Dynamic Island Notis-utvidgning */
+        .island-expand-notification {
+            width: 280px !important;
+            height: 55px !important;
+            border-radius: 28px !important;
+            justify-content: space-between !important;
         }
 
         /* Statusfält */
         .status-bar {
             height: 48px; display: flex; justify-content: space-between; align-items: center;
-            padding: 0 28px; color: #fff; font-size: 14px; font-weight: 600; z-index: 1000; position: relative;
+            padding: 0 28px; color: #fff; font-size: 13.5px; font-weight: 600; z-index: 1000; position: relative;
+            letter-spacing: -0.1px;
         }
         .status-left { display: flex; align-items: center; width: 80px; }
         #time-widget, #carrier-widget { position: absolute; transition: opacity 0.3s ease; }
         #time-widget { opacity: 0; }
-        #carrier-widget { opacity: 1; font-size: 13px; font-weight: 500; }
+        #carrier-widget { opacity: 1; font-size: 12.5px; font-weight: 500; }
         .is-unlocked #time-widget { opacity: 1; }
         .is-unlocked #carrier-widget { opacity: 0; }
 
-        .status-icons { display: flex; align-items: center; gap: 6px; }
+        .status-icons { display: flex; align-items: center; gap: 6.5px; }
         .icon-signal { width: 17px; height: 11px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M2 22h4V14H2v8zm6 0h4V10H8v12zm6 0h4V6h-4v16zm6-20v20h4V2h-4z'/%3E%3C/svg%3E") no-repeat center center; background-size: contain; }
-        .icon-wifi { width: 16px; height: 16px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 21c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm7.7-6.3c-4.3-4.3-11.2-4.3-15.4 0l1.4 1.4c3.5-3.5 9.1-3.5 12.6 0l1.4-1.4zm2.8-2.8c-5.8-5.8-15.2-5.8-21 0l1.4 1.4c5-5 13.2-5 18.2 0l1.4-1.4z'/%3E%3C/svg%3E") no-repeat center center; background-size: contain; }
-        .icon-battery { width: 25px; height: 12px; border: 1px solid rgba(255,255,255,0.55); border-radius: 4px; padding: 1px; position: relative; }
-        .icon-battery::after { content: ''; position: absolute; right: -4px; top: 3px; width: 2px; height: 4px; background: rgba(255,255,255,0.55); border-radius: 0 1px 1px 0; }
-        .battery-level { width: 100%; height: 100%; background: #fff; border-radius: 2.5px; }
+        .icon-wifi { width: 15px; height: 15px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 21c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm7.7-6.3c-4.3-4.3-11.2-4.3-15.4 0l1.4 1.4c3.5-3.5 9.1-3.5 12.6 0l1.4-1.4zm2.8-2.8c-5.8-5.8-15.2-5.8-21 0l1.4 1.4c5-5 13.2-5 18.2 0l1.4-1.4z'/%3E%3C/svg%3E") no-repeat center center; background-size: contain; }
+        .icon-battery { width: 25px; height: 11.5px; border: 1px solid rgba(255,255,255,0.6); border-radius: 4px; padding: 1px; position: relative; }
+        .icon-battery::after { content: ''; position: absolute; right: -4px; top: 3px; width: 2.5px; height: 4px; background: rgba(255,255,255,0.6); border-radius: 0 1px 1px 0; }
+        .battery-level { width: 100%; height: 100%; background: #fff; border-radius: 2px; }
 
         /* Låsskärm */
         .lock-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 500; display: flex; flex-direction: column; justify-content: space-between;
-            padding: 70px 0 35px 0; transition: transform 0.65s var(--ios-open-spring), opacity 0.4s ease;
+            padding: 75px 0 35px 0; transition: transform 0.65s var(--ios-spring-in), opacity 0.4s ease;
         }
-        #clock { font-size: 82px; font-weight: 200; color: #fff; text-align: center; letter-spacing: -1px; }
-        #date { font-size: 20px; font-weight: 400; color: #fff; text-align: center; margin-bottom: 5px; opacity: 0.9; }
-        .swipe-indicator { text-align: center; color: #fff; font-size: 14px; font-weight: 400; animation: breathe-swipe 2s infinite; opacity: 0.8; }
-        @keyframes breathe-swipe { 0%, 100% { opacity: 0.3; transform: translate3d(0, 0, 0); } 50% { opacity: 0.9; transform: translate3d(0, -6px, 0); } }
+        #clock { font-size: 84px; font-weight: 200; color: #fff; text-align: center; letter-spacing: -1.5px; }
+        #date { font-size: 19px; font-weight: 400; color: #fff; text-align: center; margin-bottom: 5px; opacity: 0.95; letter-spacing: -0.2px; }
+        .swipe-indicator { text-align: center; color: #fff; font-size: 13.5px; font-weight: 500; animation: breathe-swipe 2s infinite; opacity: 0.8; }
+        @keyframes breathe-swipe { 0%, 100% { opacity: 0.35; transform: translate3d(0, 0, 0); } 50% { opacity: 0.95; transform: translate3d(0, -6px, 0); } }
 
         /* Hemskärm */
         .home-screen {
-            padding: 10px 18px; display: flex; flex-direction: column; flex-grow: 1;
-            margin-top: 15px; opacity: 0; transform: scale3d(0.95, 0.95, 1);
-            transition: transform 0.65s var(--ios-open-spring), opacity 0.4s ease, filter 0.5s ease;
+            padding: 5px 18px 10px 18px; display: flex; flex-direction: column; flex-grow: 1;
+            opacity: 0; transform: scale3d(0.96, 0.96, 1);
+            transition: transform 0.65s var(--ios-spring-in), opacity 0.4s ease, filter 0.5s ease;
             will-change: transform, opacity, filter;
         }
         .dock-container {
-            padding: 0 18px 35px 18px; opacity: 0; transform: translate3d(0, 30px, 0);
-            transition: transform 0.65s var(--ios-open-spring), opacity 0.4s ease, filter 0.5s ease;
+            padding: 0 18px 30px 18px; opacity: 0; transform: translate3d(0, 30px, 0);
+            transition: transform 0.65s var(--ios-spring-in), opacity 0.4s ease, filter 0.5s ease;
             will-change: transform, opacity, filter;
         }
         .is-unlocked .home-screen { opacity: 1; transform: scale3d(1, 1, 1); }
         .is-unlocked .dock-container { opacity: 1; transform: translate3d(0, 0, 0); }
 
         /* Bakgrundszoom vid öppning */
-        .app-is-open .wallpaper-bg { transform: scale3d(1.1, 1.1, 1); filter: blur(20px) brightness(0.7); }
-        .app-is-open .home-screen, .app-is-open .dock-container { transform: scale3d(0.92, 0.92, 1); opacity: 0.15; filter: blur(10px); }
+        .app-is-open .wallpaper-bg { transform: scale3d(1.08, 1.08, 1); filter: blur(24px) brightness(0.65); }
+        .app-is-open .home-screen, .app-is-open .dock-container { transform: scale3d(0.93, 0.93, 1); opacity: 0.12; filter: blur(12px); }
 
-        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px 14px; padding-top: 15px; }
+        /* iOS 18 KONTROLLCENTER WIDGET */
+        .ios-widget {
+            background: var(--blur-glass);
+            border: 0.5px solid var(--glass-border);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-radius: 22px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+        .widget-buttons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .widget-btn {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: none; color: #fff; font-size: 16px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .widget-btn.active { background: var(--ios-blue); }
+        .widget-music { flex: 1; margin-left: 14px; display: flex; flex-direction: column; justify-content: center; }
+        .widget-music-title { font-size: 13.5px; font-weight: 600; color: #fff; }
+        .widget-music-artist { font-size: 11.5px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 14px; padding-top: 10px; }
         .app-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         
         .app-icon {
-            width: 62px; height: 62px; border-radius: 22.5%;
+            width: 60px; height: 60px; border-radius: 22%;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.25), 0 8px 16px rgba(0,0,0,0.3);
-            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.18s ease;
+            box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0,0,0,0.35);
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s ease;
             position: relative; overflow: hidden; background: #fff;
         }
-        .app-item:active .app-icon { transform: scale3d(0.85, 0.85, 1); filter: brightness(0.8); }
+        .app-item:active .app-icon { transform: scale3d(0.84, 0.84, 1); filter: brightness(0.82); }
 
-        /* Ikonstilar (Samma som tidigare) */
+        /* Ikoner */
         .icon-safari { background: linear-gradient(180deg, #30b0e8 0%, #0d60b5 100%); }
-        .icon-safari::before { content: ''; position: absolute; width: 44px; height: 44px; background: #fff; border-radius: 50%; }
-        .icon-safari::after { content: ''; position: absolute; width: 40px; height: 40px; background: radial-gradient(circle, #32b5ee 0%, #0a56aa 100%); border-radius: 50%; }
-        .safari-compass-dots { position: absolute; z-index: 2; width: 34px; height: 34px; border: 1.5px dashed rgba(255,255,255,0.4); border-radius: 50%; }
-        .safari-needle { position: absolute; z-index: 3; width: 0; height: 0; border-left: 4.5px solid transparent; border-right: 4.5px solid transparent; border-bottom: 20px solid #ff3b30; transform: rotate(45deg); transform-origin: 50% 100%; top: 11px; filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.25)); }
-        .safari-needle-south { position: absolute; z-index: 2; width: 0; height: 0; border-left: 4.5px solid transparent; border-right: 4.5px solid transparent; border-top: 20px solid #f2f2f7; transform: rotate(45deg); transform-origin: 50% 0%; bottom: 11px; filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.15)); }
+        .icon-safari::before { content: ''; position: absolute; width: 42px; height: 42px; background: #fff; border-radius: 50%; }
+        .icon-safari::after { content: ''; position: absolute; width: 38px; height: 38px; background: radial-gradient(circle, #32b5ee 0%, #0a56aa 100%); border-radius: 50%; }
+        .safari-compass-dots { position: absolute; z-index: 2; width: 32px; height: 32px; border: 1.5px dashed rgba(255,255,255,0.4); border-radius: 50%; }
+        .safari-needle { position: absolute; z-index: 3; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 18px solid #ff3b30; transform: rotate(45deg); transform-origin: 50% 100%; top: 11px; filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.2)); }
+        .safari-needle-south { position: absolute; z-index: 2; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 18px solid #f2f2f7; transform: rotate(45deg); transform-origin: 50% 0%; bottom: 11px; filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.12)); }
 
         .icon-photos { background: #fff; }
-        .photos-flower { position: relative; width: 32px; height: 32px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15)); }
-        .petal { position: absolute; width: 11px; height: 17px; border-radius: 5.5px; left: 10.5px; top: 7.5px; transform-origin: 5.5px 8.5px; mix-blend-mode: multiply; opacity: 0.9; }
-        .petal:nth-child(1) { background: #ff2d55; transform: rotate(0deg) translateY(-6.5px); }
-        .petal:nth-child(2) { background: #ff9500; transform: rotate(45deg) translateY(-6.5px); }
-        .petal:nth-child(3) { background: #ffcc00; transform: rotate(90deg) translateY(-6.5px); }
-        .petal:nth-child(4) { background: #4cd964; transform: rotate(135deg) translateY(-6.5px); }
-        .petal:nth-child(5) { background: #5ac8fa; transform: rotate(180deg) translateY(-6.5px); }
-        .petal:nth-child(6) { background: #007aff; transform: rotate(225deg) translateY(-6.5px); }
-        .petal:nth-child(7) { background: #5856d6; transform: rotate(270deg) translateY(-6.5px); }
-        .petal:nth-child(8) { background: #ff2d55; transform: rotate(315deg) translateY(-6.5px); }
+        .photos-flower { position: relative; width: 30px; height: 30px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15)); }
+        .petal { position: absolute; width: 10px; height: 16px; border-radius: 5px; left: 10px; top: 7px; transform-origin: 5px 8px; mix-blend-mode: multiply; opacity: 0.95; }
+        .petal:nth-child(1) { background: #ff2d55; transform: rotate(0deg) translateY(-6px); }
+        .petal:nth-child(2) { background: #ff9500; transform: rotate(45deg) translateY(-6px); }
+        .petal:nth-child(3) { background: #ffcc00; transform: rotate(90deg) translateY(-6px); }
+        .petal:nth-child(4) { background: #4cd964; transform: rotate(135deg) translateY(-6px); }
+        .petal:nth-child(5) { background: #5ac8fa; transform: rotate(180deg) translateY(-6px); }
+        .petal:nth-child(6) { background: #007aff; transform: rotate(225deg) translateY(-6px); }
+        .petal:nth-child(7) { background: #5856d6; transform: rotate(270deg) translateY(-6px); }
+        .petal:nth-child(8) { background: #ff2d55; transform: rotate(315deg) translateY(-6px); }
 
         .icon-settings { background: linear-gradient(135deg, #f2f2f7 0%, #8e8e93 100%); }
-        .settings-gear { width: 40px; height: 40px; background: #636366; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; }
-        .settings-gear::before { content: ''; position: absolute; width: 22px; height: 22px; background: linear-gradient(135deg, #d1d1d6, #8e8e93); border-radius: 50%; z-index: 2; }
-        .gear-tooth { position: absolute; width: 7px; height: 44px; background: #636366; border-radius: 2px; }
+        .settings-gear { width: 38px; height: 38px; background: #636366; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; }
+        .settings-gear::before { content: ''; position: absolute; width: 20px; height: 20px; background: linear-gradient(135deg, #d1d1d6, #8e8e93); border-radius: 50%; z-index: 2; }
+        .gear-tooth { position: absolute; width: 6px; height: 42px; background: #636366; border-radius: 2px; }
         .gear-tooth:nth-child(2) { transform: rotate(45deg); }
         .gear-tooth:nth-child(3) { transform: rotate(90deg); }
         .gear-tooth:nth-child(4) { transform: rotate(135deg); }
 
         .icon-appstore { background: linear-gradient(180deg, #34aadc 0%, #007aff 100%); }
-        .appstore-a { position: relative; width: 34px; height: 34px; }
+        .appstore-a { position: relative; width: 32px; height: 32px; }
         .appstore-line { position: absolute; background: #fff; border-radius: 3px; }
-        .appstore-line.l1 { width: 5px; height: 32px; left: 14.5px; transform: rotate(-30deg); z-index: 2; }
-        .appstore-line.l2 { width: 5px; height: 32px; left: 14.5px; transform: rotate(30deg); z-index: 1; }
-        .appstore-line.l3 { width: 22px; height: 5px; top: 19px; left: 6px; z-index: 3; }
+        .appstore-line.l1 { width: 5px; height: 30px; left: 13.5px; transform: rotate(-30deg); z-index: 2; }
+        .appstore-line.l2 { width: 5px; height: 30px; left: 13.5px; transform: rotate(30deg); z-index: 1; }
+        .appstore-line.l3 { width: 20px; height: 5px; top: 18px; left: 6px; z-index: 3; }
 
         .icon-messages { background: linear-gradient(180deg, #5fe46e 0%, #2bd04a 100%); }
-        .message-bubble { width: 36px; height: 26px; background: #fff; border-radius: 13px; position: relative; }
-        .message-bubble::after { content: ''; position: absolute; bottom: -2px; left: -3px; width: 12px; height: 12px; background: #fff; border-bottom-right-radius: 10px; border-bottom-left-radius: 15px; transform: rotate(-10deg); }
+        .message-bubble { width: 34px; height: 24px; background: #fff; border-radius: 12px; position: relative; }
+        .message-bubble::after { content: ''; position: absolute; bottom: -2px; left: -3px; width: 11px; height: 11px; background: #fff; border-bottom-right-radius: 9px; border-bottom-left-radius: 14px; transform: rotate(-10deg); }
 
         .icon-camera { background: linear-gradient(180deg, #f2f2f7 0%, #8e8e93 100%); position: relative; }
-        .camera-body-deco { width: 44px; height: 28px; background: #3a3a3c; border-radius: 6px; position: relative; display: flex; align-items: center; justify-content: center; }
-        .camera-body-deco::before { content: ''; position: absolute; top: -4px; width: 14px; height: 5px; background: #3a3a3c; border-radius: 3px 3px 0 0; }
-        .camera-lens { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle, #1c1c1e 30%, #2c2c2e 80%); border: 2px solid #545456; display: flex; align-items: center; justify-content: center; }
+        .camera-body-deco { width: 42px; height: 26px; background: #3a3a3c; border-radius: 6px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .camera-body-deco::before { content: ''; position: absolute; top: -4px; width: 12px; height: 5px; background: #3a3a3c; border-radius: 3px 3px 0 0; }
+        .camera-lens { width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle, #1c1c1e 30%, #2c2c2e 80%); border: 2px solid #545456; display: flex; align-items: center; justify-content: center; }
         .camera-lens::before { content: ''; width: 8px; height: 8px; background: radial-gradient(circle, #0a84ff 10%, #000 80%); border-radius: 50%; }
 
         .icon-phone { background: linear-gradient(180deg, #5fe46e 0%, #2bd04a 100%); }
-        .phone-receiver { width: 28px; height: 28px; background: #fff; border-radius: 4px; transform: rotate(-45deg); position: relative; }
-        .phone-receiver::before { content: ''; position: absolute; width: 11px; height: 20px; background: #fff; border-radius: 3.5px; top: 4px; left: -4px; box-shadow: 25px 0 0 #fff; }
+        .phone-receiver { width: 26px; height: 26px; background: #fff; border-radius: 4px; transform: rotate(-45deg); position: relative; }
+        .phone-receiver::before { content: ''; position: absolute; width: 10px; height: 18px; background: #fff; border-radius: 3px; top: 4px; left: -4px; box-shadow: 24px 0 0 #fff; }
 
-        .app-label { color: #fff; font-size: 11px; font-weight: 500; margin-top: 6px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; }
+        .app-label { color: #fff; font-size: 11.5px; font-weight: 500; margin-top: 6px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; letter-spacing: -0.1px; }
 
-        /* Docka med realistisk glaseffekt */
+        /* Docka */
         .dock {
-            background: rgba(255, 255, 255, 0.08);
-            border: 0.5px solid rgba(255, 255, 255, 0.15);
+            background: var(--blur-glass);
+            border: 0.5px solid var(--glass-border);
             backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
-            border-radius: 34px; padding: 13px; display: flex; justify-content: space-around;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+            border-radius: 32px; padding: 12px; display: flex; justify-content: space-around;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.45);
         }
-        .dock .app-icon { width: 60px; height: 60px; }
+        .dock .app-icon { width: 58px; height: 58px; }
 
-        /* HEM-SVEP (Alltid överst) */
+        /* HEM-SVEP */
         .home-bar-container {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 40px;
             display: flex; justify-content: center; align-items: flex-end;
             z-index: 10005; padding-bottom: 10px; cursor: pointer;
         }
-        .home-bar { width: 135px; height: 5px; background: rgba(255, 255, 255, 0.9); border-radius: 3px; transition: transform 0.2s; }
+        .home-bar { width: 135px; height: 5px; background: rgba(255, 255, 255, 0.95); border-radius: 3px; transition: transform 0.2s var(--ios-spring-out); }
         .home-bar-container:active .home-bar { transform: scale3d(0.95, 0.8, 1); }
 
         /* DYNAMISK APP-SKÄRM */
         .app-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 1001; display: none; flex-direction: column;
-            border-radius: 44px; overflow: hidden; padding-bottom: 35px;
+            border-radius: 45px; overflow: hidden; padding-bottom: 35px;
             transform-origin: var(--origin-x) var(--origin-y); opacity: 0;
             transform: scale3d(0.04, 0.04, 1);
             will-change: transform, opacity;
-            transition: transform 0.48s var(--ios-close-spring), opacity 0.28s ease-out;
+            transition: transform 0.45s var(--ios-spring-out), opacity 0.25s ease-out;
         }
         .app-screen.open {
             opacity: 1; transform: scale3d(1, 1, 1) !important;
-            transition: transform 0.6s var(--ios-open-spring), opacity 0.3s ease-out;
+            transition: transform 0.58s var(--ios-spring-in), opacity 0.3s ease-out;
         }
 
-        /* NY INSIDA FÖR APPARNA */
+        /* DESIGN FOR APP-INSIDOR */
         .app-header {
-            padding: 55px 24px 15px 24px; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;
+            padding: 55px 24px 15px 24px; font-size: 26px; font-weight: 700; letter-spacing: -0.6px;
             color: #fff; background: #000; display: flex; justify-content: space-between; align-items: center;
         }
         @media (max-width: 600px) { .app-header { padding-top: calc(50px + env(safe-area-inset-top, 0px)) !important; } }
         .app-body { flex: 1; padding: 18px; color: #fff; background: #000; overflow-y: auto; }
 
-        /* --- SAFARI VY --- */
-        .safari-search-bar { display: flex; background: #1c1c1e; border-radius: 12px; padding: 10px 14px; margin-bottom: 15px; align-items: center; }
+        /* --- SAFARI --- */
+        .safari-search-bar { display: flex; background: var(--ios-dark-gray); border-radius: 14px; padding: 10px 14px; margin-bottom: 15px; align-items: center; }
         .safari-search-bar input { background: none; border: none; color: #fff; flex: 1; margin-left: 8px; font-size: 15px; outline: none; }
         .safari-search-bar button { background: var(--ios-blue); color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
         .safari-frame { width: 100%; height: 80%; border: none; border-radius: 12px; background: #fff; }
         .safari-welcome { text-align: center; margin-top: 50px; color: #8e8e93; }
 
-        /* --- INSTÄLLNINGAR VY --- */
-        .settings-profile { display: flex; align-items: center; background: #1c1c1e; padding: 14px; border-radius: 14px; margin-bottom: 20px; }
-        .profile-pic { width: 50px; height: 50px; background: #8e8e93; border-radius: 50%; margin-right: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .settings-group { background: #1c1c1e; border-radius: 14px; overflow: hidden; margin-bottom: 20px; }
+        /* --- INSTÄLLNINGAR --- */
+        .settings-profile { display: flex; align-items: center; background: var(--ios-dark-gray); padding: 14px; border-radius: 14px; margin-bottom: 20px; }
+        .profile-pic { width: 50px; height: 50px; background: var(--ios-light-gray); border-radius: 50%; margin-right: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .settings-group { background: var(--ios-dark-gray); border-radius: 14px; overflow: hidden; margin-bottom: 20px; }
         .settings-row { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid #2c2c2e; font-size: 16px; }
         .settings-row:last-child { border-bottom: none; }
         .settings-row span { display: flex; align-items: center; gap: 10px; }
-        /* Switch design */
         .ios-switch { width: 46px; height: 26px; background: #39393d; border-radius: 15px; position: relative; cursor: pointer; transition: background 0.2s; }
         .ios-switch::after { content: ''; position: absolute; width: 22px; height: 22px; background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: transform 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         .ios-switch.active { background: var(--ios-green); }
         .ios-switch.active::after { transform: translate3d(20px, 0, 0); }
 
-        /* --- BILDER (PHOTOS) VY --- */
+        /* --- BILDER --- */
         .photos-tabs { display: flex; gap: 12px; margin-bottom: 15px; }
-        .photos-tab { padding: 6px 14px; background: #1c1c1e; border-radius: 15px; font-size: 13px; font-weight: 600; color: #8e8e93; cursor: pointer; }
+        .photos-tab { padding: 6px 14px; background: var(--ios-dark-gray); border-radius: 15px; font-size: 13px; font-weight: 600; color: #8e8e93; cursor: pointer; }
         .photos-tab.active { background: var(--ios-blue); color: #fff; }
         .photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
         .photo-thumbnail { width: 100%; aspect-ratio: 1; background-size: cover; background-position: center; border-radius: 4px; background-color: #111; }
 
-        /* --- APP STORE VY --- */
-        .store-hero { background: linear-gradient(135deg, #1d1d26, #322b40); border-radius: 18px; padding: 20px; margin-bottom: 20px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        /* --- APP STORE --- */
+        .store-hero { background: linear-gradient(135deg, #1d1d26, #322b40); border-radius: 18px; padding: 20px; margin-bottom: 20px; position: relative; }
         .store-hero span { font-size: 11px; font-weight: 700; color: #ff3b30; text-transform: uppercase; }
         .store-hero h2 { margin: 6px 0; font-size: 24px; }
         .store-hero p { font-size: 14px; color: #8e8e93; margin-bottom: 15px; }
-        .store-list-item { display: flex; align-items: center; background: #1c1c1e; padding: 12px; border-radius: 14px; margin-bottom: 10px; }
+        .store-list-item { display: flex; align-items: center; background: var(--ios-dark-gray); padding: 12px; border-radius: 14px; margin-bottom: 10px; }
         .store-app-icon { width: 48px; height: 48px; border-radius: 10px; margin-right: 12px; background-size: cover; }
         .store-app-info { flex: 1; }
         .store-app-info h4 { font-size: 15px; }
         .store-app-info p { font-size: 12px; color: #8e8e93; }
         .btn-get { background: rgba(255,255,255,0.15); color: var(--ios-blue); font-size: 12px; font-weight: 700; padding: 6px 16px; border-radius: 15px; border: none; cursor: pointer; transition: background 0.2s; }
-        .btn-get:active { background: rgba(255,255,255,0.3); }
 
-        /* --- MEDDELANDEN VY --- */
+        /* --- CHATT --- */
         .chat-area { display: flex; flex-direction: column; height: 100%; justify-content: space-between; }
         .messages-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 15px; }
         .msg-bubble { max-width: 75%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.4; }
         .msg-sender { background: var(--ios-blue); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg-receiver { background: #1c1c1e; color: #fff; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .chat-input-bar { display: flex; gap: 8px; padding-top: 10px; border-top: 1px solid #1c1c1e; }
-        .chat-input-bar input { flex: 1; background: #1c1c1e; border: none; border-radius: 20px; padding: 10px 16px; color: #fff; font-size: 15px; outline: none; }
+        .msg-receiver { background: var(--ios-dark-gray); color: #fff; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .chat-input-bar { display: flex; gap: 8px; padding-top: 10px; border-top: 1px solid var(--ios-dark-gray); }
+        .chat-input-bar input { flex: 1; background: var(--ios-dark-gray); border: none; border-radius: 20px; padding: 10px 16px; color: #fff; font-size: 15px; outline: none; }
         .chat-send-btn { background: var(--ios-blue); border: none; width: 36px; height: 36px; border-radius: 50%; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* --- TELEFON VY --- */
+        /* --- TELEFON --- */
         .phone-display { text-align: center; padding: 20px 0; font-size: 32px; font-weight: 400; height: 80px; letter-spacing: 1px; }
         .phone-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; max-width: 270px; margin: 0 auto; }
-        .phone-key { width: 70px; height: 70px; border-radius: 50%; background: #1c1c1e; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: background 0.15s; }
+        .phone-key { width: 70px; height: 70px; border-radius: 50%; background: var(--ios-dark-gray); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: background 0.15s; }
         .phone-key:active { background: #3a3a3c; }
         .phone-key span { font-size: 10px; color: #8e8e93; text-transform: uppercase; margin-top: 2px; }
         .phone-call-btn { width: 70px; height: 70px; border-radius: 50%; background: var(--ios-green); display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; margin: 20px auto 0 auto; grid-column: 2; }
-        .phone-call-btn:active { transform: scale(0.95); }
 
-        /* KAMERA VY (Justeringar) */
+        /* KAMERA UI */
         .camera-screen .app-header { display: none !important; }
         .camera-screen .app-body { padding: 0 !important; }
         .camera-container { display: flex; flex-direction: column; height: 100%; justify-content: space-between; padding-top: env(safe-area-inset-top, 40px); padding-bottom: 20px; }
@@ -388,12 +417,17 @@
 <body>
 
     <div class="iphone-frame">
+        <div class="button-side btn-action"></div>
         <div class="button-side btn-volume-up"></div>
         <div class="button-side btn-volume-down"></div>
         <div class="button-side btn-power"></div>
 
         <div class="dynamic-island-container" id="islandContainer">
             <div class="dynamic-island" id="island">
+                <div id="islandContent" style="display: none; color: #fff; font-size: 12px; font-weight: 500; width: 100%; align-items: center; justify-content: space-between;">
+                    <span id="islandText"></span>
+                    <span style="color: var(--ios-green);">✓</span>
+                </div>
                 <div class="camera-indicator"></div>
             </div>
         </div>
@@ -422,6 +456,18 @@
             </div>
 
             <div class="home-screen">
+                <div class="ios-widget">
+                    <div class="widget-buttons">
+                        <button class="widget-btn active" onclick="playSystemSound(440, 0.05); this.classList.toggle('active');">📶</button>
+                        <button class="widget-btn active" onclick="playSystemSound(554, 0.05); this.classList.toggle('active');">🔵</button>
+                    </div>
+                    <div class="widget-music">
+                        <span class="widget-music-title">Spelas nu</span>
+                        <span class="widget-music-artist">iOS Ultimate Pro</span>
+                    </div>
+                    <button class="widget-btn" onclick="triggerNotification('Musik pausad')">⏯️</button>
+                </div>
+
                 <div class="app-grid">
                     <div class="app-item" data-id="safari" onclick="openApp(this)">
                         <div class="app-icon icon-safari">
@@ -500,7 +546,62 @@
         let lastClickedIcon = null;
         let activeStream = null;
         let currentFacingMode = 'user';
-        let capturedPhotos = []; // Sparar tagna bilder
+        let capturedPhotos = [];
+
+        // Ljudsyntetisator (Inbyggda iOS-ljud)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSystemSound(frequency, duration, type = 'sine') {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function playUnlockSound() {
+            playSystemSound(800, 0.08, 'triangle');
+            setTimeout(() => playSystemSound(1200, 0.12, 'triangle'), 60);
+        }
+
+        function playLockSound() {
+            playSystemSound(150, 0.15, 'sine');
+        }
+
+        function playCameraShutterSound() {
+            // Vitt brus för realistiskt kameraslutarljud
+            try {
+                const bufferSize = audioCtx.sampleRate * 0.12;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1000;
+                
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                noise.start();
+            } catch(e) {}
+        }
 
         // Klocka
         function updateClock() {
@@ -514,6 +615,22 @@
         setInterval(updateClock, 1000);
         updateClock();
 
+        // Banner i Dynamic Island
+        function triggerNotification(text) {
+            const island = document.getElementById('island');
+            const content = document.getElementById('islandContent');
+            const textEl = document.getElementById('islandText');
+
+            textEl.textContent = text;
+            island.classList.add('island-expand-notification');
+            content.style.display = 'flex';
+
+            setTimeout(() => {
+                island.classList.remove('island-expand-notification');
+                content.style.display = 'none';
+            }, 2500);
+        }
+
         function bumpIsland() {
             const island = document.getElementById('island');
             island.classList.remove('island-pulse');
@@ -524,6 +641,7 @@
         function unlockPhone() {
             if (!isLocked) return;
             isLocked = false;
+            playUnlockSound();
             bumpIsland();
             const lockScreen = document.getElementById('lockScreen');
             lockScreen.style.transform = 'translate3d(0, -100%, 0)';
@@ -532,7 +650,7 @@
             setTimeout(() => { lockScreen.style.display = 'none'; }, 650);
         }
 
-        // --- APP-STRUKTURER (INTERAKTIV DESIGN) ---
+        // --- APPARNA ---
         const contents = {
             safari: {
                 title: 'Safari',
@@ -543,8 +661,8 @@
                     </div>
                     <div style="height: calc(100% - 70px);" id="safariView">
                         <div class="safari-welcome">
-                            <h2>Välkommen till Safari</h2>
-                            <p style="margin-top:10px; font-size:14px; color:#8e8e93;">Skriv en adress ovan och klicka på "Sök".</p>
+                            <h2>Sök säkert i Safari</h2>
+                            <p style="margin-top:10px; font-size:14px; color:#8e8e93;">Dina data skyddas av iOS Private Sandboxing.</p>
                         </div>
                     </div>
                 `
@@ -578,32 +696,18 @@
                     <div class="settings-profile">
                         <div class="profile-pic">🍎</div>
                         <div>
-                            <h4 style="font-size:16px;">Apple-ID</h4>
-                            <p style="font-size:12px; color:#8e8e93;">iCloud, medier, köp</p>
+                            <h4 style="font-size:16px;">Konfigurera Simulator</h4>
+                            <p style="font-size:12px; color:#8e8e93;">iCloud, system och säkerhet</p>
                         </div>
                     </div>
                     <div class="settings-group">
                         <div class="settings-row">
                             <span>📶 Wi-Fi</span>
-                            <div class="ios-switch active" onclick="toggleSwitch(this)"></div>
+                            <div class="ios-switch active" onclick="toggleSwitch(this); triggerNotification('Wi-Fi ändrat')"></div>
                         </div>
                         <div class="settings-row">
                             <span>🔵 Bluetooth</span>
-                            <div class="ios-switch active" onclick="toggleSwitch(this)"></div>
-                        </div>
-                        <div class="settings-row">
-                            <span>🌙 Dark Mode</span>
-                            <div class="ios-switch" onclick="toggleSwitch(this)"></div>
-                        </div>
-                    </div>
-                    <div class="settings-group">
-                        <div class="settings-row">
-                            <span>⚙️ Allmänt</span>
-                            <span style="color:#8e8e93;">›</span>
-                        </div>
-                        <div class="settings-row">
-                            <span>🔒 Integritet</span>
-                            <span style="color:#8e8e93;">›</span>
+                            <div class="ios-switch active" onclick="toggleSwitch(this); triggerNotification('Bluetooth ändrat')"></div>
                         </div>
                     </div>
                 `
@@ -612,18 +716,9 @@
                 title: 'App Store',
                 render: () => `
                     <div class="store-hero">
-                        <span>Dagens spel</span>
-                        <h2>Among Us 2</h2>
-                        <p>Redo för rymden och nya sabotörer?</p>
-                        <button class="btn-get" onclick="downloadApp(this)">HÄMTA</button>
-                    </div>
-                    <h3 style="margin-bottom:12px;">Missa inte</h3>
-                    <div class="store-list-item">
-                        <div class="store-app-icon" style="background-image:url('https://picsum.photos/id/102/100/100');"></div>
-                        <div class="store-app-info">
-                            <h4>ProCam</h4>
-                            <p>Proffsiga filter direkt</p>
-                        </div>
+                        <span>Relevanta appar</span>
+                        <h2>Lär dig bygga iOS</h2>
+                        <p>Utforska Swift, SwiftUI och moderna webbramverk.</p>
                         <button class="btn-get" onclick="downloadApp(this)">HÄMTA</button>
                     </div>
                 `
@@ -633,8 +728,8 @@
                 render: () => `
                     <div class="chat-area">
                         <div class="messages-list" id="msgList">
-                            <div class="msg-bubble msg-receiver">Tja! Har du sett den nya iOS-simulatorn? Den har en fungerande kamera och allt! 😮</div>
-                            <div class="msg-bubble msg-sender">Ja! Den nya Dynamic Islanden ser sjukt bra ut nu.</div>
+                            <div class="msg-bubble msg-receiver">Tja! Har du kollat in källkoden? Den är sjukt stilren! 🔥</div>
+                            <div class="msg-bubble msg-sender">Ja! Allt flyter på perfekt nu tack vare fjäder-animationerna.</div>
                         </div>
                         <div class="chat-input-bar">
                             <input type="text" id="chatInput" placeholder="iMessage" onkeydown="if(event.key === 'Enter') sendChatMessage()">
@@ -687,27 +782,28 @@
             }
         };
 
-        // --- APPFUNKTIONER ---
         function navigateSafari() {
             let url = document.getElementById('safariUrl').value.trim();
             if(!url.startsWith('http://') && !url.startsWith('https://')) {
                 url = 'https://' + url;
             }
             document.getElementById('safariView').innerHTML = `<iframe class="safari-frame" src="${url}"></iframe>`;
+            triggerNotification('Navigerar i Safari');
         }
 
         function toggleSwitch(el) {
+            playSystemSound(600, 0.05);
             el.classList.toggle('active');
         }
 
         function downloadApp(btn) {
-            btn.textContent = 'Laddar...';
-            btn.style.color = '#8e8e93';
+            playSystemSound(700, 0.05);
+            btn.textContent = 'Hämtar...';
             setTimeout(() => {
                 btn.textContent = 'ÖPPNA';
-                btn.style.color = '#fff';
-                btn.style.background = '#34c759';
-            }, 2000);
+                btn.style.background = 'var(--ios-green)';
+                triggerNotification('App installerad');
+            }, 1500);
         }
 
         function sendChatMessage() {
@@ -719,15 +815,17 @@
             list.innerHTML += `<div class="msg-bubble msg-sender">${text}</div>`;
             input.value = '';
             list.scrollTop = list.scrollHeight;
+            playSystemSound(900, 0.08);
 
-            // Enkelt autosvar
             setTimeout(() => {
-                list.innerHTML += `<div class="msg-bubble msg-receiver">Sjukt coolt! 🚀</div>`;
+                list.innerHTML += `<div class="msg-bubble msg-receiver">Häftigt! 👍</div>`;
                 list.scrollTop = list.scrollHeight;
+                playSystemSound(800, 0.08);
             }, 1000);
         }
 
         function pressKey(val) {
+            playSystemSound(500, 0.04);
             const disp = document.getElementById('phoneNum');
             if (disp.textContent.length < 15) {
                 disp.textContent += val;
@@ -735,15 +833,17 @@
         }
 
         function makePhoneCall() {
+            playSystemSound(1000, 0.1);
             const num = document.getElementById('phoneNum').textContent;
             if (!num) return;
             document.getElementById('phoneNum').textContent = "Ringer...";
+            triggerNotification('Initierar samtal');
             setTimeout(() => {
                 document.getElementById('phoneNum').textContent = "";
-            }, 3000);
+            }, 2500);
         }
 
-        // Kamerahantering
+        // Kamera-logik
         async function startCamera() {
             try {
                 if (activeStream) {
@@ -769,6 +869,7 @@
         }
 
         function flipCamera() {
+            playSystemSound(600, 0.05);
             currentFacingMode = (currentFacingMode === 'user') ? 'environment' : 'user';
             startCamera();
         }
@@ -781,6 +882,7 @@
 
             if (!video || !canvas) return;
 
+            playCameraShutterSound();
             flash.classList.add('flash-active');
             setTimeout(() => flash.classList.remove('flash-active'), 80);
 
@@ -795,12 +897,14 @@
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             
             const imgData = canvas.toDataURL('image/png');
-            capturedPhotos.push(imgData); // Spara bilden till galleriet
+            capturedPhotos.push(imgData);
             thumb.style.backgroundImage = `url(${imgData})`;
+            triggerNotification('Foto sparat');
         }
 
         // Öppna App
         function openApp(appElement) {
+            playSystemSound(600, 0.05);
             const appId = appElement.getAttribute('data-id');
             const app = contents[appId];
             if (!app) return;
@@ -843,6 +947,7 @@
             const appScreen = document.getElementById('appScreen');
             if (!appScreen.classList.contains('open')) return;
 
+            playLockSound();
             bumpIsland();
             
             document.getElementById('islandContainer').classList.remove('camera-active');
@@ -856,10 +961,10 @@
 
             setTimeout(() => {
                 appScreen.style.display = 'none';
-            }, 480); 
+            }, 450); 
         }
 
-        // Navigation (Click / Drag på hem-strecket)
+        // Navigations-gester (Svep upp för att stänga)
         const gestureZone = document.getElementById('homeGestureZone');
         let touchStartY = 0;
 
