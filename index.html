@@ -109,58 +109,33 @@
             }
         }
 
-        /* DYNAMIC ISLAND (STÖRRE OCH BÄTTRE PLACERAD) */
+        /* DYNAMIC ISLAND (SÖMLÖS OCH HELBLACK) */
         .dynamic-island-container {
             position: absolute;
-            top: 15px; /* Sänkt från 11px för realistisk placering */
+            top: 15px; 
             left: 50%;
             transform: translate3d(-50%, 0, 0);
             z-index: 99999;
             pointer-events: none;
         }
         .dynamic-island {
-            width: 125px; /* Ökat från 110px */
-            height: 35px; /* Ökat från 30px */
-            background: #000;
+            width: 125px; 
+            height: 35px; 
+            background: #000; /* Helt kolsvart för maximal realism */
             border-radius: 22px;
             box-sizing: border-box;
-            border: 0.5px solid rgba(255, 255, 255, 0.08);
+            border: 0.5px solid rgba(255, 255, 255, 0.05); /* Extremt subtil kant */
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding: 0 14px;
+            padding: 0 16px;
             transition: all 0.55s var(--ios-island-spring);
             will-change: width, height, transform;
         }
-        
-        /* Gömda linser och sensorer (Anpassade efter den nya storleken) */
-        .dynamic-island::before {
-            content: '';
-            position: absolute;
-            left: 16px;
-            top: 12px;
-            width: 11px;
-            height: 11px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #0d122b 0%, #03040a 80%);
-            opacity: 0.85;
-            box-shadow: inset 0 0 2px rgba(255,255,255,0.2);
-        }
-        .dynamic-island::after {
-            content: '';
-            position: absolute;
-            left: 32px;
-            top: 14px;
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #051405 0%, #010401 90%);
-            opacity: 0.7;
-        }
 
-        /* Grön LED-indikator */
+        /* Grön LED-indikator (Integritet) */
         .camera-indicator {
             width: 6px;
             height: 6px;
@@ -352,17 +327,17 @@
         }
         .dock .app-icon { width: 60px; height: 60px; }
 
-        /* HEM-SVEP (FLYTTAD TILL TOPP-LAGRET) */
+        /* HEM-SVEP */
         .home-bar-container {
             position: absolute; 
             bottom: 0; 
             left: 0; 
             width: 100%; 
-            height: 40px; /* Något högre träffyta */
+            height: 40px; 
             display: flex; 
             justify-content: center; 
             align-items: flex-end;
-            z-index: 10005; /* Betydligt högre än .app-screen (1001) */
+            z-index: 10005; 
             padding-bottom: 10px; 
             cursor: pointer;
         }
