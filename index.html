@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>iOS 26 Simulator</title>
+    <title>iOS 26 & 27 Simulator</title>
     <style>
         :root {
-            --spring-fast: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-            --spring-bouncy: 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-blur: blur(25px);
+            --spring-io: cubic-bezier(0.16, 1, 0.3, 1);
+            --liquid-glass: rgba(255, 255, 255, 0.11);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --siri-glow: radial-gradient(circle, rgba(100,80,250,0.8) 0%, rgba(255,80,150,0.8) 50%, rgba(0,240,255,0) 70%);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
             user-select: none;
             -webkit-user-select: none;
         }
 
         body {
-            background: #1a1a2e;
-            background-image: radial-gradient(circle at top right, #3a3a5a, #1a1a2e);
+            background: #0d0e15;
+            background-image: radial-gradient(circle at center, #1a1c29 0%, #0d0e15 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -31,19 +31,19 @@
             overflow: hidden;
         }
 
-        /* iPhone Ram */
+        /* Titanium Ram */
         .iphone-frame {
             width: 375px;
             height: 812px;
             background: #000;
-            border-radius: 50px;
-            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(255,255,255,0.2);
-            border: 8px solid #1c1c1e;
+            border-radius: 54px;
+            box-shadow: 0 0 0 4px #3a3a3c, 0 30px 100px rgba(0, 0, 0, 0.8);
             position: relative;
             overflow: hidden;
+            padding: 10px;
         }
 
-        /* Skärmen */
+        /* Skärm */
         .iphone-screen {
             width: 100%;
             height: 100%;
@@ -53,28 +53,28 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border-radius: 42px;
+            border-radius: 44px;
             overflow: hidden;
         }
 
         /* Dynamic Island */
         .dynamic-island {
-            width: 120px;
-            height: 35px;
+            width: 110px;
+            height: 30px;
             background: #000;
-            border-radius: 24px;
+            border-radius: 20px;
             position: absolute;
-            top: 10px;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9999;
-            transition: all var(--spring-bouncy);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: all 0.5s var(--spring-io);
+            cursor: pointer;
         }
 
-        .is-unlocked .dynamic-island {
-            width: 100px;
-            height: 30px;
+        .dynamic-island:active {
+            width: 130px;
+            height: 35px;
         }
 
         /* Statusfält */
@@ -85,16 +85,9 @@
             align-items: center;
             padding: 0 28px;
             color: #fff;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             z-index: 1000;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-        }
-
-        .status-right {
-            display: flex;
-            gap: 6px;
-            align-items: center;
         }
 
         /* Låsskärm */
@@ -111,52 +104,64 @@
             flex-direction: column;
             justify-content: space-between;
             padding: 70px 0 40px 0;
-            transition: transform var(--spring-bouncy), opacity 0.4s ease, filter 0.4s ease;
+            transition: transform 0.6s var(--spring-io), opacity 0.4s ease, filter 0.4s ease;
         }
 
         .lock-screen.unlocked-swipe {
-            transform: translateY(-100%) scale(0.95);
+            transform: translateY(-100%);
             opacity: 0;
-            filter: blur(10px);
+            filter: blur(15px);
             pointer-events: none;
         }
 
-        .lock-info {
-            text-align: center;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
         #clock {
-            font-size: 82px;
+            font-size: 80px;
             font-weight: 800;
             letter-spacing: -2px;
-            line-height: 1;
-            margin-top: 5px;
-            font-family: 'SF Pro Display', -apple-system, sans-serif;
+            color: #fff;
+            text-align: center;
         }
 
         #date {
-            font-size: 22px;
+            font-size: 19px;
             font-weight: 500;
-            color: rgba(255,255,255,0.9);
+            color: rgba(255,255,255,0.85);
+            text-align: center;
         }
 
-        /* Hemskärmen */
+        /* Hemskärm med Liquid Glass design */
         .home-screen {
-            padding: 20px 18px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px 16px;
-            margin-top: 44px;
+            padding: 15px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            margin-top: 25px;
             opacity: 0;
-            transform: scale(0.85) translateY(20px);
-            transition: transform var(--spring-bouncy), opacity 0.5s ease;
+            transform: scale(0.95);
+            transition: transform 0.6s var(--spring-io), opacity 0.5s ease;
         }
 
         .is-unlocked .home-screen {
             opacity: 1;
-            transform: scale(1) translateY(0);
+            transform: scale(1);
+        }
+
+        /* Liquid Glass Widget */
+        .glass-widget {
+            background: var(--liquid-glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 24px;
+            padding: 16px;
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px 14px;
         }
 
         .app-item {
@@ -164,39 +169,39 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.2s ease;
         }
 
-        .app-item:active {
-            transform: scale(0.85);
-        }
-
+        /* App-ikoner med glas-effekt */
         .app-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            transition: box-shadow 0.3s ease;
+            width: 62px;
+            height: 62px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            transition: transform 0.2s var(--spring-io);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .app-icon svg { width: 100%; height: 100%; display: block; }
+        .app-item:active .app-icon {
+            transform: scale(0.88);
+        }
 
         .app-label {
             color: #fff;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
-            margin-top: 6px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+            margin-top: 7px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Dockan */
+        /* Docka */
         .dock-container {
             padding: 0 18px 20px 18px;
             opacity: 0;
             transform: translateY(20px);
-            transition: transform var(--spring-bouncy), opacity 0.5s ease;
-            transition-delay: 0.1s;
+            transition: transform 0.6s var(--spring-io), opacity 0.5s ease;
         }
 
         .is-unlocked .dock-container {
@@ -205,461 +210,294 @@
         }
 
         .dock {
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border-radius: 35px;
-            padding: 14px;
+            background: var(--liquid-glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border-radius: 32px;
+            padding: 12px;
             display: flex;
             justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
 
         .dock .app-icon {
-            width: 54px;
-            height: 54px;
+            width: 56px;
+            height: 56px;
         }
 
         .home-screen-indicator {
             width: 130px;
             height: 5px;
-            background: #fff;
+            background: rgba(255,255,255,0.7);
             border-radius: 3px;
             margin: 15px auto 0 auto;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
-        /* App-skärmar */
+        /* Fullskärmsappar */
         .app-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #F2F2F7;
+            background: #0c0d14;
             z-index: 1000;
             display: none;
             flex-direction: column;
-            overflow: hidden;
-            border-radius: 42px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            transform-origin: center center;
+            border-radius: 44px;
         }
 
         .app-screen.open { display: flex; }
 
-        .app-screen-header {
+        .app-header {
             padding: 55px 24px 15px 24px;
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
-            letter-spacing: -0.5px;
-            position: relative;
-            z-index: 10;
+            color: #fff;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
 
-        .app-screen-body {
+        .app-body {
             flex: 1;
+            padding: 20px;
+            color: #fff;
             overflow-y: auto;
-            padding: 15px;
-            background: #F2F2F7;
-            position: relative;
         }
 
-        .app-screen-home {
+        .app-close-zone {
             height: 40px;
-            background: transparent;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            z-index: 20;
         }
 
         .home-bar {
             width: 130px;
             height: 5px;
-            background: #000;
+            background: #fff;
             border-radius: 3px;
-            transition: width 0.2s ease, transform 0.2s ease;
         }
 
-        .app-screen-home:active .home-bar {
-            width: 100px;
-            transform: scaleY(1.5);
-        }
-
-        /* Safari (Framtid) */
-        .safari-view { height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
-        .safari-content { flex: 1; border-radius: 20px; background: #fff; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .safari-bar-floating {
-            margin-top: 15px;
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(15px);
-            padding: 15px;
-            border-radius: 25px;
-            text-align: center;
-            font-size: 15px;
-            color: #1c1c1e;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            font-weight: 500;
-        }
-
-        /* Inställningar (Inset Cards) */
-        .row-group {
-            background: #FFF;
-            border-radius: 18px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            overflow: hidden;
-        }
-        .row {
+        /* Siri AI i iOS 27-stil */
+        .siri-panel {
+            position: absolute;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            height: 320px;
+            background: rgba(10, 10, 18, 0.85);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-top: 1px solid rgba(255,255,255,0.15);
+            border-radius: 35px 35px 44px 44px;
+            z-index: 9999;
+            transition: bottom 0.5s var(--spring-io);
+            padding: 25px;
+            box-sizing: border-box;
+            color: #fff;
             display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .siri-panel.active {
+            bottom: 0;
+        }
+
+        .siri-orb-container {
+            width: 100%;
+            height: 100px;
+            position: relative;
+            display: flex;
+            justify-content: center;
             align-items: center;
-            padding: 14px 18px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            transition: background 0.2s;
         }
-        .row:active { background: #e5e5ea; }
-        .row:last-child { border-bottom: none; }
-        .row-icon {
-            width: 32px; height: 32px; border-radius: 10px; color: white; display: flex; justify-content: center; align-items: center; font-size: 16px; margin-right: 15px;
+
+        .siri-orb {
+            width: 140px;
+            height: 140px;
+            background: var(--siri-glow);
+            filter: blur(10px);
+            animation: pulse-siri 2s infinite ease-in-out;
+            border-radius: 50%;
         }
-        .row-title { font-size: 17px; font-weight: 500; color: #000; }
-        .row-sub { font-size: 14px; color: #8E8E93; }
-        .chevron { color: #C7C7CC; font-size: 22px; }
 
-        /* Musik (Modern Player) */
-        .music-player { background: linear-gradient(to bottom, #2b2b3a, #1a1a2e); color: #fff; height: 100%; margin: -15px; padding: 30px 20px; display: flex; flex-direction: column; }
-        .music-art { width: 100%; aspect-ratio: 1; border-radius: 25px; background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%); margin: 40px 0 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .music-title { font-size: 28px; font-weight: 800; margin-bottom: 5px; }
-        .music-artist { color: #ff7eb3; font-size: 18px; font-weight: 500; opacity: 0.9; margin-bottom: 30px; }
-        .music-controls { display: flex; justify-content: space-around; align-items: center; margin-top: auto; padding-bottom: 40px; }
-        .play-btn-modern { width: 80px; height: 80px; border-radius: 40px; background: #fff; color: #000; border: none; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 20px rgba(255,255,255,0.2); transition: transform 0.2s; }
-        .play-btn-modern:active { transform: scale(0.9); }
-        .waveform { height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; width: 100%; position: relative; margin-bottom: 30px; }
-        .waveform-fill { width: 45%; background: #fff; height: 100%; border-radius: 2px; position: relative; }
-        .waveform-fill::after { content: ''; position: absolute; right: -4px; top: -4px; width: 12px; height: 12px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
-
-        /* App Store */
-        .app-card { background: #FFF; padding: 20px; border-radius: 24px; display: flex; align-items: center; gap: 15px; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.04); }
-        .app-card-icon { width: 60px; height: 60px; border-radius: 16px; }
-        .app-card-title { font-size: 18px; font-weight: 700; }
-        .app-card-btn { margin-left: auto; background: rgba(0,122,255,0.1); color: #007AFF; padding: 8px 18px; border-radius: 20px; font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* Telefon */
-        .phone-display { font-size: 42px; font-weight: 300; text-align: center; margin: 30px 0; min-height: 50px; letter-spacing: 2px; }
-        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 280px; margin: 0 auto; }
-        .keypad button { width: 80px; height: 80px; border-radius: 40px; background: #E5E5EA; border: none; font-size: 32px; font-weight: 400; cursor: pointer; transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .keypad button:active { background: #C7C7CC; transform: scale(0.85); }
-        .call-btn { background: #34C759; width: 80px; height: 80px; border-radius: 40px; margin: 30px auto; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 20px rgba(52,199,89,0.3); transition: transform 0.2s; }
-        .call-btn:active { transform: scale(0.85); }
-
-        /* Bilder (Edge-to-edge grid) */
-        .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin: -15px; }
-        .photo-grid div { aspect-ratio: 1; background-size: cover; background-position: center; }
-
-        /* FaceID-indikator */
-        .face-id-indicator {
-            position: absolute; top: 150px; left: 50%; transform: translateX(-50%) scale(0.5); width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.5); border-radius: 14px; opacity: 0; transition: all 0.4s var(--spring-bouncy);
+        @keyframes pulse-siri {
+            0%, 100% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
         }
-        .face-id-indicator.show { opacity: 1; transform: translateX(-50%) scale(1); }
-        .face-id-indicator.unlocked { border-color: #34C759; background: rgba(52, 199, 89, 0.2); transform: translateX(-50%) scale(1.1); }
-        .swipe-to-unlock { text-align: center; color: rgba(255,255,255,0.8); font-size: 16px; font-weight: 500; animation: pulse 2.5s infinite; cursor: pointer; margin-bottom: 10px; }
-        @keyframes pulse { 0%, 100% { transform: translateY(0); opacity: 0.6; } 50% { transform: translateY(-5px); opacity: 1; } }
+
+        /* iOS 27 Beta knapp */
+        .beta-banner {
+            background: linear-gradient(135deg, #2f1c5c, #000);
+            border: 1.5px solid #8e2de2;
+            padding: 15px;
+            border-radius: 18px;
+            margin-top: 15px;
+            cursor: pointer;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
     <div class="iphone-frame">
-        <div class="dynamic-island"></div>
+        <div class="dynamic-island" onclick="toggleSiri()"></div>
         
         <div class="iphone-screen">
             <div class="status-bar">
-                <span id="statusLeft">Telenor SE</span>
-                <div class="status-right">
-                    <svg width="16" height="12" viewBox="0 0 16 12" fill="#fff"><path d="M1 12h2V8H1v4zm4 0h2V5H5v7zm4 0h2V2H9v10zm4 0h2V0h-2v12z"/></svg>
-                    <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="1" y="1" width="20" height="10" rx="3" stroke="#fff" stroke-width="1.5"/><rect x="3" y="3" width="12" height="6" rx="1" fill="#fff"/><path d="M22 4.5v3a1.5 1.5 0 000-3z" fill="#fff"/></svg>
+                <span id="time-widget">12:00</span>
+                <div style="display:flex; gap:6px;">
+                    <span>📶</span>
+                    <span>🔋</span>
                 </div>
             </div>
 
-            <div class="lock-screen" id="lockScreen" onclick="simulateFaceID()">
-                <div class="face-id-indicator" id="faceIdIndicator"></div>
-                <div class="lock-info">
-                    <div id="date">Måndag 1 januari</div>
+            <div class="lock-screen" id="lockScreen" onclick="unlockPhone()">
+                <div>
+                    <div id="date">Torsdag 16 juli</div>
                     <div id="clock">12:00</div>
                 </div>
-                <div class="swipe-to-unlock" onclick="swipeUpToHome(); event.stopPropagation();">
-                    Svep uppåt för att låsa upp
+                <div style="text-align:center; color:rgba(255,255,255,0.6); font-size:14px; animation: bounce 2s infinite;">
+                    Svep upp eller klicka för att låsa upp
                 </div>
             </div>
 
             <div class="home-screen">
-                <div class="app-item" onclick="openApp('safari', this)"><div class="app-icon"><svg viewBox="0 0 60 60"><defs><linearGradient id="safariBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E5F1FC"/><stop offset="100%" stop-color="#B2D6F3"/></linearGradient></defs><rect width="60" height="60" fill="url(#safariBg)"/><circle cx="30" cy="30" r="22" fill="#FFFFFF"/><circle cx="30" cy="30" r="20" fill="#1D72F2"/><g stroke="#FFFFFF" stroke-width="2"><line x1="30" y1="10" x2="30" y2="50"/><line x1="10" y1="30" x2="50" y2="30"/></g><polygon points="30,14 34,30 30,46 26,30" fill="#FF3B30"/><polygon points="30,14 34,30 30,30 26,30" fill="#FFFFFF"/></svg></div><div class="app-label">Safari</div></div>
-                <div class="app-item" onclick="openApp('photos', this)"><div class="app-icon"><svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#FFFFFF"/><g transform="translate(30,30)" opacity="0.85"><ellipse cx="0" cy="-10" rx="6" ry="12" fill="#FF2D55"/><ellipse cx="0" cy="-10" rx="6" ry="12" fill="#FF9500" transform="rotate(45)"/><ellipse cx="0" cy="-10" rx="6" ry="12" fill="#FFCC00" transform="rotate(90)"/><ellipse cx="0" cy="-10" rx="6" ry="12" fill="#4CD964" transform="rotate(135)"/><ellipse cx="0" cy="-10" rx="6" ry="12" fill="#5AC8FA" transform="rotate(180)"/><ellipse cx="0" cy="-10" rx="6" ry="12" fill="#007AFF" transform="rotate(225)"/><ellipse cx="0" cy="-10" rx="6" ry="12" fill="#5856D6" transform="rotate(270)"/><ellipse cx="0" cy="-10" rx="6" ry="12" fill="#C70039" transform="rotate(315)"/></g></svg></div><div class="app-label">Bilder</div></div>
-                <div class="app-item" onclick="openApp('settings', this)"><div class="app-icon"><svg viewBox="0 0 60 60"><defs><linearGradient id="setBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4a4a4a"/><stop offset="100%" stop-color="#2a2a2a"/></linearGradient></defs><rect width="60" height="60" fill="url(#setBg)"/><circle cx="30" cy="30" r="18" fill="#8E8E93"/><circle cx="30" cy="30" r="8" fill="#2a2a2a"/><g fill="#8E8E93" transform="translate(30,30)"><rect x="-4" y="-22" width="8" height="6" rx="2"/><rect x="-4" y="-22" width="8" height="6" rx="2" transform="rotate(45)"/><rect x="-4" y="-22" width="8" height="6" rx="2" transform="rotate(90)"/><rect x="-4" y="-22" width="8" height="6" rx="2" transform="rotate(135)"/><rect x="-4" y="-22" width="8" height="6" rx="2" transform="rotate(180)"/><rect x="-4" y="-22" width="8" height="6" rx="2" transform="rotate(225)"/><rect x="-4" y="-22" width="8" height="6" rx="2" transform="rotate(270)"/><rect x="-4" y="-22" width="8" height="6" rx="2" transform="rotate(315)"/></g></svg></div><div class="app-label">Inställ.</div></div>
-                <div class="app-item" onclick="openApp('appstore', this)"><div class="app-icon"><svg viewBox="0 0 60 60"><defs><linearGradient id="asBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#34AADC"/><stop offset="100%" stop-color="#007AFF"/></linearGradient></defs><rect width="60" height="60" fill="url(#asBg)"/><g stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" fill="none"><line x1="30" y1="16" x2="44" y2="42"/><line x1="30" y1="16" x2="16" y2="42"/><line x1="20" y1="36" x2="40" y2="36"/></g></svg></div><div class="app-label">App Store</div></div>
+                <div class="glass-widget">
+                    <div style="font-size:12px; text-transform:uppercase; opacity:0.6; letter-spacing:1px;">Apple Intelligence</div>
+                    <div style="font-size:18px; font-weight:700; margin-top:4px;">iOS 26.5 är aktivt</div>
+                    <div style="font-size:13px; opacity:0.8; margin-top:4px;">Klicka på Dynamic Island för att starta Siri AI.</div>
+                </div>
+
+                <div class="app-grid">
+                    <div class="app-item" onclick="openApp('safari')">
+                        <div class="app-icon" style="background: linear-gradient(135deg, #00c6ff, #0072ff);">🌐</div>
+                        <div class="app-label">Safari</div>
+                    </div>
+                    <div class="app-item" onclick="openApp('settings')">
+                        <div class="app-icon" style="background: linear-gradient(135deg, #4b5563, #1f2937);">⚙️</div>
+                        <div class="app-label">Inställningar</div>
+                    </div>
+                    <div class="app-item" onclick="openApp('photos')">
+                        <div class="app-icon" style="background: linear-gradient(135deg, #ff5e62, #ff9966);">🖼️</div>
+                        <div class="app-label">Bilder</div>
+                    </div>
+                </div>
             </div>
 
             <div class="dock-container">
                 <div class="dock">
-                    <div class="app-icon" style="cursor:pointer;" onclick="openApp('phone', this)"><svg viewBox="0 0 60 60"><defs><linearGradient id="phBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#66BB6A"/><stop offset="100%" stop-color="#43A047"/></linearGradient></defs><rect width="60" height="60" fill="url(#phBg)"/><path d="M20 16 C18 16 15 18 15 21 C15 32 28 45 39 45 C42 45 44 42 44 40 L40 35 C39 34 37 34 36 35 L34 37 C29 34 26 31 23 26 L25 24 C26 23 26 21 25 20 L20 16 Z" fill="#FFFFFF"/></svg></div>
-                    <div class="app-icon" style="cursor:pointer;" onclick="openApp('messages', this)"><svg viewBox="0 0 60 60"><rect width="60" height="60" fill="url(#phBg)"/><path d="M30 14 C19 14 11 21 11 29 C11 34 14 38 20 41 L18 46 L24 44 C26 45 28 45 30 45 C41 45 49 38 49 29 C49 21 41 14 30 14 Z" fill="#FFFFFF"/></svg></div>
-                    <div class="app-icon" style="cursor:pointer;" onclick="openApp('music', this)"><svg viewBox="0 0 60 60"><defs><linearGradient id="muBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FF2D55"/><stop offset="100%" stop-color="#FA243C"/></linearGradient></defs><rect width="60" height="60" fill="url(#muBg)"/><g fill="#FFFFFF"><circle cx="22" cy="40" r="5"/><circle cx="40" cy="36" r="5"/><path d="M25 18 L43 14 L43 36 L39 36 L39 17 L25 20 L25 40 L21 40 L25 18 Z"/></g></svg></div>
-                    <div class="app-icon" style="cursor:pointer;" onclick="openApp('camera', this)"><svg viewBox="0 0 60 60"><defs><linearGradient id="camBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f0f0f0"/><stop offset="100%" stop-color="#b0b0b0"/></linearGradient></defs><rect width="60" height="60" fill="url(#camBg)"/><rect x="12" y="20" width="36" height="26" rx="6" fill="#2c2c2e"/><path d="M22 20 L25 14 L35 14 L38 20 Z" fill="#2c2c2e"/><circle cx="30" cy="33" r="8" fill="#FFF" opacity="0.2"/><circle cx="30" cy="33" r="6" fill="#111"/><circle cx="42" cy="24" r="2" fill="#FFCC00"/></svg></div>
+                    <div class="app-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);">📞</div>
+                    <div class="app-icon" style="background: linear-gradient(135deg, #ea00d9, #711c91);">🎵</div>
                 </div>
                 <div class="home-screen-indicator"></div>
+            </div>
+
+            <div class="siri-panel" id="siriPanel">
+                <div style="text-align:center;">
+                    <h3 style="font-size:18px; font-weight:700;" id="siriText">Hur kan jag hjälpa dig idag?</h3>
+                    <p style="font-size:12px; opacity:0.5; margin-top:4px;">Drivs av Siri AI (iOS 27)</p>
+                </div>
+                <div class="siri-orb-container">
+                    <div class="siri-orb"></div>
+                </div>
+                <button onclick="siriRespond()" style="width:100%; padding:12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); border-radius:15px; color:#fff; font-weight:600; cursor:pointer;">Prata med Siri</button>
             </div>
         </div>
 
         <div class="app-screen" id="appScreen">
-            <div class="app-screen-header" id="appScreenTitle">App</div>
-            <div class="app-screen-body" id="appScreenBody"></div>
-            <div class="app-screen-home" onclick="closeApp()">
+            <div class="app-header" id="appTitle">App</div>
+            <div class="app-body" id="appBody">Innehåll</div>
+            <div class="app-close-zone" onclick="closeApp()">
                 <div class="home-bar"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Klocka och Låsskärmslogik
-        function updateTime() {
+        // Klocka
+        function updateClock() {
             const now = new Date();
-            let hours = now.getHours().toString().padStart(2, '0');
-            let minutes = now.getMinutes().toString().padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}`;
-            const options = { weekday: 'long', day: 'numeric', month: 'long' };
-            let dateStr = now.toLocaleDateString('sv-SE', options);
-            document.getElementById('date').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+            const h = now.getHours().toString().padStart(2, '0');
+            const m = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('clock').textContent = `${h}:${m}`;
+            document.getElementById('time-widget').textContent = `${h}:${m}`;
         }
-        setInterval(updateTime, 1000); updateTime();
+        setInterval(updateClock, 1000);
+        updateClock();
 
-        function swipeUpToHome() {
+        // Lås upp
+        function unlockPhone() {
             document.getElementById('lockScreen').classList.add('unlocked-swipe');
             document.querySelector('.iphone-screen').classList.add('is-unlocked');
         }
 
-        let faceIdBusy = false;
-        function simulateFaceID() {
-            const screen = document.querySelector('.iphone-screen');
-            if (screen.classList.contains('is-unlocked') || faceIdBusy) return;
-            faceIdBusy = true;
-            const ind = document.getElementById('faceIdIndicator');
-            ind.classList.add('show');
-            setTimeout(() => ind.classList.add('unlocked'), 500);
-            setTimeout(() => {
-                ind.classList.remove('show', 'unlocked');
-                faceIdBusy = false;
-            }, 1200);
-        }
-
-        /* --- APPAR: "iOS 26" Design --- */
-        const apps = {
+        // Öppna appar
+        const appContents = {
             safari: {
-                title: 'Safari',
+                title: 'Safari 26',
+                body: `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px;">
+                    <h3>Sök med AI-sammanfattning</h3>
+                    <p style="font-size:14px; opacity:0.7; margin-top:8px;">Webbsidor sammanfattas automatiskt i iOS 26 med lokala språkmodeller.</p>
+                </div>`
+            },
+            settings: {
+                title: 'Inställningar',
                 body: `
-                    <div class="safari-view">
-                        <div class="safari-content">
-                            <h2 style="margin-bottom:15px; font-weight:700;">Godafton.</h2>
-                            <div style="background:#f2f2f7; height:120px; border-radius:15px; margin-bottom:15px;"></div>
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                                <div style="background:#e5e5ea; height:80px; border-radius:12px;"></div>
-                                <div style="background:#e5e5ea; height:80px; border-radius:12px;"></div>
-                            </div>
-                        </div>
-                        <div class="safari-bar-floating">
-                            🔒 sök eller ange webbadress...
+                    <div style="display:flex; flex-direction:column; gap:12px;">
+                        <div>Programuppdatering</div>
+                        <div class="beta-banner" onclick="simulateBetaUpdate()">
+                            <h4 style="font-weight:700;">iOS 27 Public Beta</h4>
+                            <p style="font-size:12px; opacity:0.8; margin-top:4px;">Uppgradera och testa Siri AI och nya Liquid Glass-effekter.</p>
                         </div>
                     </div>
                 `
             },
             photos: {
-                title: 'Bilder',
-                body: `
-                    <div class="photo-grid">
-                        <div style="background-image:url('https://images.unsplash.com/photo-1506744626753-1fa44df31d7f?q=80&w=200&auto=format&fit=crop');"></div>
-                        <div style="background-image:url('https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=200&auto=format&fit=crop');"></div>
-                        <div style="background-image:url('https://images.unsplash.com/photo-1511884642898-4c92249e20b6?q=80&w=200&auto=format&fit=crop');"></div>
-                        <div style="background-image:url('https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?q=80&w=200&auto=format&fit=crop');"></div>
-                        <div style="background-image:url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=200&auto=format&fit=crop');"></div>
-                        <div style="background-image:url('https://images.unsplash.com/photo-1444464666168-49b626f1110c?q=80&w=200&auto=format&fit=crop');"></div>
-                        <div style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=200&auto=format&fit=crop');"></div>
-                        <div style="background-image:url('https://images.unsplash.com/photo-1532386236358-a33d8a9434e3?q=80&w=200&auto=format&fit=crop');"></div>
-                        <div style="background-image:url('https://images.unsplash.com/photo-1494548162494-384bba4ab999?q=80&w=200&auto=format&fit=crop');"></div>
-                    </div>
-                `
-            },
-            settings: {
-                title: 'Inställningar',
-                body: `
-                    <div class="row-group" style="margin-top:10px;">
-                        <div class="row"><div class="row-icon" style="background:linear-gradient(135deg, #a1c4fd, #c2e9fb);">👤</div><div class="row-main"><div class="row-title">Apple ID</div><div class="row-sub">Konto, lösenord m.m.</div></div><div class="chevron">›</div></div>
-                    </div>
-                    <div class="row-group">
-                        <div class="row"><div class="row-icon" style="background:#007AFF;">📶</div><div class="row-main"><div class="row-title">Wi-Fi</div><div class="row-sub">Smart Hem_5G</div></div><div class="chevron">›</div></div>
-                        <div class="row"><div class="row-icon" style="background:#007AFF;">🔵</div><div class="row-main"><div class="row-title">Bluetooth</div><div class="row-sub">AirPods anslutna</div></div><div class="chevron">›</div></div>
-                    </div>
-                    <div class="row-group">
-                        <div class="row"><div class="row-icon" style="background:#FF3B30;">🔔</div><div class="row-main"><div class="row-title">Aviseringar</div></div><div class="chevron">›</div></div>
-                        <div class="row"><div class="row-icon" style="background:#5856D6;">🔉</div><div class="row-main"><div class="row-title">Ljud & Haptik</div></div><div class="chevron">›</div></div>
-                    </div>
-                `
-            },
-            appstore: {
-                title: 'App Store',
-                body: `
-                    <div style="font-size:24px; font-weight:800; margin-bottom:15px; color:#1c1c1e;">Dagens App</div>
-                    <div class="app-card" style="flex-direction:column; align-items:flex-start; padding:0; overflow:hidden;">
-                        <div style="width:100%; height:150px; background:linear-gradient(135deg, #fdfbfb, #ebedee);"></div>
-                        <div style="padding:20px; width:100%; display:flex; align-items:center; gap:15px;">
-                            <div class="app-card-icon" style="background:linear-gradient(135deg, #a18cd1, #fbc2eb);"></div>
-                            <div><div class="app-card-title">AI Assistant</div><div style="font-size:13px; color:#8e8e93;">Produktivitet</div></div>
-                            <div class="app-card-btn">HÄMTA</div>
-                        </div>
-                    </div>
-                `
-            },
-            music: {
-                title: '',
-                body: `
-                    <div class="music-player">
-                        <div class="music-art"></div>
-                        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-                            <div>
-                                <div class="music-title">Neon Future</div>
-                                <div class="music-artist">Synthwave 2026</div>
-                            </div>
-                            <div style="background:rgba(255,255,255,0.2); padding:5px 12px; border-radius:15px; font-weight:bold;">Lossless</div>
-                        </div>
-                        <div class="waveform" style="margin-top:30px;"><div class="waveform-fill"></div></div>
-                        <div style="display:flex; justify-content:space-between; font-size:12px; opacity:0.7; margin-top:-20px; margin-bottom:20px;">
-                            <span>1:24</span><span>-2:46</span>
-                        </div>
-                        <div class="music-controls">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path d="M6 6h2v12H6zm3.5 6L18 6v12z"/></svg>
-                            <button class="play-btn-modern">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="#000"><polygon points="8,5 19,12 8,19"/></svg>
-                            </button>
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path d="M18 6h-2v12h2zM14.5 12L6 6v12z"/></svg>
-                        </div>
-                    </div>
-                `
-            },
-            phone: {
-                title: 'Telefon',
-                body: `
-                    <div class="phone-display" id="phoneDisplay"></div>
-                    <div class="keypad">
-                        <button onclick="dialDigit('1')">1</button>
-                        <button onclick="dialDigit('2')">2</button>
-                        <button onclick="dialDigit('3')">3</button>
-                        <button onclick="dialDigit('4')">4</button>
-                        <button onclick="dialDigit('5')">5</button>
-                        <button onclick="dialDigit('6')">6</button>
-                        <button onclick="dialDigit('7')">7</button>
-                        <button onclick="dialDigit('8')">8</button>
-                        <button onclick="dialDigit('9')">9</button>
-                        <button onclick="dialDigit('*')">*</button>
-                        <button onclick="dialDigit('0')">0</button>
-                        <button onclick="dialDigit('⌫')">⌫</button>
-                    </div>
-                    <div class="call-btn" onclick="dialDigit('reset')">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path d="M20 15.5c-1.2 0-2.4-.2-3.5-.6-.3-.1-.7 0-1 .3l-2.2 2.2c-2.8-1.4-5.2-3.8-6.6-6.6l2.2-2.2c.3-.3.4-.7.3-1-.4-1.1-.6-2.3-.6-3.5 0-.6-.4-1-1-1H4c-.6 0-1 .4-1 1 0 9.4 7.6 17 17 17 .6 0 1-.4 1-1v-3.5c0-.6-.4-1-1-1z"/></svg>
-                    </div>
-                `
-            },
-            messages: {
-                title: 'Meddelanden',
-                body: `
-                    <div class="row-group">
-                        <div class="row"><div class="row-icon" style="background:#34C759; border-radius:16px;">👩</div><div class="row-main"><div class="row-title">Mamma</div><div class="row-sub">Kommer du hem till middag?</div></div><div style="font-size:12px; color:#8e8e93;">16:24</div></div>
-                        <div class="row"><div class="row-icon" style="background:#007AFF; border-radius:16px;">💼</div><div class="row-main"><div class="row-title">Jobbet</div><div class="row-sub">Projektet är godkänt! 🎉</div></div><div style="font-size:12px; color:#8e8e93;">Igår</div></div>
-                    </div>
-                `
-            },
-            camera: {
-                title: '',
-                body: `<div style="background:#000; height:100%; margin:-15px; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:50px;"><div style="display:flex; justify-content:center;"><div style="width:75px; height:75px; border-radius:50%; border:4px solid #fff; padding:3px; cursor:pointer;"><div style="width:100%; height:100%; background:#fff; border-radius:50%;"></div></div></div></div>`
+                title: 'Bilder (Clean Up)',
+                body: `<p style="font-size:14px; opacity:0.8;">Bilder-appen använder nu avancerad lokal AI för att sortera och söka på dina bilder direkt i enheten.</p>`
             }
         };
 
-        const appScreen = document.getElementById('appScreen');
-        const appScreenTitle = document.getElementById('appScreenTitle');
-        const appScreenBody = document.getElementById('appScreenBody');
-        let currentOrigin = null;
-
-        function openApp(id, el) {
-            const app = apps[id];
-            if (!app || !el) return;
-
-            const iconEl = el.querySelector('.app-icon') || el;
-            const rect = iconEl.getBoundingClientRect();
-            const stage = document.querySelector('.iphone-screen').getBoundingClientRect();
-
-            const originX = ((rect.left + rect.width / 2 - stage.left) / stage.width) * 100;
-            const originY = ((rect.top + rect.height / 2 - stage.top) / stage.height) * 100;
-            currentOrigin = { x: originX, y: originY };
-
-            // Göm titeln i header om den är tom (t.ex. Musik/Kamera)
-            appScreenTitle.style.display = app.title ? 'block' : 'none';
-            appScreenTitle.textContent = app.title;
-            appScreenBody.innerHTML = app.body;
-
-            // Om det är en app utan titel (som musik/kamera), ta bort padding i toppen för edge-to-edge
-            appScreenBody.style.paddingTop = app.title ? '15px' : '0px';
-
-            appScreen.style.transition = 'none';
-            appScreen.style.transformOrigin = `${originX}% ${originY}%`;
-            appScreen.style.transform = 'scale(0.15)';
-            appScreen.style.opacity = '0';
-            appScreen.style.borderRadius = '100px';
-            appScreen.classList.add('open');
-
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    appScreen.style.transition = 'transform var(--spring-bouncy), opacity 0.3s ease, border-radius 0.4s ease';
-                    appScreen.style.transform = 'scale(1)';
-                    appScreen.style.opacity = '1';
-                    appScreen.style.borderRadius = '42px';
-                });
-            });
+        function openApp(appId) {
+            const app = appContents[appId];
+            if(!app) return;
+            document.getElementById('appTitle').textContent = app.title;
+            document.getElementById('appBody').innerHTML = app.body;
+            document.getElementById('appScreen').classList.add('open');
         }
 
         function closeApp() {
-            if (!appScreen.classList.contains('open')) return;
-            if (currentOrigin) {
-                appScreen.style.transition = 'transform 0.4s cubic-bezier(0.3, 0.8, 0.3, 1), opacity 0.3s ease, border-radius 0.3s ease';
-                appScreen.style.transformOrigin = `${currentOrigin.x}% ${currentOrigin.y}%`;
-                appScreen.style.transform = 'scale(0.15)';
-                appScreen.style.opacity = '0';
-                appScreen.style.borderRadius = '100px';
-            }
-            setTimeout(() => {
-                appScreen.classList.remove('open');
-                appScreenBody.innerHTML = '';
-            }, 400);
+            document.getElementById('appScreen').classList.remove('open');
         }
 
-        // Svep upp/ner för låsskärm och hem-stapel
-        let touchY = 0;
-        document.getElementById('lockScreen').addEventListener('touchstart', e => touchY = e.touches[0].clientY, {passive:true});
-        document.getElementById('lockScreen').addEventListener('touchend', e => { if (touchY - e.changedTouches[0].clientY > 50) swipeUpToHome(); }, {passive:true});
-        
-        appScreen.addEventListener('touchstart', e => touchY = e.touches[0].clientY, {passive:true});
-        appScreen.addEventListener('touchend', e => { if (e.changedTouches[0].clientY - touchY > 80) closeApp(); }, {passive:true});
+        // Siri AI-kontroll
+        function toggleSiri() {
+            const siri = document.getElementById('siriPanel');
+            siri.classList.toggle('active');
+            if (siri.classList.contains('active')) {
+                document.getElementById('siriText').textContent = "Lyssnar...";
+            }
+        }
 
-        function dialDigit(d) {
-            const disp = document.getElementById('phoneDisplay');
-            if (!disp) return;
-            if (d === 'reset') { disp.textContent = ''; return; }
-            if (d === '⌫') { disp.textContent = disp.textContent.slice(0, -1); }
-            else { disp.textContent += d; }
+        function siriRespond() {
+            const responses = [
+                "Jag har optimerat ditt batteri med de nya iOS 27-algoritmerna.",
+                "Söker efter uppdateringar för dina installerade appar...",
+                "Skapar en sammanfattning av din dag.",
+                "Vill du att jag ska aktivera det nya Liquid Glass-temat?"
+            ];
+            document.getElementById('siriText').textContent = responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function simulateBetaUpdate() {
+            alert("Söker efter iOS 27 Public Beta... Enheten startas om med nya funktioner!");
+            closeApp();
+            document.getElementById('lockScreen').classList.remove('unlocked-swipe');
+            document.querySelector('.iphone-screen').classList.remove('is-unlocked');
         }
     </script>
 </body>
