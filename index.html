@@ -123,12 +123,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 8px;
+            font-size: 7px; /* FIX: var 8px */
             font-weight: 800;
             color: #000; /* Svart text som kontrasterar mot den vita laddningen */
             mix-blend-mode: difference; /* Magisk iOS-effekt: inverterar färg om bakgrunden ändras */
-            letter-spacing: -0.3px;
+            letter-spacing: -0.5px; /* FIX: var -0.3px */
             line-height: 1;
+            transform: scale(1, 0.95); /* FIX: ny rad, klämmer siffran snyggt i höjd */
         }
 
         .battery-head {
