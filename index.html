@@ -43,7 +43,7 @@
             padding: 10px;
         }
 
-        /* Skärm (Nu uppdaterad med blackbakgrund.webp) */
+        /* Skärm */
         .iphone-screen {
             width: 100%;
             height: 100%;
@@ -57,24 +57,90 @@
             overflow: hidden;
         }
 
-        /* Dynamic Island */
+        /* DYNAMIC ISLAND (Helt ombyggd med flexibla tillstånd) */
+        .dynamic-island-container {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
         .dynamic-island {
             width: 110px;
             height: 30px;
             background: #000;
             border-radius: 20px;
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
             transition: all 0.5s var(--spring-io);
             cursor: pointer;
+            pointer-events: auto;
+            overflow: hidden;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .dynamic-island:active {
-            width: 130px;
-            height: 35px;
+        /* Olika tillstånd för islanden */
+        .dynamic-island.compact-music {
+            width: 160px;
+            height: 30px;
+        }
+
+        .dynamic-island.compact-call {
+            width: 170px;
+            height: 30px;
+        }
+
+        .dynamic-island.expanded {
+            width: 340px;
+            height: 80px;
+            border-radius: 35px;
+            padding: 15px 20px;
+        }
+
+        /* Innehåll i Dynamic Island */
+        .island-content {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .island-content.show {
+            opacity: 1;
+        }
+
+        /* Liten musikvåg i stängt läge */
+        .island-wave {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+            height: 12px;
+        }
+        .island-wave span {
+            width: 2px;
+            height: 100%;
+            background: #1db954;
+            animation: wave-bounce 0.8s ease-in-out infinite alternate;
+        }
+        .island-wave span:nth-child(2) { animation-delay: 0.15s; }
+        .island-wave span:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes wave-bounce {
+            0% { height: 3px; }
+            100% { height: 12px; }
         }
 
         /* Statusfält */
@@ -202,7 +268,7 @@
 
         /* Docka */
         .dock-container {
-            padding: 0 18px 20px 18px;
+            padding: 0 18px 35px 18px;
             opacity: 0;
             transform: translateY(20px);
             transition: transform 0.6s var(--spring-io), opacity 0.5s ease;
@@ -230,12 +296,33 @@
             height: 56px;
         }
 
-        .home-screen-indicator {
+        /* Den fasta hem-indikatorn */
+        .home-bar-container {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            cursor: pointer;
+        }
+
+        .home-bar {
             width: 130px;
             height: 5px;
-            background: rgba(255,255,255,0.7);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 3px;
-            margin: 15px auto 0 auto;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .home-bar-container:active .home-bar {
+            transform: scaleX(0.9);
+            background: rgba(255, 255, 255, 1);
         }
 
         /* Fullskärmsappar */
@@ -246,11 +333,12 @@
             width: 100%;
             height: 100%;
             background: #0c0d14;
-            z-index: 1000;
+            z-index: 1001;
             display: none;
             flex-direction: column;
             border-radius: 44px;
             overflow: hidden;
+            padding-bottom: 30px;
         }
 
         .app-screen.open { display: flex; }
@@ -272,23 +360,6 @@
             overflow-y: auto;
         }
 
-        .app-close-zone {
-            height: 45px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            background: rgba(12, 13, 20, 0.9);
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .home-bar {
-            width: 130px;
-            height: 5px;
-            background: #fff;
-            border-radius: 3px;
-        }
-
         /* Siri AI Panel */
         .siri-panel {
             position: absolute;
@@ -303,7 +374,7 @@
             border-radius: 35px 35px 44px 44px;
             z-index: 9999;
             transition: bottom 0.5s var(--spring-io);
-            padding: 25px;
+            padding: 25px 25px 40px 25px;
             box-sizing: border-box;
             color: #fff;
             display: flex;
@@ -401,7 +472,44 @@
 <body>
 
     <div class="iphone-frame">
-        <div class="dynamic-island" onclick="toggleSiri()"></div>
+        
+        <div class="dynamic-island-container">
+            <div class="dynamic-island" id="island" onclick="islandTap()">
+                <div id="islandDefault" class="island-content show"></div>
+
+                <div id="islandMusicCompact" class="island-content" style="display:none; justify-content: space-between; width: 100%;">
+                    <span>🎵</span>
+                    <div class="island-wave"><span></span><span></span><span></span></div>
+                </div>
+
+                <div id="islandCallCompact" class="island-content" style="display:none; justify-content: space-between; width: 100%;">
+                    <span style="color:#38ef7d;">📞</span>
+                    <span id="islandCallTimer" style="font-size:11px;">00:00</span>
+                </div>
+
+                <div id="islandMusicExpanded" class="island-content" style="display:none; flex-direction:row; align-items:center; justify-content:space-between; width:100%;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="width:40px; height:40px; background:#ff2d55; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px;">🎵</div>
+                        <div style="display:flex; flex-direction:column; text-align:left;">
+                            <span style="font-size:13px; font-weight:700;">Liquid Soundwave</span>
+                            <span style="font-size:11px; opacity:0.6;">iOS 26 Beats</span>
+                        </div>
+                    </div>
+                    <button onclick="pauseMusicFromIsland(event)" style="background:rgba(255,255,255,0.2); border:none; color:#fff; border-radius:50%; width:36px; height:36px; cursor:pointer; font-size:14px; font-weight:bold;">⏸</button>
+                </div>
+
+                <div id="islandCallExpanded" class="island-content" style="display:none; flex-direction:row; align-items:center; justify-content:space-between; width:100%;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="width:40px; height:40px; background:#38ef7d; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px;">📞</div>
+                        <div style="display:flex; flex-direction:column; text-align:left;">
+                            <span id="islandCallNumber" style="font-size:13px; font-weight:700;">Samtal</span>
+                            <span id="islandCallTimerExpanded" style="font-size:11px; opacity:0.6;">00:00</span>
+                        </div>
+                    </div>
+                    <button onclick="hangUpFromIsland(event)" style="background:#ff3b30; border:none; color:#fff; border-radius:20px; padding:6px 14px; cursor:pointer; font-weight:bold;">Lägg på</button>
+                </div>
+            </div>
+        </div>
         
         <div class="iphone-screen">
             <div class="status-bar">
@@ -426,7 +534,7 @@
                 <div class="glass-widget">
                     <div style="font-size:11px; text-transform:uppercase; opacity:0.6; letter-spacing:1px;">Apple Intelligence</div>
                     <div style="font-size:16px; font-weight:700; margin-top:2px;">iOS 26.5 Aktivt</div>
-                    <div style="font-size:12px; opacity:0.8; margin-top:2px;">Klicka på Dynamic Island för röststyrning.</div>
+                    <div style="font-size:12px; opacity:0.8; margin-top:2px;">Dynamic Island visar nu dina aktiva appar live!</div>
                 </div>
 
                 <div class="app-grid">
@@ -462,7 +570,6 @@
                     <div class="app-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d); cursor:pointer;" onclick="openApp('phone')">📞</div>
                     <div class="app-icon" style="background: linear-gradient(135deg, #ea00d9, #711c91); cursor:pointer;" onclick="openApp('music')">🎵</div>
                 </div>
-                <div class="home-screen-indicator"></div>
             </div>
 
             <div class="siri-panel" id="siriPanel">
@@ -474,18 +581,25 @@
                 </div>
                 <button onclick="siriRespond()" style="width:100%; padding:12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); border-radius:15px; color:#fff; font-weight:600; cursor:pointer;">Prata med Siri</button>
             </div>
+
+            <div class="home-bar-container" onclick="handleHomeButton()">
+                <div class="home-bar"></div>
+            </div>
         </div>
 
         <div class="app-screen" id="appScreen">
             <div class="app-header" id="appTitle">App</div>
             <div class="app-body" id="appBody">Innehåll</div>
-            <div class="app-close-zone" onclick="closeApp()">
-                <div class="home-bar"></div>
-            </div>
         </div>
     </div>
 
     <script>
+        // Systemvariabler för bakgrundsaktiviteter
+        let activeActivity = null; // 'music' eller 'call' eller null
+        let callTimer = null;
+        let callSeconds = 0;
+        let isIslandExpanded = false;
+
         // Klocka
         function updateClock() {
             const now = new Date();
@@ -501,6 +615,131 @@
         function unlockPhone() {
             document.getElementById('lockScreen').classList.add('unlocked-swipe');
             document.querySelector('.iphone-screen').classList.add('is-unlocked');
+        }
+
+        // Global hemknappsfunktion
+        function handleHomeButton() {
+            const appScreen = document.getElementById('appScreen');
+            const siriPanel = document.getElementById('siriPanel');
+            
+            if (isIslandExpanded) {
+                collapseIsland();
+                return;
+            }
+
+            if (appScreen.classList.contains('open')) {
+                // Om vi stänger Musik eller Telefon minimeras de till Dynamic Island!
+                const currentApp = document.getElementById('appTitle').textContent;
+                if (currentApp === "Nu Spelas") {
+                    setIslandActivity('music');
+                } else if (currentApp === "Pågående Samtal") {
+                    // Vi låter samtalet fortsätta i bakgrunden
+                }
+                closeApp();
+            } else if (siriPanel.classList.contains('active')) {
+                siriPanel.classList.remove('active');
+            }
+        }
+
+        // Dynamic Island Hantering
+        function setIslandActivity(type, extraData = "") {
+            activeActivity = type;
+            const island = document.getElementById('island');
+            
+            // Dölj allt innehåll först
+            document.querySelectorAll('.island-content').forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('show');
+            });
+
+            if (type === 'music') {
+                island.className = "dynamic-island compact-music";
+                const musicCompact = document.getElementById('islandMusicCompact');
+                musicCompact.style.display = 'flex';
+                setTimeout(() => musicCompact.classList.add('show'), 50);
+            } else if (type === 'call') {
+                island.className = "dynamic-island compact-call";
+                document.getElementById('islandCallNumber').textContent = extraData || "Mamma";
+                const callCompact = document.getElementById('islandCallCompact');
+                callCompact.style.display = 'flex';
+                setTimeout(() => callCompact.classList.add('show'), 50);
+                
+                // Starta samtalstimer
+                if (!callTimer) {
+                    callSeconds = 0;
+                    callTimer = setInterval(() => {
+                        callSeconds++;
+                        const mins = Math.floor(callSeconds / 60).toString().padStart(2, '0');
+                        const secs = (callSeconds % 60).toString().padStart(2, '0');
+                        const timeStr = `${mins}:${secs}`;
+                        document.getElementById('islandCallTimer').textContent = timeStr;
+                        document.getElementById('islandCallTimerExpanded').textContent = timeStr;
+                        const screenTimer = document.getElementById('screenCallTimer');
+                        if (screenTimer) screenTimer.textContent = timeStr;
+                    }, 1000);
+                }
+            } else {
+                // Återställ till standardlins
+                island.className = "dynamic-island";
+                const def = document.getElementById('islandDefault');
+                def.style.display = 'flex';
+                setTimeout(() => def.classList.add('show'), 50);
+                if (callTimer) {
+                    clearInterval(callTimer);
+                    callTimer = null;
+                }
+            }
+        }
+
+        function islandTap() {
+            const island = document.getElementById('island');
+            
+            if (!activeActivity) {
+                // Inget körs i bakgrunden -> Öppna Siri
+                toggleSiri();
+                return;
+            }
+
+            // Om islanden redan är expanderad, krymp den
+            if (isIslandExpanded) {
+                collapseIsland();
+                return;
+            }
+
+            // Expandera islanden och visa kontrollerna
+            isIslandExpanded = true;
+            island.className = "dynamic-island expanded";
+            
+            document.querySelectorAll('.island-content').forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('show');
+            });
+
+            if (activeActivity === 'music') {
+                const musicExp = document.getElementById('islandMusicExpanded');
+                musicExp.style.display = 'flex';
+                setTimeout(() => musicExp.classList.add('show'), 50);
+            } else if (activeActivity === 'call') {
+                const callExp = document.getElementById('islandCallExpanded');
+                callExp.style.display = 'flex';
+                setTimeout(() => callExp.classList.add('show'), 50);
+            }
+        }
+
+        function collapseIsland() {
+            isIslandExpanded = false;
+            setIslandActivity(activeActivity);
+        }
+
+        function pauseMusicFromIsland(event) {
+            event.stopPropagation(); // Hindra klicket från att stänga eller öppna igen
+            setIslandActivity(null);
+        }
+
+        function hangUpFromIsland(event) {
+            event.stopPropagation();
+            setIslandActivity(null);
+            closeApp();
         }
 
         // App-innehåll
@@ -574,6 +813,7 @@
                         <button onclick="pressKey('7')">7</button><button onclick="pressKey('8')">8</button><button onclick="pressKey('9')">9</button>
                         <button onclick="pressKey('*')">*</button><button onclick="pressKey('0')">0</button><button onclick="pressKey('⌫')">⌫</button>
                     </div>
+                    <button onclick="startCall()" style="width:68px; height:68px; border-radius:50%; background:#38ef7d; border:none; color:#fff; font-size:26px; display:block; margin:20px auto 0 auto; cursor:pointer;">📞</button>
                 `
             },
             music: {
@@ -584,6 +824,7 @@
                         <h3>Liquid Soundwave</h3>
                         <p style="opacity:0.6; font-size:14px; margin-top:4px;">iOS 26 Beats</p>
                     </div>
+                    <button onclick="playMusicFromApp()" style="display:block; margin:20px auto; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:15px; color:#fff; padding:10px 24px; font-weight:600; cursor:pointer;">Minimera till Dynamic Island</button>
                 `
             }
         };
@@ -598,6 +839,38 @@
 
         function closeApp() {
             document.getElementById('appScreen').classList.remove('open');
+        }
+
+        // Knappsatshantering för samtal
+        function pressKey(val) {
+            const disp = document.getElementById('phoneDisplay');
+            if (!disp) return;
+            if (val === '⌫') {
+                disp.textContent = disp.textContent.slice(0, -1);
+            } else {
+                if (disp.textContent.length < 15) disp.textContent += val;
+            }
+        }
+
+        function startCall() {
+            const nr = document.getElementById('phoneDisplay').textContent || "Mamma";
+            setIslandActivity('call', nr);
+            
+            // Uppdatera skärmen till en pågående samtalsvy
+            document.getElementById('appTitle').textContent = "Pågående Samtal";
+            document.getElementById('appBody').innerHTML = `
+                <div style="text-align:center; padding-top:40px;">
+                    <div style="font-size:40px; margin-bottom:10px;">📞</div>
+                    <h2>${nr}</h2>
+                    <p id="screenCallTimer" style="font-size:18px; opacity:0.6; margin-top:10px;">00:00</p>
+                    <button onclick="hangUpFromIsland(event)" style="background:#ff3b30; color:#fff; border:none; padding:15px 35px; border-radius:30px; margin-top:50px; font-weight:bold; cursor:pointer; font-size:16px;">Lägg på</button>
+                </div>
+            `;
+        }
+
+        function playMusicFromApp() {
+            setIslandActivity('music');
+            closeApp();
         }
 
         // Siri AI-kontroll
@@ -616,17 +889,6 @@
                 "Här är dina senast använda appar."
             ];
             document.getElementById('siriText').textContent = responses[Math.floor(Math.random() * responses.length)];
-        }
-
-        // Telefon-knappsats
-        function pressKey(val) {
-            const disp = document.getElementById('phoneDisplay');
-            if (!disp) return;
-            if (val === '⌫') {
-                disp.textContent = disp.textContent.slice(0, -1);
-            } else {
-                if (disp.textContent.length < 15) disp.textContent += val;
-            }
         }
     </script>
 </body>
