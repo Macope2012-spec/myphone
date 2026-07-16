@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>iOS 18 Ultimate Simulator</title>
+    <title>iOS 18 Private Chat</title>
     <style>
         :root {
             --ios-spring-in: cubic-bezier(0.16, 1, 0.3, 1);
@@ -39,7 +39,7 @@
             overflow: hidden;
         }
 
-        /* IPHONE RAM */
+        /* IPHONE 16 PRO MAX RAM */
         .iphone-frame {
             width: 390px;
             height: 844px;
@@ -74,7 +74,6 @@
             background: #000 url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000') no-repeat center center;
             background-size: cover;
             z-index: -1;
-            transition: background 0.5s ease;
         }
 
         /* DYNAMIC ISLAND */
@@ -93,11 +92,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s var(--ios-spring-in);
-        }
-        .island-recording {
-            width: 135px !important;
-            background: #ff3b30 !important;
         }
 
         /* Statusfält */
@@ -118,39 +112,15 @@
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 8px 16px rgba(0,0,0,0.35);
             transition: transform 0.2s;
-            position: relative;
-            overflow: hidden;
         }
         .app-item:active .app-icon { transform: scale3d(0.85, 0.85, 1); }
 
-        /* Ikon-stilar */
         .icon-messages { background: linear-gradient(180deg, #5fe46e 0%, #2bd04a 100%); }
         .message-bubble { width: 34px; height: 24px; background: #fff; border-radius: 12px; position: relative; }
         .message-bubble::after { content: ''; position: absolute; bottom: -2px; left: -3px; width: 11px; height: 11px; background: #fff; border-bottom-right-radius: 9px; border-bottom-left-radius: 14px; transform: rotate(-10deg); }
-
-        .icon-safari { background: linear-gradient(180deg, #30b0e8 0%, #0d60b5 100%); }
-        .safari-compass { width: 30px; height: 30px; border: 2px solid #fff; border-radius: 50%; position: relative; }
-        .safari-compass::before { content: ''; position: absolute; top: 50%; left: 50%; width: 4px; height: 20px; background: #ff3b30; transform: translate(-50%, -50%) rotate(45deg); border-radius: 2px; }
-
-        .icon-photos { background: #fff; display: grid; grid-template-columns: repeat(2, 1fr); padding: 8px; gap: 2px; }
-        .photo-dot { border-radius: 50%; }
-        .photo-dot:nth-child(1) { background: #ff3b30; } .photo-dot:nth-child(2) { background: #ffcc00; }
-        .photo-dot:nth-child(3) { background: #007aff; } .photo-dot:nth-child(4) { background: #34c759; }
-
-        .icon-camera { background: linear-gradient(180deg, #444 0%, #111 100%); }
-        .camera-lens { width: 26px; height: 26px; background: #000; border: 3px solid #666; border-radius: 50%; }
-
-        .icon-settings { background: linear-gradient(135deg, #f2f2f7 0%, #8e8e93 100%); }
-        .settings-cog { width: 28px; height: 28px; border: 4px dashed #555; border-radius: 50%; }
-
-        .icon-phone { background: linear-gradient(180deg, #34c759 0%, #1c9439 100%); }
-        .phone-handset { width: 22px; height: 22px; background: #fff; border-radius: 4px; transform: rotate(-45deg); }
-
-        .icon-appstore { background: linear-gradient(180deg, #1d71f2 0%, #0a4da2 100%); font-size: 28px; color: #fff; font-weight: bold; }
-
         .app-label { color: #fff; font-size: 11.5px; font-weight: 500; margin-top: 6px; text-align: center; }
 
-        /* FULLSKÄRMS APPAR */
+        /* FULLSKÄRMS CHATT-APP */
         .app-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 1001; display: none; flex-direction: column;
@@ -158,11 +128,19 @@
         }
         .app-header {
             padding: 55px 24px 15px 24px; font-size: 24px; font-weight: 700;
-            color: #fff; border-bottom: 0.5px solid #2c2c2e; display: flex; justify-content: space-between; align-items: center;
+            color: #fff; border-bottom: 0.5px solid #2c2c2e; display: flex; justify-content: space-between;
         }
-        .app-body { flex: 1; padding: 18px; display: flex; flex-direction: column; color: #fff; overflow-y: auto; }
+        .app-body { flex: 1; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
 
-        /* HEM-SVEP */
+        .messages-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 15px; }
+        .msg-bubble { max-width: 75%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
+        .msg-sender { background: var(--ios-blue); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+        
+        .chat-input-bar { display: flex; gap: 8px; padding-top: 10px; }
+        .chat-input-bar input { flex: 1; background: var(--ios-dark-gray); border: none; border-radius: 20px; padding: 12px 16px; color: #fff; font-size: 15px; outline: none; -webkit-user-select: text; user-select: text; }
+        .chat-send-btn { background: var(--ios-blue); border: none; width: 38px; height: 38px; border-radius: 50%; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        /* Hem-svep */
         .home-bar-container {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 30px;
             display: flex; justify-content: center; align-items: flex-end;
@@ -170,48 +148,7 @@
         }
         .home-bar { width: 135px; height: 5px; background: rgba(255, 255, 255, 0.95); border-radius: 3px; }
 
-        /* --- 1. MESSAGES INSIDA --- */
-        .messages-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px; }
-        .msg-bubble { max-width: 75%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.4; }
-        .msg-sender { background: var(--ios-blue); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .chat-input-bar { display: flex; gap: 8px; }
-        .chat-input-bar input { flex: 1; background: var(--ios-dark-gray); border: none; border-radius: 20px; padding: 12px 16px; color: #fff; outline: none; }
-        .chat-send-btn { background: var(--ios-blue); border: none; width: 38px; height: 38px; border-radius: 50%; color: #fff; cursor: pointer; }
-
-        /* --- 2. SAFARI INSIDA --- */
-        .safari-bar { display: flex; background: var(--ios-dark-gray); border-radius: 12px; padding: 8px 12px; align-items: center; gap: 8px; margin-bottom: 15px; }
-        .safari-bar input { background: none; border: none; color: #fff; flex: 1; outline: none; }
-        .safari-content { flex: 1; background: #111; border-radius: 12px; padding: 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-
-        /* --- 3. PHOTOS INSIDA --- */
-        .photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
-        .photo-thumb { aspect-ratio: 1; background-size: cover; background-position: center; border-radius: 4px; }
-
-        /* --- 4. CAMERA INSIDA --- */
-        .camera-view { flex: 1; background: #111; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; }
-        .camera-view video { width: 100%; height: 100%; object-fit: cover; }
-        .camera-fallback { color: #8e8e93; font-size: 14px; text-align: center; padding: 20px; position: absolute; }
-        .camera-shutter { width: 70px; height: 70px; background: #fff; border: 5px solid #2c2c2e; border-radius: 50%; align-self: center; margin-top: 15px; cursor: pointer; }
-
-        /* --- 5. SETTINGS INSIDA --- */
-        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--ios-dark-gray); border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
-        .wallpaper-picker { display: flex; gap: 10px; margin-top: 10px; }
-        .wallpaper-option { width: 60px; height: 100px; border-radius: 8px; border: 2px solid transparent; background-size: cover; cursor: pointer; }
-        .wallpaper-option.selected { border-color: var(--ios-blue); }
-
-        /* --- 6. PHONE INSIDA --- */
-        .phone-number { font-size: 32px; text-align: center; margin-bottom: 20px; height: 40px; }
-        .dial-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px 25px; justify-items: center; margin-bottom: 20px; }
-        .dial-btn { width: 65px; height: 65px; background: var(--ios-dark-gray); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; font-size: 24px; }
-        .dial-btn:active { background: #3a3a3c; }
-        .call-btn { width: 65px; height: 65px; background: var(--ios-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; align-self: center; cursor: pointer; font-size: 24px; }
-
-        /* --- 7. APP STORE INSIDA --- */
-        .store-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--ios-dark-gray); border-radius: 12px; margin-bottom: 10px; }
-        .store-info { display: flex; gap: 10px; align-items: center; }
-        .store-icon { width: 45px; height: 45px; border-radius: 10px; background: var(--ios-blue); display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .store-get { background: rgba(255,255,255,0.15); padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer; color: var(--ios-blue); }
-
+        /* Mobil-anpassning */
         @media (max-width: 600px) {
             .iphone-frame { width: 100vw; height: 100dvh; border-radius: 0; padding: 0; }
             .iphone-screen { border-radius: 0; }
@@ -226,54 +163,21 @@
         </div>
         
         <div class="iphone-screen">
-            <div class="wallpaper-bg" id="wallpaper"></div>
+            <div class="wallpaper-bg"></div>
 
             <div class="status-bar">
-                <span id="statusBarTime">12:00</span>
+                <span>12:00</span>
                 <span>📶 🔋</span>
             </div>
 
             <div class="home-screen">
-                <div class="app-grid" id="homeAppGrid">
-                    
-                    <div class="app-item" onclick="openApp('chatApp')">
-                        <div class="app-icon icon-messages"><div class="message-bubble"></div></div>
+                <div class="app-grid">
+                    <div class="app-item" onclick="openChat()">
+                        <div class="app-icon icon-messages">
+                            <div class="message-bubble"></div>
+                        </div>
                         <div class="app-label">iMessage</div>
                     </div>
-
-                    <div class="app-item" onclick="openApp('safariApp')">
-                        <div class="app-icon icon-safari"><div class="safari-compass"></div></div>
-                        <div class="app-label">Safari</div>
-                    </div>
-
-                    <div class="app-item" onclick="openApp('photosApp')">
-                        <div class="app-icon icon-photos">
-                            <div class="photo-dot"></div><div class="photo-dot"></div>
-                            <div class="photo-dot"></div><div class="photo-dot"></div>
-                        </div>
-                        <div class="app-label">Foton</div>
-                    </div>
-
-                    <div class="app-item" onclick="openApp('cameraApp'); initCamera();">
-                        <div class="app-icon icon-camera"><div class="camera-lens"></div></div>
-                        <div class="app-label">Kamera</div>
-                    </div>
-
-                    <div class="app-item" onclick="openApp('settingsApp')">
-                        <div class="app-icon icon-settings"><div class="settings-cog"></div></div>
-                        <div class="app-label">Inställningar</div>
-                    </div>
-
-                    <div class="app-item" onclick="openApp('phoneApp')">
-                        <div class="app-icon icon-phone"><div class="phone-handset"></div></div>
-                        <div class="app-label">Telefon</div>
-                    </div>
-
-                    <div class="app-item" onclick="openApp('storeApp')">
-                        <div class="app-icon icon-appstore">A</div>
-                        <div class="app-label">App Store</div>
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -281,278 +185,79 @@
         <div class="app-screen" id="chatApp">
             <div class="app-header">
                 <span>Mina Anteckningar</span>
-                <span style="font-size: 14px; color: var(--ios-red); cursor: pointer;" onclick="clearChat()">Rensa</span>
+                <span style="font-size: 14px; color: var(--ios-red); cursor: pointer;" onclick="clearChat()">Rensa allt</span>
             </div>
             <div class="app-body">
-                <div class="messages-list" id="msgList"></div>
+                <div class="messages-list" id="msgList">
+                    </div>
                 <div class="chat-input-bar">
-                    <input type="text" id="chatInput" placeholder="iMessage" onkeydown="if(event.key === 'Enter') sendMsg()">
+                    <input type="text" id="chatInput" placeholder="Skriv ett privat meddelande..." onkeydown="if(event.key === 'Enter') sendMsg()">
                     <button class="chat-send-btn" onclick="sendMsg()">⬆️</button>
                 </div>
             </div>
         </div>
 
-        <div class="app-screen" id="safariApp">
-            <div class="app-header"><span>Safari</span></div>
-            <div class="app-body">
-                <div class="safari-bar">
-                    <span>🔍</span>
-                    <input type="text" id="safariSearch" placeholder="Sök eller ange webbplats..." onkeydown="if(event.key==='Enter') searchSafari()">
-                </div>
-                <div class="safari-content" id="safariContent">
-                    <h2>Välkommen till Safari</h2>
-                    <p style="color: #8e8e93; margin-top: 10px;">Skriv något i sökfältet och tryck Enter för att söka.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-screen" id="photosApp">
-            <div class="app-header"><span>Bibliotek</span></div>
-            <div class="app-body">
-                <h3 style="margin-bottom: 10px;">Senaste foton</h3>
-                <div class="photos-grid">
-                    <div class="photo-thumb" style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=200')"></div>
-                    <div class="photo-thumb" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=200')"></div>
-                    <div class="photo-thumb" style="background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=200')"></div>
-                    <div class="photo-thumb" style="background-image: url('https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=200')"></div>
-                    <div class="photo-thumb" style="background-image: url('https://images.unsplash.com/photo-1472214222541-d510753a4907?w=200')"></div>
-                    <div class="photo-thumb" style="background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=200')"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-screen" id="cameraApp">
-            <div class="app-header"><span>Kamera</span></div>
-            <div class="app-body" style="padding: 0;">
-                <div class="camera-view">
-                    <video id="cameraVideo" autoplay playsinline></video>
-                    <div class="camera-fallback" id="cameraFallback">Godkänn kameratillstånd för att se sökaren.</div>
-                </div>
-                <div style="height: 120px; display: flex; justify-content: center; align-items: center;">
-                    <div class="camera-shutter" onclick="takePhoto()"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-screen" id="settingsApp">
-            <div class="app-header"><span>Inställningar</span></div>
-            <div class="app-body">
-                <div class="setting-row">
-                    <span>WiFi</span>
-                    <span style="color: #8e8e93;">Ansluten 📶</span>
-                </div>
-                <div class="setting-row">
-                    <span>Bluetooth</span>
-                    <span style="color: #8e8e93;">På</span>
-                </div>
-                <h3 style="margin-top: 20px; margin-bottom: 10px;">Välj Bakgrundsbild</h3>
-                <div class="wallpaper-picker">
-                    <div class="wallpaper-option" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100')" onclick="setWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000')"></div>
-                    <div class="wallpaper-option" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=100')" onclick="setWallpaper('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=1000')"></div>
-                    <div class="wallpaper-option" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=100')" onclick="setWallpaper('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000')"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-screen" id="phoneApp">
-            <div class="app-header"><span>Knappsats</span></div>
-            <div class="app-body">
-                <div class="phone-number" id="phoneNumberDisplay"></div>
-                <div class="dial-pad">
-                    <div class="dial-btn" onclick="dial('1')">1</div>
-                    <div class="dial-btn" onclick="dial('2')">2</div>
-                    <div class="dial-btn" onclick="dial('3')">3</div>
-                    <div class="dial-btn" onclick="dial('4')">4</div>
-                    <div class="dial-btn" onclick="dial('5')">5</div>
-                    <div class="dial-btn" onclick="dial('6')">6</div>
-                    <div class="dial-btn" onclick="dial('7')">7</div>
-                    <div class="dial-btn" onclick="dial('8')">8</div>
-                    <div class="dial-btn" onclick="dial('9')">9</div>
-                    <div class="dial-btn" onclick="dial('*')">*</div>
-                    <div class="dial-btn" onclick="dial('0')">0</div>
-                    <div class="dial-btn" onclick="dial('#')">#</div>
-                </div>
-                <div style="display: flex; justify-content: center; gap: 40px;">
-                    <div class="call-btn" onclick="startCall()">📞</div>
-                    <div class="call-btn" style="background: #3a3a3c; font-size: 16px;" onclick="backspaceDial()">⌫</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-screen" id="storeApp">
-            <div class="app-header"><span>App Store</span></div>
-            <div class="app-body">
-                <h3 style="margin-bottom: 15px;">Populära appar</h3>
-                <div class="store-item">
-                    <div class="store-info">
-                        <div class="store-icon" style="background: #ff5e3a;">🎮</div>
-                        <div>
-                            <div>Flappy Bird</div>
-                            <div style="font-size: 12px; color: #8e8e93;">Spel</div>
-                        </div>
-                    </div>
-                    <div class="store-get" onclick="downloadApp('Flappy Bird', '🎮')">HÄMTA</div>
-                </div>
-                <div class="store-item">
-                    <div class="store-info">
-                        <div class="store-icon" style="background: #000;">🎵</div>
-                        <div>
-                            <div>TikTok</div>
-                            <div style="font-size: 12px; color: #8e8e93;">Underhållning</div>
-                        </div>
-                    </div>
-                    <div class="store-get" onclick="downloadApp('TikTok', '🎵')">HÄMTA</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="home-bar-container" onclick="closeAllApps()">
+        <div class="home-bar-container" onclick="closeChat()">
             <div class="home-bar"></div>
         </div>
     </div>
 
     <script>
-        let currentStream = null;
+        // Ladda sparade anteckningar/meddelanden när sidan startas
+        document.addEventListener("DOMContentLoaded", loadMessages);
 
-        // Klocka i statusfältet
-        function updateClock() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('statusBarTime').textContent = timeStr;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // ÖPPNA OCH STÄNGA APPAR
-        function openApp(appId) {
-            closeAllApps();
-            document.getElementById(appId).style.display = 'flex';
-        }
-
-        function closeAllApps() {
-            const screens = document.querySelectorAll('.app-screen');
-            screens.forEach(screen => screen.style.display = 'none');
-            
-            // Stäng av kameran om vi lämnar kameraappen
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-                currentStream = null;
-            }
-            document.getElementById('island').classList.remove('island-recording');
-        }
-
-        // --- 1. iMESSAGE LOGIK ---
         function sendMsg() {
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
             if (!text) return;
 
-            let savedMessages = JSON.parse(localStorage.getItem('my_messages')) || [];
+            // Spara lokalt på enheten
+            let savedMessages = JSON.parse(localStorage.getItem('private_messages')) || [];
             savedMessages.push(text);
-            localStorage.setItem('my_messages', JSON.stringify(savedMessages));
+            localStorage.setItem('private_messages', JSON.stringify(savedMessages));
 
+            // Visa i gränssnittet
             renderMessage(text);
+            
             input.value = '';
+            const list = document.getElementById('msgList');
+            list.scrollTop = list.scrollHeight;
         }
 
         function renderMessage(text) {
             const list = document.getElementById('msgList');
             list.innerHTML += `<div class="msg-bubble msg-sender">${text}</div>`;
-            list.scrollTop = list.scrollHeight;
         }
 
         function loadMessages() {
             const list = document.getElementById('msgList');
-            let savedMessages = JSON.parse(localStorage.getItem('my_messages')) || [];
-            list.innerHTML = '';
+            let savedMessages = JSON.parse(localStorage.getItem('private_messages')) || [];
+            
             if (savedMessages.length === 0) {
-                list.innerHTML = `<div class="msg-bubble" style="background: var(--ios-dark-gray); align-self: center; border-radius: 12px; font-size: 13px;">Skriv dina privata anteckningar här...</div>`;
+                list.innerHTML = `<div class="msg-bubble msg-sender" style="background: var(--ios-dark-gray); align-self: center; border-radius: 18px; font-size: 13px; text-align: center;">Detta är din privata rymd. Allt du skriver här sparas säkert på din egen enhet. 🔒</div>`;
             } else {
-                savedMessages.forEach(msg => renderMessage(msg));
+                list.innerHTML = '';
+                savedMessages.forEach(msg => {
+                    renderMessage(msg);
+                });
             }
+            list.scrollTop = list.scrollHeight;
         }
-        loadMessages();
 
         function clearChat() {
-            localStorage.removeItem('my_messages');
-            loadMessages();
-        }
-
-        // --- 2. SAFARI LOGIK ---
-        function searchSafari() {
-            const input = document.getElementById('safariSearch');
-            const query = input.value.trim();
-            const content = document.getElementById('safariContent');
-            if (!query) return;
-
-            content.innerHTML = `
-                <div style="text-align: left; width: 100%;">
-                    <h3 style="color: var(--ios-blue); cursor: pointer;">${query}</h3>
-                    <p style="color: #34c759; font-size: 12px; margin-bottom: 8px;">https://www.google.com/search?q=${encodeURIComponent(query)}</p>
-                    <p style="color: #8e8e93; font-size: 14px; line-height: 1.4;">Här visas sökresultat inuti din iOS-simulator för "${query}". Safari är nu helt integrerad!</p>
-                </div>
-            `;
-        }
-
-        // --- 4. KAMERA LOGIK ---
-        async function initCamera() {
-            const video = document.getElementById('cameraVideo');
-            const fallback = document.getElementById('cameraFallback');
-            const island = document.getElementById('island');
-
-            try {
-                currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-                video.srcObject = currentStream;
-                fallback.style.display = 'none';
-                video.style.display = 'block';
-                island.classList.add('island-recording'); // Visar röd prick i Dynamic Island
-            } catch (err) {
-                fallback.textContent = "Kunde inte ansluta till kameran. Kontrollera behörigheter.";
-                video.style.display = 'none';
+            if (confirm("Vill du rensa alla dina sparade meddelanden?")) {
+                localStorage.removeItem('private_messages');
+                loadMessages();
             }
         }
 
-        function takePhoto() {
-            alert("📸 Klick! Bilden sparades i ditt bibliotek (Foton).");
+        function openChat() {
+            document.getElementById('chatApp').style.display = 'flex';
+            loadMessages(); // Ladda om meddelanden när appen öppnas
         }
 
-        // --- 5. INSTÄLLNINGAR (WALLPAPER) ---
-        function setWallpaper(url) {
-            document.getElementById('wallpaper').style.backgroundImage = `url('${url}')`;
-        }
-
-        // --- 6. TELEFON LOGIK ---
-        let currentDial = '';
-        function dial(num) {
-            currentDial += num;
-            document.getElementById('phoneNumberDisplay').textContent = currentDial;
-        }
-        function backspaceDial() {
-            currentDial = currentDial.slice(0, -1);
-            document.getElementById('phoneNumberDisplay').textContent = currentDial;
-        }
-        function startCall() {
-            if (!currentDial) return;
-            alert(`Ringer ${currentDial}... 📞`);
-            currentDial = '';
-            document.getElementById('phoneNumberDisplay').textContent = '';
-        }
-
-        // --- 7. APP STORE LOGIK ---
-        function downloadApp(name, icon) {
-            alert(`Laddar ner "${name}"...`);
-            setTimeout(() => {
-                const grid = document.getElementById('homeAppGrid');
-                // Skapa en ny appikon på hemskärmen
-                grid.innerHTML += `
-                    <div class="app-item" onclick="alert('Du öppnade det installerade spelet/appen: ${name}')">
-                        <div class="app-icon" style="background: #333; font-size: 24px;">${icon}</div>
-                        <div class="app-label">${name}</div>
-                    </div>
-                `;
-                alert(`"${name}" har installerats på hemskärmen!`);
-                closeAllApps();
-            }, 1500);
+        function closeChat() {
+            document.getElementById('chatApp').style.display = 'none';
         }
     </script>
 </body>
