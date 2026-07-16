@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>iOS 26 Simulator</title>
+    <title>Simulator</title>
     <style>
         :root {
             --spring-io: cubic-bezier(0.16, 1, 0.3, 1);
@@ -254,9 +254,7 @@
             cursor: pointer;
         }
 
-        /* ========================================================
-           100% ÄKTA APPLE APP ICON STYLES (PURE CSS RECREATIONS)
-           ======================================================== */
+        /* App-ikoner */
         .app-icon {
             width: 60px;
             height: 60px;
@@ -287,7 +285,6 @@
             border: 2px solid rgba(255,255,255,0.3);
             border-radius: 50%;
         }
-        /* Kompassnålen */
         .icon-safari::after {
             content: '';
             position: absolute;
@@ -313,7 +310,7 @@
             z-index: 2;
         }
 
-        /* Bilder original-look (Blomman) */
+        /* Bilder (Blomman) */
         .icon-photos {
             background: #ffffff;
         }
@@ -341,7 +338,7 @@
         .petal:nth-child(7) { background: #1ad6fd; transform: rotate(270deg) translateY(-6px); }
         .petal:nth-child(8) { background: #b545ff; transform: rotate(315deg) translateY(-6px); }
 
-        /* Inställningar original-look */
+        /* Inställningar */
         .icon-settings {
             background: linear-gradient(135deg, #f5f5f7 0%, #e3e3e8 100%);
             display: flex;
@@ -376,7 +373,6 @@
             border-radius: 50%;
             z-index: 3;
         }
-        /* Kugghjulens tänder */
         .gear-tooth {
             position: absolute;
             width: 6px;
@@ -388,7 +384,7 @@
         .gear-tooth:nth-child(3) { transform: rotate(90deg); }
         .gear-tooth:nth-child(4) { transform: rotate(135deg); }
 
-        /* App Store original-look */
+        /* App Store */
         .icon-appstore {
             background: linear-gradient(180deg, #1d9dfd 0%, #0076e4 100%);
         }
@@ -421,7 +417,7 @@
             left: 4px;
         }
 
-        /* Meddelanden original-look */
+        /* Meddelanden */
         .icon-messages {
             background: linear-gradient(180deg, #53d769 0%, #34c759 100%);
         }
@@ -445,7 +441,7 @@
             transform: rotate(-10deg);
         }
 
-        /* Kamera original-look */
+        /* Kamera */
         .icon-camera {
             background: linear-gradient(180deg, #eff0f1 0%, #dcdde0 100%);
         }
@@ -476,7 +472,7 @@
             border-radius: 50%;
         }
 
-        /* Kartor original-look */
+        /* Kartor */
         .icon-maps {
             background: #e5e5ea;
         }
@@ -509,7 +505,7 @@
             border-top: 6px solid #ff3b30;
         }
 
-        /* Väder original-look */
+        /* Väder */
         .icon-weather {
             background: linear-gradient(180deg, #5ac8fa 0%, #007aff 100%);
         }
@@ -543,7 +539,7 @@
             left: 4px;
         }
 
-        /* Telefon original-look */
+        /* Telefon */
         .icon-phone {
             background: linear-gradient(180deg, #53d769 0%, #34c759 100%);
         }
@@ -567,7 +563,7 @@
             box-shadow: 24px 0 0 #fff;
         }
 
-        /* Musik original-look */
+        /* Musik */
         .icon-music {
             background: linear-gradient(180deg, #ff5e3a 0%, #ff2a68 100%);
         }
@@ -610,7 +606,6 @@
             bottom: 2px;
         }
 
-        /* App etiketter under ikonerna */
         .app-label {
             color: #fff;
             font-size: 11px;
@@ -799,7 +794,7 @@
                         <div style="width:40px; height:40px; background:#ff2d55; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px;">🎵</div>
                         <div style="display:flex; flex-direction:column; text-align:left;">
                             <span style="font-size:13px; font-weight:700;">Liquid Soundwave</span>
-                            <span style="font-size:11px; opacity:0.6;">iOS 26 Beats</span>
+                            <span style="font-size:11px; opacity:0.6;">Beats</span>
                         </div>
                     </div>
                     <button onclick="pauseMusicFromIsland(event)" style="background:rgba(255,255,255,0.2); border:none; color:#fff; border-radius:50%; width:36px; height:36px; cursor:pointer; font-size:14px; font-weight:bold;">⏸</button>
@@ -958,305 +953,3 @@
             document.getElementById('clock').textContent = `${h}:${m}`;
             document.getElementById('time-widget').textContent = `${h}:${m}`;
         }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // Lås upp funktion
-        function unlockPhone() {
-            document.getElementById('lockScreen').classList.add('unlocked-swipe');
-            document.querySelector('.iphone-screen').classList.add('is-unlocked');
-            isLocked = false;
-        }
-
-        // Global hemknappsfunktion (Svep & Klick-hanterare)
-        const gestureZone = document.getElementById('homeGestureZone');
-        const homeBar = document.getElementById('homeBar');
-        let startY = 0;
-
-        // Klick-stöd
-        gestureZone.addEventListener('click', () => {
-            triggerHomeAction();
-        });
-
-        // Touch-drag (Svep uppåt) stöd för mobiler
-        gestureZone.addEventListener('touchstart', (e) => {
-            startY = e.touches[0].clientY;
-            homeBar.style.transform = "scaleX(0.85) translateY(-5px)";
-        });
-
-        gestureZone.addEventListener('touchend', (e) => {
-            let endY = e.changedTouches[0].clientY;
-            homeBar.style.transform = "none";
-            if (startY - endY > 30) { // Om man svepte minst 30px uppåt
-                triggerHomeAction();
-            }
-        });
-
-        function triggerHomeAction() {
-            // Om telefonen är låst: Lås upp den!
-            if (isLocked) {
-                unlockPhone();
-                return;
-            }
-
-            const appScreen = document.getElementById('appScreen');
-            
-            if (isIslandExpanded) {
-                collapseIsland();
-                return;
-            }
-
-            if (appScreen.classList.contains('open')) {
-                const currentApp = document.getElementById('appTitle').textContent;
-                if (currentApp === "Nu Spelas") {
-                    setIslandActivity('music');
-                }
-                closeApp();
-            }
-        }
-
-        // Dynamic Island Hantering
-        function setIslandActivity(type, extraData = "") {
-            activeActivity = type;
-            const island = document.getElementById('island');
-            
-            document.querySelectorAll('.island-content').forEach(el => {
-                el.style.display = 'none';
-                el.classList.remove('show');
-            });
-
-            if (type === 'music') {
-                island.className = "dynamic-island compact-music";
-                const musicCompact = document.getElementById('islandMusicCompact');
-                musicCompact.style.display = 'flex';
-                setTimeout(() => musicCompact.classList.add('show'), 50);
-            } else if (type === 'call') {
-                island.className = "dynamic-island compact-call";
-                document.getElementById('islandCallNumber').textContent = extraData || "Mamma";
-                const callCompact = document.getElementById('islandCallCompact');
-                callCompact.style.display = 'flex';
-                setTimeout(() => callCompact.classList.add('show'), 50);
-                
-                if (!callTimer) {
-                    callSeconds = 0;
-                    callTimer = setInterval(() => {
-                        callSeconds++;
-                        const mins = Math.floor(callSeconds / 60).toString().padStart(2, '0');
-                        const secs = (callSeconds % 60).toString().padStart(2, '0');
-                        const timeStr = `${mins}:${secs}`;
-                        document.getElementById('islandCallTimer').textContent = timeStr;
-                        document.getElementById('islandCallTimerExpanded').textContent = timeStr;
-                        const screenTimer = document.getElementById('screenCallTimer');
-                        if (screenTimer) screenTimer.textContent = timeStr;
-                    }, 1000);
-                }
-            } else {
-                island.className = "dynamic-island";
-                const def = document.getElementById('islandDefault');
-                def.style.display = 'flex';
-                setTimeout(() => def.classList.add('show'), 50);
-                if (callTimer) {
-                    clearInterval(callTimer);
-                    callTimer = null;
-                }
-            }
-        }
-
-        function islandTap() {
-            if (!activeActivity) return;
-
-            const island = document.getElementById('island');
-
-            if (isIslandExpanded) {
-                collapseIsland();
-                return;
-            }
-
-            isIslandExpanded = true;
-            island.className = "dynamic-island expanded";
-            
-            document.querySelectorAll('.island-content').forEach(el => {
-                el.style.display = 'none';
-                el.classList.remove('show');
-            });
-
-            if (activeActivity === 'music') {
-                const musicExp = document.getElementById('islandMusicExpanded');
-                musicExp.style.display = 'flex';
-                setTimeout(() => musicExp.classList.add('show'), 50);
-            } else if (activeActivity === 'call') {
-                const callExp = document.getElementById('islandCallExpanded');
-                callExp.style.display = 'flex';
-                setTimeout(() => callExp.classList.add('show'), 50);
-            }
-        }
-
-        function collapseIsland() {
-            isIslandExpanded = false;
-            setIslandActivity(activeActivity);
-        }
-
-        function pauseMusicFromIsland(event) {
-            event.stopPropagation();
-            setIslandActivity(null);
-        }
-
-        function hangUpFromIsland(event) {
-            event.stopPropagation();
-            setIslandActivity(null);
-            closeApp();
-        }
-
-        // App-innehåll
-        const appContents = {
-            safari: {
-                title: 'Safari',
-                body: `
-                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px;">
-                        <h3>Sök med AI-sammanfattning</h3>
-                        <p style="font-size:14px; opacity:0.7; margin-top:8px;">Sidor anpassas nu automatiskt för enklare läsning.</p>
-                    </div>
-                    <div class="safari-bar">🔍 Sök i iOS 26...</div>
-                `
-            },
-            photos: {
-                title: 'Bilder',
-                body: `
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                        <div style="aspect-ratio:1; background:rgba(255,255,255,0.1); border-radius:10px; display:flex; justify-content:center; align-items:center;">🌄</div>
-                        <div style="aspect-ratio:1; background:rgba(255,255,255,0.1); border-radius:10px; display:flex; justify-content:center; align-items:center;">🌌</div>
-                    </div>
-                `
-            },
-            settings: {
-                title: 'Inställningar',
-                body: `
-                    <div class="setting-row"><span>Wi-Fi</span><span style="opacity:0.5;">Ansluten ›</span></div>
-                    <div class="setting-row"><span>Bluetooth</span><span style="opacity:0.5;">På ›</span></div>
-                `
-            },
-            appstore: {
-                title: 'App Store',
-                body: `
-                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <h4>Siri AI Chat</h4>
-                            <p style="font-size:12px; opacity:0.6;">Produktivitet</p>
-                        </div>
-                        <button style="background:#0a84ff; color:#fff; padding:6px 14px; border:none; border-radius:12px; font-weight:bold;">HÄMTA</button>
-                    </div>
-                `
-            },
-            messages: {
-                title: 'Meddelanden',
-                body: `
-                    <div style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; margin-bottom:10px;">
-                        <strong style="font-size:14px;">Mamma</strong>
-                        <p style="font-size:13px; opacity:0.7; margin-top:2px;">Kommer du hem snart? 👍</p>
-                    </div>
-                `
-            },
-            camera: {
-                title: 'Kamera',
-                body: `
-                    <div style="height:100%; display:flex; flex-direction:column; justify-content:space-between; align-items:center; padding:40px 0;">
-                        <div style="width:200px; height:200px; border:2px dashed rgba(255,255,255,0.3); border-radius:20px; display:flex; justify-content:center; align-items:center; opacity:0.5;">Sökare</div>
-                        <div style="width:70px; height:70px; border-radius:50%; border:5px solid #fff; cursor:pointer;"></div>
-                    </div>
-                `
-            },
-            maps: {
-                title: 'Kartor',
-                body: `
-                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom: 15px;">
-                        <h3>Sök i närheten</h3>
-                        <p style="font-size:13px; opacity:0.6;">Hitta restauranger, bensinstationer och mer.</p>
-                    </div>
-                    <div style="height:180px; background:rgba(255,255,255,0.1); border-radius:14px; display:flex; justify-content:center; align-items:center; color:rgba(255,255,255,0.5);">[Karta laddas...]</div>
-                `
-            },
-            weather: {
-                title: 'Väder',
-                body: `
-                    <div style="text-align:center; padding:20px 0;">
-                        <h2 style="font-size:48px; font-weight:200;">21°</h2>
-                        <p style="font-size:16px;">Mestadels soligt</p>
-                        <p style="opacity:0.6; font-size:13px; margin-top:5px;">H: 24° L: 14°</p>
-                    </div>
-                `
-            },
-            phone: {
-                title: 'Telefon',
-                body: `
-                    <div class="phone-display" id="phoneDisplay"></div>
-                    <div class="keypad-grid">
-                        <button onclick="pressKey('1')">1</button><button onclick="pressKey('2')">2</button><button onclick="pressKey('3')">3</button>
-                        <button onclick="pressKey('4')">4</button><button onclick="pressKey('5')">5</button><button onclick="pressKey('6')">6</button>
-                        <button onclick="pressKey('7')">7</button><button onclick="pressKey('8')">8</button><button onclick="pressKey('9')">9</button>
-                        <button onclick="pressKey('*')">*</button><button onclick="pressKey('0')">0</button><button onclick="pressKey('⌫')">⌫</button>
-                    </div>
-                    <button onclick="startCall()" style="width:68px; height:68px; border-radius:50%; background:#2fc854; border:none; color:#fff; font-size:26px; display:block; margin:20px auto 0 auto; cursor:pointer;">📞</button>
-                `
-            },
-            music: {
-                title: 'Nu Spelas',
-                body: `
-                    <div class="music-disc"></div>
-                    <div style="text-align:center; margin-top:10px;">
-                        <h3>Liquid Soundwave</h3>
-                        <p style="opacity:0.6; font-size:14px; margin-top:4px;">iOS 26 Beats</p>
-                    </div>
-                    <button onclick="playMusicFromApp()" style="display:block; margin:20px auto; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:15px; color:#fff; padding:10px 24px; font-weight:600; cursor:pointer;">Minimera till Dynamic Island</button>
-                `
-            }
-        };
-
-        function openApp(appId) {
-            const app = appContents[appId];
-            if(!app) return;
-            const screen = document.getElementById('appScreen');
-            document.getElementById('appTitle').textContent = app.title;
-            document.getElementById('appBody').innerHTML = app.body;
-            screen.style.display = 'flex';
-            setTimeout(() => screen.classList.add('open'), 10);
-        }
-
-        function closeApp() {
-            const screen = document.getElementById('appScreen');
-            screen.classList.remove('open');
-            setTimeout(() => screen.style.display = 'none', 500);
-        }
-
-        // Knappsatshantering för samtal
-        function pressKey(val) {
-            const disp = document.getElementById('phoneDisplay');
-            if (!disp) return;
-            if (val === '⌫') {
-                disp.textContent = disp.textContent.slice(0, -1);
-            } else {
-                if (disp.textContent.length < 15) disp.textContent += val;
-            }
-        }
-
-        function startCall() {
-            const nr = document.getElementById('phoneDisplay').textContent || "Mamma";
-            setIslandActivity('call', nr);
-            
-            document.getElementById('appTitle').textContent = "Pågående Samtal";
-            document.getElementById('appBody').innerHTML = `
-                <div style="text-align:center; padding-top:40px;">
-                    <div style="font-size:40px; margin-bottom:10px;">📞</div>
-                    <h2>${nr}</h2>
-                    <p id="screenCallTimer" style="font-size:18px; opacity:0.6; margin-top:10px;">00:00</p>
-                    <button onclick="hangUpFromIsland(event)" style="background:#ff3b30; color:#fff; border:none; padding:15px 35px; border-radius:30px; margin-top:50px; font-weight:bold; cursor:pointer; font-size:16px;">Lägg på</button>
-                </div>
-            `;
-        }
-
-        function playMusicFromApp() {
-            setIslandActivity('music');
-            closeApp();
-        }
-    </script>
-</body>
-</html>
