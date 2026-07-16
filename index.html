@@ -6,9 +6,9 @@
     <title>iOS Simulator Pro</title>
     <style>
         :root {
-            /* FYSIK-KURVOR FÖR ULTRA-FLYT (Använder Apple-liknande parametrar) */
-            --ios-open-spring: cubic-bezier(0.22, 1.25, 0.36, 1); /* Perfekt studs */
-            --ios-close-spring: cubic-bezier(0.25, 1, 0.3, 1);    /* Snabb, rapp respons */
+            /* FYSIK-KURVOR FÖR ULTRA-FLYT */
+            --ios-open-spring: cubic-bezier(0.22, 1.25, 0.36, 1); 
+            --ios-close-spring: cubic-bezier(0.25, 1, 0.3, 1);    
             --ios-island-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
             
             --liquid-glass: rgba(255, 255, 255, 0.11);
@@ -105,24 +105,24 @@
                 padding-bottom: calc(20px + env(safe-area-inset-bottom, 15px)) !important;
             }
             .home-bar-container {
-                padding-bottom: env(safe-area-inset-bottom, 8px) !important;
+                padding-bottom: calc(env(safe-area-inset-bottom, 8px) + 4px) !important;
             }
         }
 
-        /* REALISTISK DYNAMIC ISLAND */
+        /* DYNAMIC ISLAND (STÖRRE OCH BÄTTRE PLACERAD) */
         .dynamic-island-container {
             position: absolute;
-            top: 11px;
+            top: 15px; /* Sänkt från 11px för realistisk placering */
             left: 50%;
             transform: translate3d(-50%, 0, 0);
             z-index: 99999;
             pointer-events: none;
         }
         .dynamic-island {
-            width: 110px;
-            height: 30px;
+            width: 125px; /* Ökat från 110px */
+            height: 35px; /* Ökat från 30px */
             background: #000;
-            border-radius: 20px;
+            border-radius: 22px;
             box-sizing: border-box;
             border: 0.5px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
@@ -130,19 +130,19 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding: 0 12px;
+            padding: 0 14px;
             transition: all 0.55s var(--ios-island-spring);
             will-change: width, height, transform;
         }
         
-        /* Gömda linser inuti hårdvaran */
+        /* Gömda linser och sensorer (Anpassade efter den nya storleken) */
         .dynamic-island::before {
             content: '';
             position: absolute;
-            left: 14px;
-            top: 10px;
-            width: 10px;
-            height: 10px;
+            left: 16px;
+            top: 12px;
+            width: 11px;
+            height: 11px;
             border-radius: 50%;
             background: radial-gradient(circle, #0d122b 0%, #03040a 80%);
             opacity: 0.85;
@@ -151,19 +151,19 @@
         .dynamic-island::after {
             content: '';
             position: absolute;
-            left: 28px;
-            top: 12px;
-            width: 6px;
-            height: 6px;
+            left: 32px;
+            top: 14px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background: radial-gradient(circle, #051405 0%, #010401 90%);
             opacity: 0.7;
         }
 
-        /* Grön Kamera-lampa (Integritetsindikator) */
+        /* Grön LED-indikator */
         .camera-indicator {
-            width: 5.5px;
-            height: 5.5px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: #30d158;
             opacity: 0;
@@ -177,7 +177,7 @@
             transform: scale3d(1, 1, 1);
         }
 
-        /* Puls-animation när Dynamic Island reagerar på interaktioner */
+        /* Island-puls */
         .island-pulse {
             animation: islandBump 0.4s var(--ios-island-spring);
         }
@@ -189,7 +189,7 @@
 
         @media (max-width: 600px) {
             .dynamic-island-container {
-                top: calc(env(safe-area-inset-top, 12px) + 2px);
+                top: calc(env(safe-area-inset-top, 12px) + 5px);
             }
         }
 
@@ -276,11 +276,10 @@
         .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px 14px; padding-top: 15px; }
         .app-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         
-        /* REALISTISKA APP-IKONER */
+        /* Ikon-design */
         .app-icon {
             width: 62px; height: 62px; border-radius: 22.5%;
             display: flex; align-items: center; justify-content: center;
-            /* Premium djupeffekt och inre kant */
             box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.2), 0 5px 14px rgba(0,0,0,0.22);
             transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.18s ease;
             position: relative; overflow: hidden; background: #fff;
@@ -353,14 +352,25 @@
         }
         .dock .app-icon { width: 60px; height: 60px; }
 
-        /* Hem-svep */
+        /* HEM-SVEP (FLYTTAD TILL TOPP-LAGRET) */
         .home-bar-container {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 35px;
-            display: flex; justify-content: center; align-items: flex-end;
-            z-index: 10000; padding-bottom: 8px; cursor: pointer;
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 40px; /* Något högre träffyta */
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-end;
+            z-index: 10005; /* Betydligt högre än .app-screen (1001) */
+            padding-bottom: 10px; 
+            cursor: pointer;
         }
         .home-bar { 
-            width: 135px; height: 5px; background: rgba(255, 255, 255, 0.9); border-radius: 3px; 
+            width: 135px; 
+            height: 5px; 
+            background: rgba(255, 255, 255, 0.9); 
+            border-radius: 3px; 
             transition: transform 0.2s var(--ios-close-spring);
         }
         .home-bar-container:active .home-bar { transform: scale3d(0.95, 0.8, 1); }
@@ -371,7 +381,7 @@
             background: #000; z-index: 1001; display: none; flex-direction: column;
             border-radius: 44px; overflow: hidden; padding-bottom: 35px;
             
-            /* Ultra-smooth maskning baserad på klickpunkt */
+            /* Ultra-smooth maskning */
             transform-origin: var(--origin-x) var(--origin-y);
             opacity: 0;
             transform: scale3d(0.04, 0.04, 1) translate3d(0, 0, 0);
@@ -380,7 +390,7 @@
             will-change: transform, opacity, border-radius;
             backface-visibility: hidden;
             
-            /* Standard stängningsfjäder (Rapp, snabb och direkt) */
+            /* Standard stängningsfjäder */
             transition: transform 0.48s var(--ios-close-spring), opacity 0.28s ease-out, border-radius 0.48s var(--ios-close-spring);
         }
 
@@ -388,7 +398,7 @@
             .app-screen { border-radius: 0; }
         }
 
-        /* Fullt öppen med Apples elastiska fjäder */
+        /* Fullt öppen */
         .app-screen.open {
             opacity: 1;
             transform: scale3d(1, 1, 1) translate3d(0, 0, 0) !important;
@@ -579,15 +589,15 @@
                     </div>
                 </div>
             </div>
-
-            <div class="home-bar-container" id="homeGestureZone">
-                <div class="home-bar"></div>
-            </div>
         </div>
 
         <div class="app-screen" id="appScreen">
             <div class="app-header" id="appTitle">App</div>
             <div class="app-body" id="appBody">Innehåll</div>
+        </div>
+
+        <div class="home-bar-container" id="homeGestureZone">
+            <div class="home-bar"></div>
         </div>
     </div>
 
@@ -685,7 +695,7 @@
                     }
                 }
                 
-                // Aktivera den gröna LED-lampan i Dynamic Island
+                // Aktivera lampa i Dynamic Island
                 document.getElementById('islandContainer').classList.add('camera-active');
             } catch (err) {
                 console.error("Kunde inte starta kameran: ", err);
@@ -732,7 +742,7 @@
             thumb.style.backgroundImage = `url(${imgData})`;
         }
 
-        // Öppna App (Med ultra-smidig spring-mekanik)
+        // Öppna App
         function openApp(appElement) {
             const appId = appElement.getAttribute('data-id');
             const app = contents[appId];
@@ -741,7 +751,6 @@
             bumpIsland();
             lastClickedIcon = appElement.querySelector('.app-icon');
             
-            // Beräkna exakt position för ikon-sug
             const iconRect = lastClickedIcon.getBoundingClientRect();
             const screenRect = document.getElementById('mainScreen').getBoundingClientRect();
             const xPercent = ((iconRect.left + iconRect.width / 2 - screenRect.left) / screenRect.width) * 100;
@@ -779,7 +788,6 @@
 
             bumpIsland();
             
-            // Släck kameraindikatorn och stäng av videoströmmar
             document.getElementById('islandContainer').classList.remove('camera-active');
             if (activeStream) {
                 activeStream.getTracks().forEach(track => track.stop());
@@ -791,7 +799,7 @@
 
             setTimeout(() => {
                 appScreen.style.display = 'none';
-            }, 480); // Sänkt tid matchat med den nya stängningsfjädern
+            }, 480); 
         }
 
         // Svep / Touch för stängning
