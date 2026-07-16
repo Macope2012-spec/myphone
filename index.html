@@ -194,16 +194,15 @@
             z-index: 500;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            padding: 70px 0 0 0;
-            transition: transform 0.6s var(--spring-io), opacity 0.4s ease, filter 0.4s ease;
-            pointer-events: none;
+            justify-content: space-between;
+            padding: 70px 0 35px 0;
+            transition: transform 0.5s var(--spring-io), opacity 0.4s ease;
+            pointer-events: auto;
+            cursor: grab;
         }
 
-        .lock-screen.unlocked-swipe {
-            transform: translateY(-100%);
-            opacity: 0;
-            filter: blur(15px);
+        .lock-screen:active {
+            cursor: grabbing;
         }
 
         #clock {
@@ -219,6 +218,23 @@
             font-weight: 500;
             color: rgba(255,255,255,0.85);
             text-align: center;
+        }
+
+        /* Svep upp-indikator (Äkta iOS-stil) */
+        .swipe-indicator {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            animation: breathe-swipe 2s infinite ease-in-out;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        @keyframes breathe-swipe {
+            0%, 100% { opacity: 0.35; transform: translateY(0); }
+            50% { opacity: 0.9; transform: translateY(-5px); }
         }
 
         /* Hemskärm */
@@ -646,7 +662,7 @@
             height: 56px;
         }
 
-        /* SVEP-STRECK LÄNGST NER */
+        /* SVEP-STRECK LÄNGST NER (Aktivt först efter upplåsning!) */
         .home-bar-container {
             position: absolute;
             bottom: 8px;
@@ -660,6 +676,11 @@
             z-index: 10000;
             cursor: pointer;
             padding-bottom: 8px;
+            pointer-events: none; /* Inaktiverat vid låst skärm för att låta svep passera fritt! */
+        }
+
+        .is-unlocked .home-bar-container {
+            pointer-events: auto !important; /* Aktivt igen vid upplåst skärm */
         }
 
         .home-bar {
@@ -826,10 +847,11 @@
             </div>
 
             <div class="lock-screen" id="lockScreen">
-                <div>
+                <div style="margin-top: 15px;">
                     <div id="date">Torsdag 16 juli</div>
                     <div id="clock">12:00</div>
                 </div>
+                <div class="swipe-indicator" onclick="unlockPhone()">Klicka eller svep upp för att öppna</div>
             </div>
 
             <div class="home-screen">
@@ -953,3 +975,376 @@
             document.getElementById('clock').textContent = `${h}:${m}`;
             document.getElementById('time-widget').textContent = `${h}:${m}`;
         }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Lås upp funktion
+        function unlockPhone() {
+            if (!isLocked) return;
+            isLocked = false;
+            
+            const lockScreen = document.getElementById('lockScreen');
+            lockScreen.style.transition = 'transform 0.5s var(--spring-io), opacity 0.4s ease';
+            lockScreen.style.transform = 'translateY(-100%)';
+            lockScreen.style.opacity = '0';
+            
+            // Inaktivera helt efter animationen så den inte blockerar klick på hemskärmen
+            setTimeout(() => {
+                lockScreen.style.display = 'none';
+            }, 500);
+            
+            document.querySelector('.iphone-screen').classList.add('is-unlocked');
+        }
+
+        // --- ULTRA-ROBUST SVEP-OCH-KLICK-GESTER FÖR LÅSSKÄRMEN ---
+        const lockScreen = document.getElementById('lockScreen');
+        let dragStartY = 0;
+        let dragCurrentY = 0;
+        let isDragging = false;
+
+        function handleDragStart(y) {
+            if (!isLocked) return;
+            isDragging = true;
+            dragStartY = y;
+            dragCurrentY = y;
+            lockScreen.style.transition = 'none';
+        }
+
+        function handleDragMove(y) {
+            if (!isDragging) return;
+            dragCurrentY = y;
+            let diff = dragStartY - dragCurrentY;
+            if (diff > 0) {
+                // Skärmen glider upp med fingret/musen
+                lockScreen.style.transform = `translateY(-${diff}px)`;
+            }
+        }
+
+        function handleDragEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            let diff = dragStartY - dragCurrentY;
+
+            // Om man svept uppåt mer än 80px, ELLER om det bara var ett enkelt tryck/klick (diff nära noll)
+            if (diff > 80 || Math.abs(diff) < 8) {
+                unlockPhone();
+            } else {
+                // Studsa tillbaka om svepet var för kort
+                lockScreen.style.transition = 'transform 0.5s var(--spring-io)';
+                lockScreen.style.transform = 'translateY(0)';
+            }
+        }
+
+        // Touch-händelser (Mobil & surfplattor)
+        lockScreen.addEventListener('touchstart', (e) => {
+            handleDragStart(e.touches[0].clientY);
+        }, { passive: true });
+
+        lockScreen.addEventListener('touchmove', (e) => {
+            handleDragMove(e.touches[0].clientY);
+        }, { passive: true });
+
+        lockScreen.addEventListener('touchend', () => {
+            handleDragEnd();
+        });
+
+        // Mus-händelser (Dator)
+        lockScreen.addEventListener('mousedown', (e) => {
+            handleDragStart(e.clientY);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            handleDragMove(e.clientY);
+        });
+
+        window.addEventListener('mouseup', () => {
+            handleDragEnd();
+        });
+
+
+        // Global hemknappsfunktion (För hemskärmen/minimering av appar)
+        const gestureZone = document.getElementById('homeGestureZone');
+        const homeBar = document.getElementById('homeBar');
+        let startY = 0;
+
+        gestureZone.addEventListener('click', () => {
+            triggerHomeAction();
+        });
+
+        gestureZone.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+            homeBar.style.transform = "scaleX(0.85) translateY(-5px)";
+        });
+
+        gestureZone.addEventListener('touchend', (e) => {
+            let endY = e.changedTouches[0].clientY;
+            homeBar.style.transform = "none";
+            if (startY - endY > 30) {
+                triggerHomeAction();
+            }
+        });
+
+        function triggerHomeAction() {
+            if (isLocked) return; 
+
+            const appScreen = document.getElementById('appScreen');
+            
+            if (isIslandExpanded) {
+                collapseIsland();
+                return;
+            }
+
+            if (appScreen.classList.contains('open')) {
+                const currentApp = document.getElementById('appTitle').textContent;
+                if (currentApp === "Nu Spelas") {
+                    setIslandActivity('music');
+                }
+                closeApp();
+            }
+        }
+
+        // Dynamic Island Hantering
+        function setIslandActivity(type, extraData = "") {
+            activeActivity = type;
+            const island = document.getElementById('island');
+            
+            document.querySelectorAll('.island-content').forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('show');
+            });
+
+            if (type === 'music') {
+                island.className = "dynamic-island compact-music";
+                const musicCompact = document.getElementById('islandMusicCompact');
+                musicCompact.style.display = 'flex';
+                setTimeout(() => musicCompact.classList.add('show'), 50);
+            } else if (type === 'call') {
+                island.className = "dynamic-island compact-call";
+                document.getElementById('islandCallNumber').textContent = extraData || "Mamma";
+                const callCompact = document.getElementById('islandCallCompact');
+                callCompact.style.display = 'flex';
+                setTimeout(() => callCompact.classList.add('show'), 50);
+                
+                if (!callTimer) {
+                    callSeconds = 0;
+                    callTimer = setInterval(() => {
+                        callSeconds++;
+                        const mins = Math.floor(callSeconds / 60).toString().padStart(2, '0');
+                        const secs = (callSeconds % 60).toString().padStart(2, '0');
+                        const timeStr = `${mins}:${secs}`;
+                        document.getElementById('islandCallTimer').textContent = timeStr;
+                        document.getElementById('islandCallTimerExpanded').textContent = timeStr;
+                        const screenTimer = document.getElementById('screenCallTimer');
+                        if (screenTimer) screenTimer.textContent = timeStr;
+                    }, 1000);
+                }
+            } else {
+                island.className = "dynamic-island";
+                const def = document.getElementById('islandDefault');
+                def.style.display = 'flex';
+                setTimeout(() => def.classList.add('show'), 50);
+                if (callTimer) {
+                    clearInterval(callTimer);
+                    callTimer = null;
+                }
+            }
+        }
+
+        function islandTap() {
+            if (!activeActivity) return;
+
+            const island = document.getElementById('island');
+
+            if (isIslandExpanded) {
+                collapseIsland();
+                return;
+            }
+
+            isIslandExpanded = true;
+            island.className = "dynamic-island expanded";
+            
+            document.querySelectorAll('.island-content').forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('show');
+            });
+
+            if (activeActivity === 'music') {
+                const musicExp = document.getElementById('islandMusicExpanded');
+                musicExp.style.display = 'flex';
+                setTimeout(() => musicExp.classList.add('show'), 50);
+            } else if (activeActivity === 'call') {
+                const callExp = document.getElementById('islandCallExpanded');
+                callExp.style.display = 'flex';
+                setTimeout(() => callExp.classList.add('show'), 50);
+            }
+        }
+
+        function collapseIsland() {
+            isIslandExpanded = false;
+            setIslandActivity(activeActivity);
+        }
+
+        function pauseMusicFromIsland(event) {
+            event.stopPropagation();
+            setIslandActivity(null);
+        }
+
+        function hangUpFromIsland(event) {
+            event.stopPropagation();
+            setIslandActivity(null);
+            closeApp();
+        }
+
+        // App-innehåll
+        const appContents = {
+            safari: {
+                title: 'Safari',
+                body: `
+                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px;">
+                        <h3>Sök</h3>
+                        <p style="font-size:14px; opacity:0.7; margin-top:8px;">Sidor anpassas nu automatiskt för enklare läsning.</p>
+                    </div>
+                    <div class="safari-bar">🔍 Sök...</div>
+                `
+            },
+            photos: {
+                title: 'Bilder',
+                body: `
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div style="aspect-ratio:1; background:rgba(255,255,255,0.1); border-radius:10px; display:flex; justify-content:center; align-items:center;">🌄</div>
+                        <div style="aspect-ratio:1; background:rgba(255,255,255,0.1); border-radius:10px; display:flex; justify-content:center; align-items:center;">🌌</div>
+                    </div>
+                `
+            },
+            settings: {
+                title: 'Inställningar',
+                body: `
+                    <div class="setting-row"><span>Wi-Fi</span><span style="opacity:0.5;">Ansluten ›</span></div>
+                    <div class="setting-row"><span>Bluetooth</span><span style="opacity:0.5;">På ›</span></div>
+                `
+            },
+            appstore: {
+                title: 'App Store',
+                body: `
+                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4>Chat</h4>
+                            <p style="font-size:12px; opacity:0.6;">Produktivitet</p>
+                        </div>
+                        <button style="background:#0a84ff; color:#fff; padding:6px 14px; border:none; border-radius:12px; font-weight:bold;">HÄMTA</button>
+                    </div>
+                `
+            },
+            messages: {
+                title: 'Meddelanden',
+                body: `
+                    <div style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; margin-bottom:10px;">
+                        <strong style="font-size:14px;">Mamma</strong>
+                        <p style="font-size:13px; opacity:0.7; margin-top:2px;">Kommer du hem snart? 👍</p>
+                    </div>
+                `
+            },
+            camera: {
+                title: 'Kamera',
+                body: `
+                    <div style="height:100%; display:flex; flex-direction:column; justify-content:space-between; align-items:center; padding:40px 0;">
+                        <div style="width:200px; height:200px; border:2px dashed rgba(255,255,255,0.3); border-radius:20px; display:flex; justify-content:center; align-items:center; opacity:0.5;">Sökare</div>
+                        <div style="width:70px; height:70px; border-radius:50%; border:5px solid #fff; cursor:pointer;"></div>
+                    </div>
+                `
+            },
+            maps: {
+                title: 'Kartor',
+                body: `
+                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom: 15px;">
+                        <h3>Sök i närheten</h3>
+                        <p style="font-size:13px; opacity:0.6;">Hitta restauranger, bensinstationer och mer.</p>
+                    </div>
+                    <div style="height:180px; background:rgba(255,255,255,0.1); border-radius:14px; display:flex; justify-content:center; align-items:center; color:rgba(255,255,255,0.5);">[Karta laddas...]</div>
+                `
+            },
+            weather: {
+                title: 'Väder',
+                body: `
+                    <div style="text-align:center; padding:20px 0;">
+                        <h2 style="font-size:48px; font-weight:200;">21°</h2>
+                        <p style="font-size:16px;">Mestadels soligt</p>
+                        <p style="opacity:0.6; font-size:13px; margin-top:5px;">H: 24° L: 14°</p>
+                    </div>
+                `
+            },
+            phone: {
+                title: 'Telefon',
+                body: `
+                    <div class="phone-display" id="phoneDisplay"></div>
+                    <div class="keypad-grid">
+                        <button onclick="pressKey('1')">1</button><button onclick="pressKey('2')">2</button><button onclick="pressKey('3')">3</button>
+                        <button onclick="pressKey('4')">4</button><button onclick="pressKey('5')">5</button><button onclick="pressKey('6')">6</button>
+                        <button onclick="pressKey('7')">7</button><button onclick="pressKey('8')">8</button><button onclick="pressKey('9')">9</button>
+                        <button onclick="pressKey('*')">*</button><button onclick="pressKey('0')">0</button><button onclick="pressKey('⌫')">⌫</button>
+                    </div>
+                    <button onclick="startCall()" style="width:68px; height:68px; border-radius:50%; background:#2fc854; border:none; color:#fff; font-size:26px; display:block; margin:20px auto 0 auto; cursor:pointer;">📞</button>
+                `
+            },
+            music: {
+                title: 'Nu Spelas',
+                body: `
+                    <div class="music-disc"></div>
+                    <div style="text-align:center; margin-top:10px;">
+                        <h3>Liquid Soundwave</h3>
+                        <p style="opacity:0.6; font-size:14px; margin-top:4px;">Beats</p>
+                    </div>
+                    <button onclick="playMusicFromApp()" style="display:block; margin:20px auto; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:15px; color:#fff; padding:10px 24px; font-weight:600; cursor:pointer;">Minimera till Dynamic Island</button>
+                `
+            }
+        };
+
+        function openApp(appId) {
+            const app = appContents[appId];
+            if(!app) return;
+            const screen = document.getElementById('appScreen');
+            document.getElementById('appTitle').textContent = app.title;
+            document.getElementById('appBody').innerHTML = app.body;
+            screen.style.display = 'flex';
+            setTimeout(() => screen.classList.add('open'), 10);
+        }
+
+        function closeApp() {
+            const screen = document.getElementById('appScreen');
+            screen.classList.remove('open');
+            setTimeout(() => screen.style.display = 'none', 500);
+        }
+
+        // Knappsatshantering för samtal
+        function pressKey(val) {
+            const disp = document.getElementById('phoneDisplay');
+            if (!disp) return;
+            if (val === '⌫') {
+                disp.textContent = disp.textContent.slice(0, -1);
+            } else {
+                if (disp.textContent.length < 15) disp.textContent += val;
+            }
+        }
+
+        function startCall() {
+            const nr = document.getElementById('phoneDisplay').textContent || "Mamma";
+            setIslandActivity('call', nr);
+            
+            document.getElementById('appTitle').textContent = "Pågående Samtal";
+            document.getElementById('appBody').innerHTML = `
+                <div style="text-align:center; padding-top:40px;">
+                    <div style="font-size:40px; margin-bottom:10px;">📞</div>
+                    <h2>${nr}</h2>
+                    <p id="screenCallTimer" style="font-size:18px; opacity:0.6; margin-top:10px;">00:00</p>
+                    <button onclick="hangUpFromIsland(event)" style="background:#ff3b30; color:#fff; border:none; padding:15px 35px; border-radius:30px; margin-top:50px; font-weight:bold; cursor:pointer; font-size:16px;">Lägg på</button>
+                </div>
+            `;
+        }
+
+        function playMusicFromApp() {
+            setIslandActivity('music');
+            closeApp();
+        }
+    </script>
+</body>
+</html>
